@@ -39,7 +39,7 @@ namespace GifWin
     internal class GifWitLibraryEntry
     {
         [JsonProperty("url")]
-        public string Url { get; set; }
+        public Uri Url { get; set; }
 
         // Ugh this is dumb.
         [JsonProperty("keywords")]
