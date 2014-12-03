@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <ListBox x:Name="listBox" Margin="10,67,10,10" ItemsSource="{Binding}" SelectionMode="Single" KeyDown="ListBox_OnKeyDown" MouseDoubleClick="ListBox_OnMouseDoubleClick">
+        <ListBox x:Name="listBox" Margin="10,67,10,10" ItemsSource="{Binding}" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
@@ -21,6 +21,6 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <TextBox x:Name="textBox" Height="52" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="textBox_TextChanged"/>
+        <TextBox x:Name="textBox" Height="52" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="FilterTextChanged"/>
     </Grid>
 </Window>

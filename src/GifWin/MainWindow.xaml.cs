@@ -22,7 +22,7 @@ namespace GifWin
             listBox.DataContext = lib;
         }
 
-        private void textBox_TextChanged (object sender, TextChangedEventArgs e)
+        private void FilterTextChanged (object sender, TextChangedEventArgs e)
         {
             if (lib != null && !string.IsNullOrWhiteSpace (textBox.Text)) {
                 typingTimer?.Dispose ();
@@ -43,7 +43,7 @@ namespace GifWin
             }
         }
 
-        private void ListBox_OnMouseDoubleClick (object sender, MouseButtonEventArgs e)
+        private void GifEntryClicked (object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Left)
                 return;
@@ -52,11 +52,11 @@ namespace GifWin
             Clipboard.SetText (entry.Url.ToString ());
         }
 
-        private void ListBox_OnKeyDown (object sender, KeyEventArgs e)
+        private void GifEntryKeyPressed (object sender, KeyEventArgs e)
         {
             // Because I am lazy, just reuse the same thing. This should probably be a command on a ViewModel.
             if (e.Key == Key.Enter) {
-                ListBox_OnMouseDoubleClick (sender, new MouseButtonEventArgs (InputManager.Current.PrimaryMouseDevice, 5, MouseButton.Left));
+                GifEntryClicked (sender, new MouseButtonEventArgs (InputManager.Current.PrimaryMouseDevice, 5, MouseButton.Left));
             }
         }
     }
