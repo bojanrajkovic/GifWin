@@ -36,26 +36,27 @@ namespace GifWin
                             listBox.DataContext = lib;
                         }
 
-                        listBox.Items.Refresh();
-                        listBox.Focus();
+                        listBox.Items.Refresh ();
+                        listBox.Focus ();
                     });
                 }, textBox.Text, TimeSpan.FromMilliseconds (500), TimeSpan.FromMilliseconds (-1));
             }
         }
 
-        private void ListBox_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void ListBox_OnMouseDoubleClick (object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left) {
-                var entry = (GifWitLibraryEntry) listBox.SelectedItem;
-                Clipboard.SetText(entry.Url.ToString());
-            }
+            if (e.ChangedButton != MouseButton.Left)
+                return;
+
+            var entry = (GifWitLibraryEntry) listBox.SelectedItem;
+            Clipboard.SetText (entry.Url.ToString ());
         }
 
-        private void ListBox_OnKeyDown(object sender, KeyEventArgs e)
+        private void ListBox_OnKeyDown (object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                ListBox_OnMouseDoubleClick(sender, new MouseButtonEventArgs (InputManager.Current.PrimaryMouseDevice, 5, MouseButton.Left));
+            // Because I am lazy, just reuse the same thing. This should probably be a command on a ViewModel.
+            if (e.Key == Key.Enter) {
+                ListBox_OnMouseDoubleClick (sender, new MouseButtonEventArgs (InputManager.Current.PrimaryMouseDevice, 5, MouseButton.Left));
             }
         }
     }
