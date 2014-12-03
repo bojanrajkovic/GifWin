@@ -7,6 +7,20 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <ListBox x:Name="listBox" Margin="10,67,10,10" ItemsSource="{Binding}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Keywords: "></Label>
+                            <Label Content="{Binding KeywordString}"></Label>
+                        </StackPanel>
+                        <local:GifImage GifSource="{Binding Url}" AutoStart="True"></local:GifImage>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBox x:Name="textBox" Height="52" Margin="10,10,10,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" TextChanged="textBox_TextChanged"/>
+
     </Grid>
 </Window>

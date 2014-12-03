@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +21,17 @@ namespace GifWin
     /// </summary>
     public partial class MainWindow : Window
     {
+        private GifWitLibrary lib;
         public MainWindow ()
         {
             InitializeComponent ();
+            lib = GifWitLibrary.LoadFromFile ("library.gifwit");
+            listBox.DataContext = lib;
+        }
+
+        private void textBox_TextChanged (object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }
