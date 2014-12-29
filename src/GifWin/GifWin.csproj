@@ -63,6 +63,7 @@
       <DependentUpon>HintTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModelBase.cs" />
+    <Compile Include="VirtualizingWrapPanel.cs" />
     <Page Include="HintTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

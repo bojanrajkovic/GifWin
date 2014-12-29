@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GifWin"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
+
+        xmlns:myWinCollection="clr-namespace:MyWinCollection"
         mc:Ignorable="d"
         Title="GifWin" Height="500" Width="600"
         FocusManager.FocusedElement="{Binding ElementName=search}">
@@ -28,11 +30,16 @@
         <local:HintTextBox x:Name="search" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}" />
 
         <ListBox x:Name="imageList" Grid.Row="1" Margin="10" ItemsSource="{Binding Images}" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <myWinCollection:VirtualizingWrapPanel  />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" Height="400" Width="400">
                         <Label Content="{Binding KeywordString}" ContentStringFormat="Tags: {0}" Target="{Binding ElementName=gif}" />
-                        <Image Name="gif"  gif:ImageBehavior.AutoStart="True" gif:ImageBehavior.AnimatedSource="{Binding Url}" />
+                        <Image Name="gif" Stretch="Uniform" gif:ImageBehavior.AutoStart="True" gif:ImageBehavior.AnimatedSource="{Binding Url}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
