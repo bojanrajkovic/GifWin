@@ -7,8 +7,12 @@
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+    <Window.DataContext>
+        <local:MainWindowViewModel />
+    </Window.DataContext>
+
     <Grid>
-        <ListBox x:Name="listBox" Margin="10,67,10,10" ItemsSource="{Binding}" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked">
+        <ListBox x:Name="listBox" Margin="10,67,10,10" ItemsSource="{Binding Images}" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
@@ -21,6 +25,6 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <TextBox x:Name="textBox" Height="52" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="FilterTextChanged"/>
+        <TextBox x:Name="textBox" Height="52" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </Window>

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GifWin
@@ -18,29 +15,6 @@ namespace GifWin
         public MainWindow ()
         {
             InitializeComponent ();
-            lib = GifWitLibrary.LoadFromFile ("library.gifwit");
-            listBox.DataContext = lib;
-        }
-
-        private void FilterTextChanged (object sender, TextChangedEventArgs e)
-        {
-            if (lib != null && !string.IsNullOrWhiteSpace (textBox.Text)) {
-                typingTimer?.Dispose ();
-
-                typingTimer = new Timer (state => {
-                    var newKeywords = ((string) state).Split (new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    Dispatcher.Invoke (() => {
-                        if (newKeywords.Any ()) {
-                            listBox.DataContext = lib.Where (x => newKeywords.Any (nk => x.Keywords.Contains (nk))).ToList ();
-                        } else {
-                            listBox.DataContext = lib;
-                        }
-
-                        listBox.Items.Refresh ();
-                        listBox.Focus ();
-                    });
-                }, textBox.Text, TimeSpan.FromMilliseconds (500), TimeSpan.FromMilliseconds (-1));
-            }
         }
 
         private void GifEntryClicked (object sender, MouseButtonEventArgs e)
