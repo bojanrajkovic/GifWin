@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GifWin"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="GifWin" Height="350" Width="525">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
