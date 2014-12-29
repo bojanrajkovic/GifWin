@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:GifWin"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
-        Title="GifWin" Height="500" Width="600">
+        Title="GifWin" Height="500" Width="600"
+        FocusManager.FocusedElement="{Binding ElementName=search}">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
