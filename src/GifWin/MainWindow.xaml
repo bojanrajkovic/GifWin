@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GifWin"
         xmlns:myWinCollection="clr-namespace:MyWinCollection"
         mc:Ignorable="d"
-        Title="GifWin" Height="600" Width="800"
+        Title="GifWin" Height="700" Width="800"
         FocusManager.FocusedElement="{Binding ElementName=search}">
     <Window.DataContext>
         <local:MainWindowViewModel />
