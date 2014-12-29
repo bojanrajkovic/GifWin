@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GifWin"
         xmlns:myWinCollection="clr-namespace:MyWinCollection"
         mc:Ignorable="d"
-        Title="GifWin" Height="700" Width="800"
+        Title="GifWin" Height="{Binding Height,Mode=TwoWay}" Width="{Binding Width,Mode=TwoWay}"
         FocusManager.FocusedElement="{Binding ElementName=search}">
     <Window.DataContext>
         <local:MainWindowViewModel />
@@ -44,6 +44,6 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Slider Name="zoom" Grid.Row="2" Margin="10" Width="200" HorizontalAlignment="Left" Minimum="10" Maximum="500" Value="170" />
+        <Slider Name="zoom" Grid.Row="2" Margin="10" Width="200" HorizontalAlignment="Left" Minimum="10" Maximum="500" Value="{Binding Zoom}" />
     </Grid>
 </Window>
