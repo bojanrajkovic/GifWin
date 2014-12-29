@@ -17,9 +17,9 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBox x:Name="textBox" Grid.Row="0" Margin="10" TextWrapping="Wrap" VerticalAlignment="Stretch" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox x:Name="search" Grid.Row="0" Margin="10" TextWrapping="Wrap" VerticalAlignment="Stretch" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}" />
 
-        <ListBox x:Name="listBox" Grid.Row="1" Margin="10" ItemsSource="{Binding Images}" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked">
+        <ListBox x:Name="imageList" Grid.Row="1" Margin="10" ItemsSource="{Binding Images}" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
