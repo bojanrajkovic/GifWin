@@ -8,7 +8,7 @@
 
         xmlns:myWinCollection="clr-namespace:MyWinCollection"
         mc:Ignorable="d"
-        Title="GifWin" Height="500" Width="600"
+        Title="GifWin" Height="600" Width="800"
         FocusManager.FocusedElement="{Binding ElementName=search}">
     <Window.DataContext>
         <local:MainWindowViewModel />
@@ -25,6 +25,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <local:HintTextBox x:Name="search" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}" />
@@ -37,12 +38,14 @@
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Vertical" Height="400" Width="400">
+                    <StackPanel Orientation="Vertical" Height="{Binding Value,ElementName=zoom}" Width="{Binding Value,ElementName=zoom}">
                         <Label Content="{Binding KeywordString}" ContentStringFormat="Tags: {0}" Target="{Binding ElementName=gif}" />
                         <Image Name="gif" Stretch="Uniform" gif:ImageBehavior.AutoStart="True" gif:ImageBehavior.AnimatedSource="{Binding Url}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
+        <Slider Name="zoom" Grid.Row="2" Margin="10" Width="200" HorizontalAlignment="Left" Minimum="10" Maximum="500" Value="500" />
     </Grid>
 </Window>
