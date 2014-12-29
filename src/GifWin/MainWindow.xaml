@@ -4,8 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GifWin"
-        xmlns:gif="http://wpfanimatedgif.codeplex.com"
-
         xmlns:myWinCollection="clr-namespace:MyWinCollection"
         mc:Ignorable="d"
         Title="GifWin" Height="600" Width="800"
@@ -40,7 +38,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Vertical" Height="{Binding Value,ElementName=zoom}" Width="{Binding Value,ElementName=zoom}">
                         <Label Content="{Binding KeywordString}" ContentStringFormat="Tags: {0}" Target="{Binding ElementName=gif}" />
-                        <Image Name="gif" Stretch="Uniform" gif:ImageBehavior.AutoStart="True" gif:ImageBehavior.AnimatedSource="{Binding Url}" />
+                        <MediaElement Name="gif" UnloadedBehavior="Close" Source="{Binding CachedUri}" LoadedBehavior="Manual" Stretch="Uniform" local:ReplayBehavior.Repeats="True" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
