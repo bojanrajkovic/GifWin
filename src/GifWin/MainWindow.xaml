@@ -6,13 +6,20 @@
         xmlns:local="clr-namespace:GifWin"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
-        Title="GifWin" Height="350" Width="525">
+        Title="GifWin" Height="500" Width="600">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
 
     <Grid>
-        <ListBox x:Name="listBox" Margin="10,67,10,10" ItemsSource="{Binding Images}" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="62" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBox x:Name="textBox" Grid.Row="0" Margin="10" TextWrapping="Wrap" VerticalAlignment="Stretch" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}" />
+
+        <ListBox x:Name="listBox" Grid.Row="1" Margin="10" ItemsSource="{Binding Images}" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
@@ -20,11 +27,10 @@
                             <Label Content="Keywords: "></Label>
                             <Label Content="{Binding KeywordString}"></Label>
                         </StackPanel>
-                        <Image gif:ImageBehavior.AutoStart="True" gif:ImageBehavior.AnimatedSource="{Binding Url}"></Image>
+                        <Image gif:ImageBehavior.AutoStart="True" gif:ImageBehavior.AnimatedSource="{Binding Url}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <TextBox x:Name="textBox" Height="52" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </Window>
