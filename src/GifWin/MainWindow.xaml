@@ -12,13 +12,20 @@
         <local:MainWindowViewModel />
     </Window.DataContext>
 
+    <Window.Resources>
+        <Style x:Key="LargeEntry" TargetType="TextBox">
+            <Setter Property="FontSize" Value="50" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="62" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBox x:Name="search" Grid.Row="0" Margin="10" TextWrapping="Wrap" VerticalAlignment="Stretch" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}" />
+        <local:HintTextBox x:Name="search" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}" />
 
         <ListBox x:Name="imageList" Grid.Row="1" Margin="10" ItemsSource="{Binding Images}" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked">
             <ListBox.ItemTemplate>
