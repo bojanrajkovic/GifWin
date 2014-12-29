@@ -31,11 +31,8 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Keywords: "></Label>
-                            <Label Content="{Binding KeywordString}"></Label>
-                        </StackPanel>
-                        <Image gif:ImageBehavior.AutoStart="True" gif:ImageBehavior.AnimatedSource="{Binding Url}" />
+                        <Label Content="{Binding KeywordString}" ContentStringFormat="Tags: {0}" Target="{Binding ElementName=gif}" />
+                        <Image Name="gif"  gif:ImageBehavior.AutoStart="True" gif:ImageBehavior.AnimatedSource="{Binding Url}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
