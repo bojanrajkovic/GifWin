@@ -17,6 +17,7 @@ namespace GifWin
         public MainWindow ()
         {
             InitializeComponent ();
+            ((MainWindowViewModel)DataContext).PropertyChanged += OnPropertyChanged;
         }
 
         public new void Show()
@@ -35,6 +36,17 @@ namespace GifWin
         {
             e.Cancel = true;
             Hide();
+        }
+
+        private void OnPropertyChanged (object sender, PropertyChangedEventArgs e)
+        {
+            // We listen to this instead of the input text so we can be sure the VM has had a chance to filter before we expand.
+            if (e.PropertyName == "FilterText") {
+                if (this.search.Text == String.Empty)
+                    VisualStateManager.GoToElementState (this, "NotSearching", useTransitions: true);
+                 else
+                    VisualStateManager.GoToElementState (this, "Searching", useTransitions: true);
+            }
         }
 
         private void GifEntryClicked (object sender, MouseButtonEventArgs e)

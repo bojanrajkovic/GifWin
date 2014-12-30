@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:GifWin"
         xmlns:myWinCollection="clr-namespace:MyWinCollection"
         mc:Ignorable="d"
+        Name="window"
         Title="GifWin" MinHeight="120" MinWidth="500" Height="120" Width="{Binding Width,Mode=TwoWay}"
         KeyUp="OnWindowKeyUp" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
@@ -18,6 +19,34 @@
             <Setter Property="BorderThickness" Value="0,0,0,1" />
         </Style>
     </Window.Resources>
+
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup Name="SearchStates">
+            <VisualState Name="NotSearching">
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="120" />
+                </Storyboard>
+            </VisualState>
+            <VisualState Name="Searching">
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="700" />
+                </Storyboard>
+            </VisualState>
+
+            <VisualStateGroup.Transitions>
+                <VisualTransition To="NotSearching" GeneratedDuration="00:00:00.3">
+                    <VisualTransition.GeneratedEasingFunction>
+                        <CircleEase EasingMode="EaseOut" />
+                    </VisualTransition.GeneratedEasingFunction>
+                </VisualTransition>
+                <VisualTransition To="Searching" GeneratedDuration="00:00:00.3">
+                    <VisualTransition.GeneratedEasingFunction>
+                        <CircleEase EasingMode="EaseOut" />
+                    </VisualTransition.GeneratedEasingFunction>
+                </VisualTransition>
+            </VisualStateGroup.Transitions>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
 
     <Grid>
         <Grid.RowDefinitions>

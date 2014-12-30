@@ -64,12 +64,13 @@ namespace GifWin
                     return;
 
                 this.filterText = value;
-                OnPropertyChanged();
                 
                 this.filterKeywords.Clear();
                 this.filterKeywords.UnionWith (value.Split (new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
                 if (this.images != null)
                     this.images.Refresh();
+
+                OnPropertyChanged();
             }
         }
 
