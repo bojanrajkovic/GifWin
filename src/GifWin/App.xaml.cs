@@ -50,6 +50,7 @@ namespace GifWin
                 this.window = new MainWindow();
 
             this.window.Show();
+            this.window.Activate();
         }
     }
 }
