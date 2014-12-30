@@ -81,7 +81,7 @@ namespace GifWin
         {
             var entry = (GifEntryViewModel) o;
             if (String.IsNullOrWhiteSpace (FilterText))
-                return true;
+                return false;
 
             return this.filterKeywords.IsSubsetOf (entry.Keywords);
         }
