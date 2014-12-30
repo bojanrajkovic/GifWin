@@ -5,15 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GifWin"
         xmlns:myWinCollection="clr-namespace:MyWinCollection"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Name="window"
-        Title="GifWin" MinHeight="120" MinWidth="500" Height="120" Width="{Binding Width,Mode=TwoWay}"
+        Title="GifWin" MinHeight="{DynamicResource Height}" MinWidth="500" Height="{DynamicResource Height}" Width="{Binding Width,Mode=TwoWay}"
         KeyUp="OnWindowKeyUp" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" ShowInTaskbar="True">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
 
     <Window.Resources>
+        <system:Double x:Key="Height">90</system:Double>
         <Style x:Key="LargeEntry" TargetType="TextBox">
             <Setter Property="FontSize" Value="50" />
             <Setter Property="BorderThickness" Value="0,0,0,1" />
@@ -24,7 +26,7 @@
         <VisualStateGroup Name="SearchStates">
             <VisualState Name="NotSearching">
                 <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="120" />
+                    <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="{StaticResource Height}" />
                 </Storyboard>
             </VisualState>
             <VisualState Name="Searching">
