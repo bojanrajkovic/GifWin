@@ -33,5 +33,11 @@ namespace GifWin
                 GifEntryClicked (sender, new MouseButtonEventArgs (InputManager.Current.PrimaryMouseDevice, 5, MouseButton.Left));
             }
         }
+
+        private void OnWindowKeyUp (object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                Close();
+        }
     }
 }
