@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GifWin"
         xmlns:myWinCollection="clr-namespace:MyWinCollection"
         mc:Ignorable="d"
-        Title="GifWin" Height="{Binding Height,Mode=TwoWay}" Width="{Binding Width,Mode=TwoWay}"
+        Title="GifWin" MinHeight="120" MinWidth="500" Height="120" Width="{Binding Width,Mode=TwoWay}"
         KeyUp="OnWindowKeyUp" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <local:MainWindowViewModel />
