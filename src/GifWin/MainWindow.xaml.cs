@@ -54,16 +54,25 @@ namespace GifWin
             if (e.ChangedButton != MouseButton.Left)
                 return;
 
+            CopyImage();
+        }
+
+        private void CopyImage()
+        {
             var entry = (GifEntryViewModel) this.imageList.SelectedItem;
-            Clipboard.SetText (entry.Url.ToString ());
+            if (entry == null)
+                return;
+
+            Clipboard.SetText (entry.Url.ToString());
+
+            this.search.Clear();
+
+            Hide();
         }
 
         private void GifEntryKeyPressed (object sender, KeyEventArgs e)
         {
-            // Because I am lazy, just reuse the same thing. This should probably be a command on a ViewModel.
-            if (e.Key == Key.Enter) {
-                GifEntryClicked (sender, new MouseButtonEventArgs (InputManager.Current.PrimaryMouseDevice, 5, MouseButton.Left));
-            }
+            CopyImage();
         }
 
         private void OnWindowKeyUp (object sender, KeyEventArgs e)
