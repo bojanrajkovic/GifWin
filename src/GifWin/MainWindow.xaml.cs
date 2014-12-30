@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 
@@ -15,6 +17,24 @@ namespace GifWin
         public MainWindow ()
         {
             InitializeComponent ();
+        }
+
+        public new void Show()
+        {
+            base.Show();
+            this.search.Focus();
+        }
+
+        public new void Hide()
+        {
+            this.search.Clear();
+            base.Hide();
+        }
+
+        protected override void OnClosing (CancelEventArgs e)
+        {
+            e.Cancel = true;
+            Hide();
         }
 
         private void GifEntryClicked (object sender, MouseButtonEventArgs e)
@@ -37,7 +57,7 @@ namespace GifWin
         private void OnWindowKeyUp (object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                Close();
+                Hide();
         }
     }
 }

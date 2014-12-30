@@ -46,7 +46,7 @@ namespace GifWin
 
         private void OnTrayClicked (object sender, EventArgs eventArgs)
         {
-            if (this.window == null || !this.window.IsLoaded)
+            if (this.window == null)
                 this.window = new MainWindow();
 
             this.window.Show();
