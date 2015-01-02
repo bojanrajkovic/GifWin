@@ -50,18 +50,17 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WpfAnimatedGif">
-      <HintPath>..\packages\WpfAnimatedGif.1.4.9\lib\net\WpfAnimatedGif.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="GifEntryViewModel.cs" />
     <Compile Include="HintTextBox.xaml.cs">
       <DependentUpon>HintTextBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ReplayBehavior.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="VirtualizingWrapPanel.cs" />
     <Page Include="HintTextBox.xaml">

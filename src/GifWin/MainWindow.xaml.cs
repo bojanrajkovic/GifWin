@@ -22,7 +22,7 @@ namespace GifWin
             if (e.ChangedButton != MouseButton.Left)
                 return;
 
-            var entry = (GifWitLibraryEntry) this.imageList.SelectedItem;
+            var entry = (GifEntryViewModel) this.imageList.SelectedItem;
             Clipboard.SetText (entry.Url.ToString ());
         }
 

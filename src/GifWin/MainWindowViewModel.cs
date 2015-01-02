@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
@@ -12,7 +13,7 @@ namespace GifWin
         public MainWindowViewModel()
         {
             GifWitLibrary.LoadFromFileAsync ("library.gifwit").ContinueWith (t => {
-                Images = new CollectionView (t.Result) {
+                Images = new CollectionView (t.Result.Select (e => new GifEntryViewModel (e))) {
                     Filter = FilterPredicate
                 };
             }, TaskScheduler.FromCurrentSynchronizationContext());
@@ -55,7 +56,7 @@ namespace GifWin
 
         private bool FilterPredicate (object o)
         {
-            var entry = (GifWitLibraryEntry) o;
+            var entry = (GifEntryViewModel) o;
             if (String.IsNullOrWhiteSpace (FilterText))
                 return true;
 
