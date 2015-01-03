@@ -59,13 +59,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="GifEntryViewModel.cs" />
-    <Compile Include="HintTextBox.xaml.cs">
-      <DependentUpon>HintTextBox.xaml</DependentUpon>
+    <Compile Include="SearchTextBox.xaml.cs">
+      <DependentUpon>SearchTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="ReplayBehavior.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="VirtualizingWrapPanel.cs" />
-    <Page Include="HintTextBox.xaml">
+    <Page Include="SearchTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
