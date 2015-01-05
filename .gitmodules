@@ -1,0 +1,3 @@
+[submodule "src/AnimatedTextBoxBehavior"]
+	path = src/AnimatedTextBoxBehavior
+	url = https://github.com/ermau/AnimatedTextBoxBehavior.git
