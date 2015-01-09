@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GifWin"
-        xmlns:myWinCollection="clr-namespace:MyWinCollection"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Name="window"
@@ -59,10 +58,10 @@
 
         <local:SearchTextBox x:Name="search" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}" />
 
-        <ListBox x:Name="imageList" Grid.Row="1" Margin="10" ItemsSource="{Binding Images}" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked">
+        <ListBox x:Name="imageList" Grid.Row="1" Margin="10" ItemsSource="{Binding Images}" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <myWinCollection:VirtualizingWrapPanel  />
+                    <WrapPanel />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>

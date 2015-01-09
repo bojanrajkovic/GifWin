@@ -70,7 +70,6 @@
     </Compile>
     <Compile Include="ReplayBehavior.cs" />
     <Compile Include="ViewModelBase.cs" />
-    <Compile Include="VirtualizingWrapPanel.cs" />
     <Page Include="SearchTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
