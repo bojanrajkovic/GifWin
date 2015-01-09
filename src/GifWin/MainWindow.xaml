@@ -35,12 +35,12 @@
             </VisualState>
 
             <VisualStateGroup.Transitions>
-                <VisualTransition To="NotSearching" GeneratedDuration="00:00:00.3">
+                <VisualTransition To="NotSearching" GeneratedDuration="00:00:00.2">
                     <VisualTransition.GeneratedEasingFunction>
                         <CircleEase EasingMode="EaseOut" />
                     </VisualTransition.GeneratedEasingFunction>
                 </VisualTransition>
-                <VisualTransition To="Searching" GeneratedDuration="00:00:00.3">
+                <VisualTransition To="Searching" GeneratedDuration="00:00:00.2">
                     <VisualTransition.GeneratedEasingFunction>
                         <CircleEase EasingMode="EaseOut" />
                     </VisualTransition.GeneratedEasingFunction>
@@ -56,7 +56,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <local:SearchTextBox x:Name="search" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}" />
+        <local:SearchTextBox x:Name="search" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=300,UpdateSourceTrigger=PropertyChanged}" />
 
         <ListBox x:Name="imageList" Grid.Row="1" Margin="10" ItemsSource="{Binding Images}" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
