@@ -65,11 +65,9 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Vertical" Height="{Binding Value,ElementName=zoom}" Width="{Binding Value,ElementName=zoom}">
-                        <Label Content="{Binding KeywordString}" ContentStringFormat="Tags: {0}" Target="{Binding ElementName=gif}" />
-                        <MediaElement Name="gif" UnloadedBehavior="Close" Source="{Binding CachedUri}" LoadedBehavior="Manual" Stretch="Uniform" local:ReplayBehavior.Repeats="True" />
-                    </StackPanel>
+                <DataTemplate DataType="local:GifEntryViewModel">
+                    <MediaElement Name="gif" Height="{Binding Value,ElementName=zoom}" Width="{Binding Value,ElementName=zoom}" Source="{Binding CachedUri}" ToolTip="{Binding Path=KeywordString, StringFormat=Tags: {0}}"
+									UnloadedBehavior="Close" LoadedBehavior="Manual" Stretch="Uniform" local:ReplayBehavior.Repeats="True" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
