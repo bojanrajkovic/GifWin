@@ -20,18 +20,6 @@ namespace GifWin
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public double Height
-        {
-            get { return Settings.Default.WindowHeight; }
-            set { Settings.Default.WindowHeight = value; }
-        }
-
-        public double Width
-        {
-            get { return Settings.Default.WindowWidth; }
-            set { Settings.Default.WindowWidth = value; }
-        }
-
         public double Zoom
         {
             get { return Settings.Default.Zoom; }

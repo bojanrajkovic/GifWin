@@ -8,14 +8,13 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Name="window"
-        Title="GifWin" MinHeight="{DynamicResource Height}" MinWidth="500" Height="{DynamicResource Height}" Width="{Binding Width,Mode=TwoWay}"
+        Title="GifWin" MinHeight="90" MinWidth="500" Height="90" Width="1000"
         KeyUp="OnWindowKeyUp" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" ShowInTaskbar="True">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
 
     <Window.Resources>
-        <system:Double x:Key="Height">90</system:Double>
         <Style x:Key="LargeEntry" TargetType="TextBox">
             <Setter Property="FontSize" Value="50" />
             <Setter Property="BorderThickness" Value="0,0,0,1" />
@@ -26,7 +25,7 @@
         <VisualStateGroup Name="SearchStates">
             <VisualState Name="NotSearching">
                 <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="{StaticResource Height}" />
+                    <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="90" />
                 </Storyboard>
             </VisualState>
             <VisualState Name="Searching">
