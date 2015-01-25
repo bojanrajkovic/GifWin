@@ -26,7 +26,7 @@ namespace GifWin
             if (this.window == null) {
                 this.window = new MainWindow();
 
-                hotkey = new HotKey(ModifierKeys.Windows | ModifierKeys.Alt, Key.G, window);
+                hotkey = new HotKey(ModifierKeys.Windows, Key.G, window);
                 hotkey.HotKeyPressed += HotKeyPressed;
             }
 
