@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GifWin"
-        xmlns:myWinCollection="clr-namespace:MyWinCollection"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Name="window"
@@ -36,12 +35,12 @@
             </VisualState>
 
             <VisualStateGroup.Transitions>
-                <VisualTransition To="NotSearching" GeneratedDuration="00:00:00.3">
+                <VisualTransition To="NotSearching" GeneratedDuration="00:00:00.2">
                     <VisualTransition.GeneratedEasingFunction>
                         <CircleEase EasingMode="EaseOut" />
                     </VisualTransition.GeneratedEasingFunction>
                 </VisualTransition>
-                <VisualTransition To="Searching" GeneratedDuration="00:00:00.3">
+                <VisualTransition To="Searching" GeneratedDuration="00:00:00.2">
                     <VisualTransition.GeneratedEasingFunction>
                         <CircleEase EasingMode="EaseOut" />
                     </VisualTransition.GeneratedEasingFunction>
@@ -57,20 +56,18 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <local:SearchTextBox x:Name="search" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=500,UpdateSourceTrigger=PropertyChanged}" />
+        <local:SearchTextBox x:Name="search" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=300,UpdateSourceTrigger=PropertyChanged}" />
 
-        <ListBox x:Name="imageList" Grid.Row="1" Margin="10" ItemsSource="{Binding Images}" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseDoubleClick="GifEntryClicked">
+        <ListBox x:Name="imageList" Grid.Row="1" Margin="10" ItemsSource="{Binding Images}" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseUp="GifEntryClicked" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <myWinCollection:VirtualizingWrapPanel  />
+                    <WrapPanel />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Vertical" Height="{Binding Value,ElementName=zoom}" Width="{Binding Value,ElementName=zoom}">
-                        <Label Content="{Binding KeywordString}" ContentStringFormat="Tags: {0}" Target="{Binding ElementName=gif}" />
-                        <MediaElement Name="gif" UnloadedBehavior="Close" Source="{Binding CachedUri}" LoadedBehavior="Manual" Stretch="Uniform" local:ReplayBehavior.Repeats="True" />
-                    </StackPanel>
+                <DataTemplate DataType="local:GifEntryViewModel">
+                    <MediaElement Name="gif" Height="{Binding Value,ElementName=zoom}" Width="{Binding Value,ElementName=zoom}" Source="{Binding CachedUri}" ToolTip="{Binding Path=KeywordString, StringFormat=Tags: {0}}"
+									UnloadedBehavior="Close" LoadedBehavior="Manual" Stretch="Uniform" local:ReplayBehavior.Repeats="True" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
