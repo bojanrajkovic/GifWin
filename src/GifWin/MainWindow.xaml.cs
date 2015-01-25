@@ -72,13 +72,24 @@ namespace GifWin
 
         private void GifEntryKeyPressed (object sender, KeyEventArgs e)
         {
-            CopyImage();
+            if (e.Key == Key.Return || e.Key == Key.Enter)
+                CopyImage();
         }
 
         private void OnWindowKeyUp (object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
                 Hide();
+        }
+
+        private void SearchBoxKeyPressed(object sender, KeyEventArgs e)
+        {
+            if (SearchStates.CurrentState == null || SearchStates.CurrentState.Name != "Searching")
+                return;
+
+            if (e.Key == Key.Down) {
+                imageList.Focus();
+            }
         }
     }
 }
