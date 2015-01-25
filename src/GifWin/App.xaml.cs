@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Linq;
 using GifWin.Properties;
 using Application = System.Windows.Application;
+using System.Windows.Input;
 
 namespace GifWin
 {
@@ -22,11 +23,19 @@ namespace GifWin
         {
             base.OnStartup (e);
 
+            if (this.window == null) {
+                this.window = new MainWindow();
+
+                hotkey = new HotKey(ModifierKeys.Windows | ModifierKeys.Alt, Key.G, window);
+                hotkey.HotKeyPressed += HotKeyPressed;
+            }
+
             SetupTrayIcon();
         }
 
         private NotifyIcon tray;
         private MainWindow window;
+        HotKey hotkey;
 
         private void SetupTrayIcon()
         {
@@ -46,11 +55,14 @@ namespace GifWin
 
         private void OnTrayClicked (object sender, EventArgs eventArgs)
         {
-            if (this.window == null)
-                this.window = new MainWindow();
-
             this.window.Show();
             this.window.Activate();
+        }
+
+        private void HotKeyPressed(HotKey obj)
+        {
+            window.Show();
+            window.Activate();
         }
     }
 }
