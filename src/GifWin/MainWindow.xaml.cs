@@ -72,7 +72,8 @@ namespace GifWin
 
         private void GifEntryKeyPressed (object sender, KeyEventArgs e)
         {
-            CopyImage();
+            if (e.Key == Key.Return || e.Key == Key.Enter)
+                CopyImage();
         }
 
         private void OnWindowKeyUp (object sender, KeyEventArgs e)
