@@ -80,5 +80,15 @@ namespace GifWin
             if (e.Key == Key.Escape)
                 Hide();
         }
+
+        private void SearchBoxKeyPressed(object sender, KeyEventArgs e)
+        {
+            if (SearchStates.CurrentState == null || SearchStates.CurrentState.Name != "Searching")
+                return;
+
+            if (e.Key == Key.Down) {
+                imageList.Focus();
+            }
+        }
     }
 }
