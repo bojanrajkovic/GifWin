@@ -21,7 +21,7 @@
     </Window.Resources>
 
     <VisualStateManager.VisualStateGroups>
-        <VisualStateGroup Name="SearchStates">
+        <VisualStateGroup x:Name="SearchStates">
             <VisualState Name="NotSearching">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="90" />
