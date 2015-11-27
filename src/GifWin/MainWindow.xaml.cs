@@ -63,10 +63,10 @@ namespace GifWin
 
             Clipboard.SetText (entry.Url);
 
+            var searchText = search.Text;
             Task.Run(async () => {
                 using (var helper = new GifWinDatabaseHelper()) {
                     try {
-                        var searchText = await Dispatcher.InvokeAsync(() => search.Text);
                         await helper.RecordGifUsageAsync(entry.Id, searchText);
                     } catch (Exception e) {
                         await Dispatcher.InvokeAsync(() => {
