@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using GifWin.Properties;
+using GifWin.Data;
 
 namespace GifWin
 {
@@ -13,11 +14,13 @@ namespace GifWin
     {
         public MainWindowViewModel()
         {
-            GifWitLibrary.LoadFromFileAsync ("library.gifwit").ContinueWith (t => {
-                Images = new CollectionView (t.Result.Select (e => new GifEntryViewModel (e))) {
-                    Filter = FilterPredicate
-                };
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+            using (var helper = new GifWinDatabaseHelper()) {
+                helper.LoadAllGifsAsync().ContinueWith(t => {
+                    Images = new CollectionView(t.Result.Select(e => new GifEntryViewModel(e))) {
+                        Filter = FilterPredicate
+                    };
+                });
+            }
         }
 
         public double Zoom
