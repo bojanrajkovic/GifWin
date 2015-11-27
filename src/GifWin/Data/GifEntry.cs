@@ -23,6 +23,7 @@ namespace GifWin.Data
         public DateTimeOffset? AddedAt { get; set; }
         public DateTimeOffset? LastUsed { get; set; }
         public int UsedCount { get; set; } = 0;
+        public byte[] FirstFrame { get; set; }
 
         public virtual ICollection<GifTag> Tags { get; set; }
         public virtual ICollection<GifUsage> Usages { get; set; }

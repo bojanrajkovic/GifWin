@@ -181,6 +181,10 @@
     <Compile Include="Migrations\20151127033805_AddSearchTermToGifUsage.designer.cs">
       <DependentUpon>20151127033805_AddSearchTermToGifUsage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20151127144929_AddFirstFrame.cs" />
+    <Compile Include="Migrations\20151127144929_AddFirstFrame.designer.cs">
+      <DependentUpon>20151127144929_AddFirstFrame.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\GifWinContextModelSnapshot.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="SearchTextBox.xaml.cs">
