@@ -167,6 +167,7 @@
     <Compile Include="Data\GifWinDatabaseHelper.cs" />
     <Compile Include="GifEntryViewModel.cs" />
     <Compile Include="GifHelper.cs" />
+    <Compile Include="GlobalHelper.cs" />
     <Compile Include="HotKey.cs" />
     <Compile Include="Migrations\20151127010218_BaseDatabaseStructure.cs" />
     <Compile Include="Migrations\20151127010218_BaseDatabaseStructure.designer.cs">
