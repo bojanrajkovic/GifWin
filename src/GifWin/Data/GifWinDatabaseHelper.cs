@@ -34,9 +34,25 @@ namespace GifWin.Data
             return await db.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<GifEntry>> LoadAllGifsAsync()
+        public async Task RecordGifUsageAsync(int gifId)
         {
-            return await db.Gifs.Include(ge => ge.Tags).ToArrayAsync().ConfigureAwait(false);
+            var gif = await db.Gifs.SingleOrDefaultAsync(ge => ge.Id == gifId).ConfigureAwait(false);
+
+            if (gif != null) {
+                var ts = DateTimeOffset.UtcNow;
+                var usage = new GifUsage();
+                gif.LastUsed = usage.UsedAt = ts;
+                gif.Usages.Add(usage);
+
+                await db.SaveChangesAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task<IQueryable<GifEntry>> LoadAllGifsAsync()
+        {
+            var query = db.Gifs.Include(ge => ge.Tags);
+            await query.LoadAsync().ConfigureAwait(false);
+            return query;
         }
 
         private bool disposedValue = false;
