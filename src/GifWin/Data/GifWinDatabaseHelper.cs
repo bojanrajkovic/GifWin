@@ -49,11 +49,11 @@ namespace GifWin.Data
             }
         }
 
-        public async Task<IQueryable<GifEntry>> LoadAllGifsAsync()
+        public async Task<IEnumerable<GifEntry>> LoadAllGifsAsync()
         {
             var query = db.Gifs.Include(ge => ge.Tags);
             await query.LoadAsync().ConfigureAwait(false);
-            return query;
+            return await query.ToArrayAsync();
         }
 
         private bool disposedValue = false;
