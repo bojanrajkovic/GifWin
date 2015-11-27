@@ -20,6 +20,7 @@ namespace GifWin
             Id = entry.Id;
             Url = entry.Url;
             Keywords = entry.Tags.Select(t => t.Tag).ToArray();
+            FirstFrameData = entry.FirstFrame;
         }
 
         public int Id { get; set; }
@@ -33,6 +34,15 @@ namespace GifWin
                     this.cachedUri = GifHelper.GetOrMakeSavedAsync (Url);
                     this.cachedUri.ContinueWith (t => {
                         OnPropertyChanged ();
+
+                        if (FirstFrameData == null) {
+                            Task.Run(async () => {
+                                using (var helper = new GifWinDatabaseHelper()) {
+                                    var frameData = GifHelper.GetFrameData(t.Result, frameNumber: 0);
+                                    await helper.UpdateSavedFirstFrameDataAsync(Id, frameData);
+                                }
+                            });
+                        }
                     }, CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext());
 
                     return null;
@@ -48,5 +58,6 @@ namespace GifWin
         public string KeywordString => string.Join(" ", Keywords);
 
         public IEnumerable<string> Keywords { get; }
+        public byte[] FirstFrameData { get; }
     }
 }

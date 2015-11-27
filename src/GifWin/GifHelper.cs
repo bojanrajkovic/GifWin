@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace GifWin
 {
@@ -32,6 +35,29 @@ namespace GifWin
 
                 return file.FullName;
             });
+        }
+
+        internal static byte[] GetFrameData(string gifPath, int frameNumber)
+        {
+            var fs = File.OpenRead(gifPath);
+            var decoder = BitmapDecoder.Create(fs, BitmapCreateOptions.None, BitmapCacheOption.Default);
+
+            if (frameNumber > decoder.Frames.Count) {
+                throw new ArgumentOutOfRangeException(nameof(frameNumber), $"Frame number {frameNumber} is greater than frame count {decoder.Frames.Count}");
+            }
+
+            var frame = decoder.Frames[frameNumber];
+
+            // Now convert it to PNG
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(frame);
+
+            byte[] pngData;
+            using (var ms = new MemoryStream()) {
+                encoder.Save(ms);
+                pngData = ms.ToArray();
+                return pngData;
+            }
         }
 
         private static string GetReadableHash(byte[] hash)
