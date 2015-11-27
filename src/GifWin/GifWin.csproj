@@ -176,6 +176,10 @@
     <Compile Include="Migrations\20151127030513_UsageDataStorage.designer.cs">
       <DependentUpon>20151127030513_UsageDataStorage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20151127033805_AddSearchTermToGifUsage.cs" />
+    <Compile Include="Migrations\20151127033805_AddSearchTermToGifUsage.designer.cs">
+      <DependentUpon>20151127033805_AddSearchTermToGifUsage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\GifWinContextModelSnapshot.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="SearchTextBox.xaml.cs">

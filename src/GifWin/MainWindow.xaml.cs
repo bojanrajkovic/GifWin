@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GifWin.Data;
+using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 

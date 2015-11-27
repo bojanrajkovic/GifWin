@@ -56,6 +56,8 @@ namespace GifWin.Migrations
 
                     b.Property<int?>("GifId");
 
+                    b.Property<string>("SearchTerm");
+
                     b.Property<DateTimeOffset>("UsedAt");
 
                     b.HasKey("Id");

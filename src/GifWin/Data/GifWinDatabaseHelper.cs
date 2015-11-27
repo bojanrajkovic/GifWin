@@ -34,7 +34,7 @@ namespace GifWin.Data
             return await db.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task RecordGifUsageAsync(int gifId)
+        public async Task RecordGifUsageAsync(int gifId, string searchTerm)
         {
             var gif = await db.Gifs.SingleOrDefaultAsync(ge => ge.Id == gifId).ConfigureAwait(false);
 
@@ -42,6 +42,7 @@ namespace GifWin.Data
                 var ts = DateTimeOffset.UtcNow;
                 var usage = new GifUsage();
                 gif.LastUsed = usage.UsedAt = ts;
+                usage.SearchTerm = searchTerm;
                 gif.Usages.Add(usage);
 
                 await db.SaveChangesAsync().ConfigureAwait(false);

@@ -9,5 +9,6 @@ namespace GifWin.Data
         public int Id { get; set; }
         public DateTimeOffset UsedAt { get; set; }
         public virtual GifEntry Gif { get; set; }
+        public string SearchTerm { get; set; }
     }
 }
