@@ -42,6 +42,7 @@ namespace GifWin.Data
                 var ts = DateTimeOffset.UtcNow;
                 var usage = new GifUsage();
                 gif.LastUsed = usage.UsedAt = ts;
+                gif.UsedCount++;
                 usage.SearchTerm = searchTerm;
                 gif.Usages.Add(usage);
 
