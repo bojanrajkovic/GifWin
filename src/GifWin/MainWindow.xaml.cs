@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GifWin.Data;
+using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -59,7 +61,20 @@ namespace GifWin
             if (entry == null)
                 return;
 
-            Clipboard.SetText (entry.Url.ToString());
+            Clipboard.SetText (entry.Url);
+
+            Task.Run(async () => {
+                using (var helper = new GifWinDatabaseHelper()) {
+                    try {
+                        await helper.RecordGifUsageAsync(entry.Id, this.search.Text);
+                    } catch (Exception e) {
+                        await Dispatcher.InvokeAsync(() => {
+                            MessageBox.Show($"Couldn't save usage record: {e.InnerException.Message}.", "Failed");
+                            GlobalHelper.PromptForDebuggerLaunch(e);
+                        });
+                    }
+                }
+            });
 
             this.search.Clear();
 

@@ -8,9 +8,10 @@ using GifWin.Data;
 namespace GifWin.Migrations
 {
     [DbContext(typeof(GifWinContext))]
-    partial class GifWinContextModelSnapshot : ModelSnapshot
+    [Migration("20151127033805_AddSearchTermToGifUsage")]
+    partial class AddSearchTermToGifUsage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348");

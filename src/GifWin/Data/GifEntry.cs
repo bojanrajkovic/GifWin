@@ -14,6 +14,7 @@ namespace GifWin.Data
         public GifEntry()
         {
             Tags = new List<GifTag>();
+            Usages = new List<GifUsage>();
         }
 
         public int Id { get; set; }
@@ -24,5 +25,6 @@ namespace GifWin.Data
         public int UsedCount { get; set; } = 0;
 
         public virtual ICollection<GifTag> Tags { get; set; }
+        public virtual ICollection<GifUsage> Usages { get; set; }
     }
 }
