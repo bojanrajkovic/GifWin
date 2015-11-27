@@ -22,7 +22,7 @@ namespace GifWin
         public HotKey (ModifierKeys modifiers, Key input, Window window)
         {
             if (window == null)
-                throw new ArgumentNullException("window");
+                throw new ArgumentNullException(nameof(window));
 
             Key = input;
             Modifiers = modifiers;

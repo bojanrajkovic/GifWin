@@ -11,12 +11,17 @@ namespace GifWin.Data
     [Table("gifs")]
     public class GifEntry
     {
+        public GifEntry()
+        {
+            Tags = new List<GifTag>();
+        }
+
         public int Id { get; set; }
         [Required]
         public string Url { get; set; }
         public DateTimeOffset? AddedAt { get; set; }
         public DateTimeOffset? LastUsed { get; set; }
-        public int UsedCount { get; set; }
+        public int UsedCount { get; set; } = 0;
 
         public virtual ICollection<GifTag> Tags { get; set; }
     }

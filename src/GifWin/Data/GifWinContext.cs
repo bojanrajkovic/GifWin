@@ -17,7 +17,7 @@ namespace GifWin.Data
             var connString = csb.ToString();
             var conn = new SqliteConnection(connString);
 
-            optionsBuilder.UseSqlite(conn);
+            optionsBuilder.UseSqlite(conn).UseRelationalNulls();
         }
     }
 }
