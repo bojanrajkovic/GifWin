@@ -26,6 +26,9 @@ namespace GifWin
         {
             base.OnStartup (e);
 
+            SetupDatabase();
+            ConvertGifWitLibraryToGifWinDatabaseAsync().GetAwaiter().GetResult();
+
             if (this.window == null) {
                 this.window = new MainWindow();
 
@@ -34,8 +37,6 @@ namespace GifWin
             }
 
             SetupTrayIcon();
-            SetupDatabase();
-            ConvertGifWitLibraryToGifWinDatabaseAsync().GetAwaiter().GetResult();
         }
 
         async Task ConvertGifWitLibraryToGifWinDatabaseAsync()
