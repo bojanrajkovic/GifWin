@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 
@@ -11,9 +10,6 @@ namespace GifWin
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly GifWitLibrary lib;
-        private Timer typingTimer;
-
         public MainWindow ()
         {
             InitializeComponent ();
