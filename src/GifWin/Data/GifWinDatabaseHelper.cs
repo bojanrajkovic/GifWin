@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Data.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,11 @@ namespace GifWin.Data
             }
 
             return await db.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<GifEntry>> LoadAllGifsAsync()
+        {
+            return await db.Gifs.Include(ge => ge.Tags).ToArrayAsync().ConfigureAwait(false);
         }
 
         private bool disposedValue = false;
