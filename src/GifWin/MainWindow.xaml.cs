@@ -66,7 +66,8 @@ namespace GifWin
             Task.Run(async () => {
                 using (var helper = new GifWinDatabaseHelper()) {
                     try {
-                        await helper.RecordGifUsageAsync(entry.Id, this.search.Text);
+                        var searchText = await Dispatcher.InvokeAsync(() => search.Text);
+                        await helper.RecordGifUsageAsync(entry.Id, searchText);
                     } catch (Exception e) {
                         await Dispatcher.InvokeAsync(() => {
                             MessageBox.Show($"Couldn't save usage record: {e.InnerException.Message}.", "Failed");
