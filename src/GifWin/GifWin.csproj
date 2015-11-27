@@ -162,6 +162,7 @@
     </ApplicationDefinition>
     <Compile Include="Data\GifEntry.cs" />
     <Compile Include="Data\GifTag.cs" />
+    <Compile Include="Data\GifUsage.cs" />
     <Compile Include="Data\GifWinContext.cs" />
     <Compile Include="Data\GifWinDatabaseHelper.cs" />
     <Compile Include="GifEntryViewModel.cs" />
@@ -170,6 +171,10 @@
     <Compile Include="Migrations\20151127010218_BaseDatabaseStructure.cs" />
     <Compile Include="Migrations\20151127010218_BaseDatabaseStructure.designer.cs">
       <DependentUpon>20151127010218_BaseDatabaseStructure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20151127030513_UsageDataStorage.cs" />
+    <Compile Include="Migrations\20151127030513_UsageDataStorage.designer.cs">
+      <DependentUpon>20151127030513_UsageDataStorage.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\GifWinContextModelSnapshot.cs" />
     <Compile Include="NativeMethods.cs" />
