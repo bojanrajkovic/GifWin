@@ -160,6 +160,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\GifEntry.cs" />
+    <Compile Include="Data\GifTag.cs" />
     <Compile Include="Data\GifWinContext.cs" />
     <Compile Include="GifEntryViewModel.cs" />
     <Compile Include="HotKey.cs" />
@@ -226,6 +228,9 @@
       <Project>{d0fa27e1-335b-431f-b8f6-55674a700592}</Project>
       <Name>AnimatedTextBoxBehavior</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
