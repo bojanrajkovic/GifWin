@@ -165,6 +165,11 @@
     <Compile Include="Data\GifWinContext.cs" />
     <Compile Include="GifEntryViewModel.cs" />
     <Compile Include="HotKey.cs" />
+    <Compile Include="Migrations\20151127010218_BaseDatabaseStructure.cs" />
+    <Compile Include="Migrations\20151127010218_BaseDatabaseStructure.designer.cs">
+      <DependentUpon>20151127010218_BaseDatabaseStructure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\GifWinContextModelSnapshot.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="SearchTextBox.xaml.cs">
       <DependentUpon>SearchTextBox.xaml</DependentUpon>
@@ -229,9 +234,7 @@
       <Name>AnimatedTextBoxBehavior</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

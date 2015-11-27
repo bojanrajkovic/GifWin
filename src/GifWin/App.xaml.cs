@@ -5,6 +5,7 @@ using System.Linq;
 using GifWin.Properties;
 using Application = System.Windows.Application;
 using System.Windows.Input;
+using GifWin.Data;
 
 namespace GifWin
 {
@@ -31,11 +32,19 @@ namespace GifWin
             }
 
             SetupTrayIcon();
+            SetupDatabase();
         }
 
         private NotifyIcon tray;
         private MainWindow window;
         HotKey hotkey;
+
+        private void SetupDatabase()
+        {
+            using (var db = new GifWinContext()) {
+                db.Database.EnsureCreated();
+            }
+        }
 
         private void SetupTrayIcon()
         {

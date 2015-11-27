@@ -1,10 +1,5 @@
 ﻿using Microsoft.Data.Entity;
 using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GifWin.Data
 {
@@ -16,7 +11,7 @@ namespace GifWin.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var csb = new SqliteConnectionStringBuilder {
-                DataSource = "|Data Directory|\\gifwin.sqlite",
+                DataSource = "gifwin.sqlite",
                 Cache = SqliteConnectionCacheMode.Shared,
             };
             var connString = csb.ToString();
