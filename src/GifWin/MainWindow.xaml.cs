@@ -18,22 +18,64 @@ namespace GifWin
             ((MainWindowViewModel)DataContext).PropertyChanged += OnPropertyChanged;
         }
 
-        public new void Show()
+        public new void Show ()
         {
-            base.Show();
-            this.search.Focus();
+            base.Show ();
+            this.search.Focus ();
         }
 
-        public new void Hide()
+        public new void Hide ()
         {
-            this.search.Clear();
-            base.Hide();
+            this.search.Clear ();
+            this.tag.Clear ();
+            base.Hide ();
+        }
+
+        private void AddNewGif (string gifUrl, string tags)
+        {
+            var helper = new GifWinDatabaseHelper ();
+            var tagsArray = tags.Split (' ');
+            helper.AddNewGifAsync (gifUrl, tagsArray).ContinueWith (t => {
+                if (t.IsFaulted) {
+                    MessageBox.Show ("Could not save GIF to database.", "Could not save GIF", MessageBoxButton.OK, MessageBoxImage.Error);
+                    GlobalHelper.PromptForDebuggerLaunch (t.Exception);
+                } else {
+                    GifHelper.GetOrMakeSavedAsync (t.Result.Id, t.Result.Url);
+                    Dispatcher.Invoke(Hide);
+                }
+                helper.Dispose ();
+            });
+        }
+
+        private void CopyImage ()
+        {
+            var entry = (GifEntryViewModel)this.imageList.SelectedItem;
+            if (entry == null)
+                return;
+
+            Clipboard.SetText (entry.Url);
+
+            var searchText = search.Text;
+            Task.Run (async () => {
+                using (var helper = new GifWinDatabaseHelper ()) {
+                    try {
+                        await helper.RecordGifUsageAsync (entry.Id, searchText);
+                    } catch (Exception e) {
+                        await Dispatcher.InvokeAsync (() => {
+                            MessageBox.Show ($"Couldn't save usage record: {e.InnerException.Message}.", "Failed");
+                            GlobalHelper.PromptForDebuggerLaunch (e);
+                        });
+                    }
+                }
+            });
+
+            Hide ();
         }
 
         protected override void OnClosing (CancelEventArgs e)
         {
             e.Cancel = true;
-            Hide();
+            Hide ();
         }
 
         private void OnPropertyChanged (object sender, PropertyChangedEventArgs e)
@@ -57,56 +99,35 @@ namespace GifWin
             if (e.ChangedButton != MouseButton.Left)
                 return;
 
-            CopyImage();
-        }
-
-        private void CopyImage()
-        {
-            var entry = (GifEntryViewModel) this.imageList.SelectedItem;
-            if (entry == null)
-                return;
-
-            Clipboard.SetText (entry.Url);
-
-            var searchText = search.Text;
-            Task.Run(async () => {
-                using (var helper = new GifWinDatabaseHelper()) {
-                    try {
-                        await helper.RecordGifUsageAsync(entry.Id, searchText);
-                    } catch (Exception e) {
-                        await Dispatcher.InvokeAsync(() => {
-                            MessageBox.Show($"Couldn't save usage record: {e.InnerException.Message}.", "Failed");
-                            GlobalHelper.PromptForDebuggerLaunch(e);
-                        });
-                    }
-                }
-            });
-
-            this.search.Clear();
-
-            Hide();
+            CopyImage ();
         }
 
         private void GifEntryKeyPressed (object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return || e.Key == Key.Enter)
-                CopyImage();
+                CopyImage ();
         }
 
         private void OnWindowKeyUp (object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                Hide();
+                Hide ();
         }
 
-        private void SearchBoxKeyPressed(object sender, KeyEventArgs e)
+        private void SearchBoxKeyPressed (object sender, KeyEventArgs e)
         {
             if (SearchStates.CurrentState == null || SearchStates.CurrentState.Name != "Searching")
                 return;
 
             if (e.Key == Key.Down) {
-                imageList.Focus();
+                imageList.Focus ();
             }
+        }
+
+        private void TagEntryKeyPressed (object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return || e.Key == Key.Enter)
+                AddNewGif (search.Text, tag.Text);
         }
     }
 }

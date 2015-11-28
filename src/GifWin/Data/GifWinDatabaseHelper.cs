@@ -34,6 +34,29 @@ namespace GifWin.Data
             return await db.SaveChangesAsync().ConfigureAwait(false);
         }
 
+        internal async Task<GifEntry> AddNewGifAsync (string gifUrl, string[] tags)
+        {
+            var existing = await db.Gifs.SingleOrDefaultAsync (ge => ge.Url.ToLower () == gifUrl.ToLower ());
+            if (existing != null) {
+                return existing;
+            } else {
+                var gifEntry = new GifEntry {
+                    Url = gifUrl,
+                    AddedAt = DateTimeOffset.UtcNow
+                };
+
+                foreach (var tag in tags) {
+                    gifEntry.Tags.Add (new GifTag { Tag = tag });
+                }
+
+                var addedEntry = db.Gifs.Add (gifEntry);
+
+                await db.SaveChangesAsync ();
+
+                return addedEntry.Entity;
+            }
+        }
+
         public async Task RecordGifUsageAsync(int gifId, string searchTerm)
         {
             var gif = await db.Gifs.SingleOrDefaultAsync(ge => ge.Id == gifId).ConfigureAwait(false);
