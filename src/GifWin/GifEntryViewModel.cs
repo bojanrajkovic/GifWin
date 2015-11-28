@@ -22,7 +22,7 @@ namespace GifWin
             Keywords = entry.Tags.Select (t => t.Tag).ToArray ();
         }
 
-        public int Id { get; set; }
+        public int Id { get; }
         public string Url { get; }
 
         public Uri CachedUri

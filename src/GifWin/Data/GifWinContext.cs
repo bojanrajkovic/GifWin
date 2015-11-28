@@ -12,22 +12,30 @@ namespace GifWin.Data
         public virtual DbSet<GifEntry> Gifs { get; set; }
         public virtual DbSet<GifTag> Tags { get; set; }
 
-        public GifWinContext()
+        static bool didAddLoggerFactory = false;
+        static readonly object syncRoot = new object ();
+
+        public GifWinContext ()
         {
-            var lf = this.GetService<ILoggerFactory> ();
-            lf.AddDebug (LogLevel.Debug);
+            if (!didAddLoggerFactory) {
+                lock (syncRoot) {
+                    var lf = this.GetService<ILoggerFactory> ();
+                    lf.AddDebug (LogLevel.Debug);
+                    didAddLoggerFactory = true;
+                }
+            }
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring (DbContextOptionsBuilder optionsBuilder)
         {
             var csb = new SqliteConnectionStringBuilder {
                 DataSource = "gifwin.sqlite",
                 Cache = SqliteConnectionCacheMode.Shared,
             };
-            var connString = csb.ToString();
-            var conn = new SqliteConnection(connString);
+            var connString = csb.ToString ();
+            var conn = new SqliteConnection (connString);
 
-            optionsBuilder.UseSqlite(conn).UseRelationalNulls();
+            optionsBuilder.UseSqlite (conn).UseRelationalNulls ();
         }
     }
 }

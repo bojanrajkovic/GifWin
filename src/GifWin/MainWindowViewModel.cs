@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using GifWin.Properties;
 using GifWin.Data;
@@ -12,15 +11,24 @@ namespace GifWin
     internal sealed class MainWindowViewModel
         : ViewModelBase
     {
+        GifWinDatabaseHelper helper;
+        string newEntryTags;
+        private string filterText;
+        private readonly HashSet<string> filterKeywords = new HashSet<string> ();
+        private ICollectionView images;
+
         public MainWindowViewModel ()
         {
-            using (var helper = new GifWinDatabaseHelper ()) {
-                helper.LoadAllGifsAsync ().ContinueWith (t => {
-                    Images = new CollectionView (t.Result.Select (e => new GifEntryViewModel (e))) {
-                        Filter = FilterPredicate
-                    };
-                });
-            }
+            helper = new GifWinDatabaseHelper ();
+            RefreshImageCollection ();
+        }
+
+        void RefreshImageCollection ()
+        {
+            helper.GetGifsbyTagAsync (filterKeywords.ToArray ()).ContinueWith (t => {
+                var filterResults = t.Result.Select(ge => new GifEntryViewModel(ge));
+                Images = CollectionViewSource.GetDefaultView (filterResults);
+            });
         }
 
         public double Zoom
@@ -58,11 +66,15 @@ namespace GifWin
 
                 this.filterKeywords.Clear ();
                 this.filterKeywords.UnionWith (value.Split (new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
-                if (this.images != null)
-                    this.images.Refresh ();
 
+                RefreshImageCollection ();
                 OnPropertyChanged ();
             }
+        }
+
+        internal void RefreshImagesFromDatabase ()
+        {
+            RefreshImageCollection ();
         }
 
         public string NewEntryTags
@@ -73,20 +85,6 @@ namespace GifWin
                 newEntryTags = value;
                 OnPropertyChanged ();
             }
-        }
-
-        string newEntryTags;
-        private string filterText;
-        private readonly HashSet<string> filterKeywords = new HashSet<string> ();
-        private ICollectionView images;
-
-        private bool FilterPredicate (object o)
-        {
-            var entry = (GifEntryViewModel)o;
-            if (String.IsNullOrWhiteSpace (FilterText))
-                return false;
-
-            return this.filterKeywords.IsSubsetOf (entry.Keywords);
         }
     }
 }
