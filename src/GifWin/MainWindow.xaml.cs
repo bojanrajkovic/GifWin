@@ -63,10 +63,11 @@ namespace GifWin
 
             Clipboard.SetText (entry.Url);
 
+            var searchText = search.Text;
             Task.Run(async () => {
                 using (var helper = new GifWinDatabaseHelper()) {
                     try {
-                        await helper.RecordGifUsageAsync(entry.Id, this.search.Text);
+                        await helper.RecordGifUsageAsync(entry.Id, searchText);
                     } catch (Exception e) {
                         await Dispatcher.InvokeAsync(() => {
                             MessageBox.Show($"Couldn't save usage record: {e.InnerException.Message}.", "Failed");

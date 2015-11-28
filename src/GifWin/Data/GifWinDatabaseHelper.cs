@@ -50,6 +50,17 @@ namespace GifWin.Data
             }
         }
 
+        internal async Task UpdateSavedFirstFrameDataAsync(int gifId, byte[] frameData)
+        {
+            var gif = await db.Gifs.SingleOrDefaultAsync(ge => ge.Id == gifId).ConfigureAwait(false);
+
+            if (gif != null) {
+                gif.FirstFrame = frameData;
+
+                await db.SaveChangesAsync().ConfigureAwait(false);
+            }
+        }
+
         public async Task<IEnumerable<GifEntry>> LoadAllGifsAsync()
         {
             var query = db.Gifs.Include(ge => ge.Tags);
