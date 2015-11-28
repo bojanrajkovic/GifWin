@@ -193,11 +193,18 @@
     </Compile>
     <Compile Include="Migrations\GifWinContextModelSnapshot.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="TagTextBox.xaml.cs">
+      <DependentUpon>TagTextBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SearchTextBox.xaml.cs">
       <DependentUpon>SearchTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="ReplayBehavior.cs" />
     <Compile Include="ViewModelBase.cs" />
+    <Page Include="TagTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SearchTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

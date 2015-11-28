@@ -42,8 +42,13 @@ namespace GifWin
             if (e.PropertyName == "FilterText") {
                 if (this.search.Text == String.Empty)
                     VisualStateManager.GoToElementState (this, "NotSearching", useTransitions: true);
-                 else
-                    VisualStateManager.GoToElementState (this, "Searching", useTransitions: true);
+                else {
+                    if (Uri.IsWellFormedUriString (this.search.Text, UriKind.Absolute)) {
+                        VisualStateManager.GoToElementState (this, "Adding", useTransitions: true);
+                    } else {
+                        VisualStateManager.GoToElementState (this, "Searching", useTransitions: true);
+                    }
+                }
             }
         }
 

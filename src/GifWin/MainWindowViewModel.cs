@@ -12,11 +12,11 @@ namespace GifWin
     internal sealed class MainWindowViewModel
         : ViewModelBase
     {
-        public MainWindowViewModel()
+        public MainWindowViewModel ()
         {
-            using (var helper = new GifWinDatabaseHelper()) {
-                helper.LoadAllGifsAsync().ContinueWith(t => {
-                    Images = new CollectionView(t.Result.Select(e => new GifEntryViewModel(e))) {
+            using (var helper = new GifWinDatabaseHelper ()) {
+                helper.LoadAllGifsAsync ().ContinueWith (t => {
+                    Images = new CollectionView (t.Result.Select (e => new GifEntryViewModel (e))) {
                         Filter = FilterPredicate
                     };
                 });
@@ -29,7 +29,7 @@ namespace GifWin
             set
             {
                 Settings.Default.Zoom = value;
-                OnPropertyChanged();
+                OnPropertyChanged ();
             }
         }
 
@@ -42,7 +42,7 @@ namespace GifWin
                     return;
 
                 this.images = value;
-                OnPropertyChanged();
+                OnPropertyChanged ();
             }
         }
 
@@ -55,23 +55,34 @@ namespace GifWin
                     return;
 
                 this.filterText = value;
-                
-                this.filterKeywords.Clear();
+
+                this.filterKeywords.Clear ();
                 this.filterKeywords.UnionWith (value.Split (new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
                 if (this.images != null)
-                    this.images.Refresh();
+                    this.images.Refresh ();
 
-                OnPropertyChanged();
+                OnPropertyChanged ();
             }
         }
 
+        public string NewEntryTags
+        {
+            get { return newEntryTags; }
+            set
+            {
+                newEntryTags = value;
+                OnPropertyChanged ();
+            }
+        }
+
+        string newEntryTags;
         private string filterText;
-        private readonly HashSet<string> filterKeywords = new HashSet<string>();
+        private readonly HashSet<string> filterKeywords = new HashSet<string> ();
         private ICollectionView images;
 
         private bool FilterPredicate (object o)
         {
-            var entry = (GifEntryViewModel) o;
+            var entry = (GifEntryViewModel)o;
             if (String.IsNullOrWhiteSpace (FilterText))
                 return false;
 

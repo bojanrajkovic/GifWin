@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Name="window"
         Title="GifWin" MinHeight="90" MinWidth="500" Height="90" Width="1000"
-        KeyUp="OnWindowKeyUp" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" ShowInTaskbar="True">
+        KeyUp="OnWindowKeyUp" WindowStyle="None" AllowsTransparency="True" ShowInTaskbar="True">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
@@ -25,11 +25,25 @@
             <VisualState Name="NotSearching">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="90" />
+                    <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="tag" Storyboard.TargetProperty="Visibility">
+                        <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Collapsed}" />
+                    </ObjectAnimationUsingKeyFrames>
                 </Storyboard>
             </VisualState>
             <VisualState Name="Searching">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="700" />
+                    <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="tag" Storyboard.TargetProperty="Visibility">
+                        <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Collapsed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                </Storyboard>
+            </VisualState>
+            <VisualState Name="Adding">
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="180" />
+                    <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="tag" Storyboard.TargetProperty="Visibility">
+                        <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Visible}" />
+                    </ObjectAnimationUsingKeyFrames>
                 </Storyboard>
             </VisualState>
 
@@ -44,6 +58,11 @@
                         <CircleEase EasingMode="EaseOut" />
                     </VisualTransition.GeneratedEasingFunction>
                 </VisualTransition>
+                <VisualTransition To="Adding" GeneratedDuration="00:00:00.2">
+                    <VisualTransition.GeneratedEasingFunction>
+                        <CircleEase EasingMode="EaseOut" />
+                    </VisualTransition.GeneratedEasingFunction>
+                </VisualTransition>
             </VisualStateGroup.Transitions>
         </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
@@ -51,13 +70,15 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <local:SearchTextBox x:Name="search" KeyUp="SearchBoxKeyPressed" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=300,UpdateSourceTrigger=PropertyChanged}" />
+        <local:TagTextBox x:Name="tag" Grid.Row="1" Visibility="Collapsed" Hint="tags" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding NewEntryTags,Mode=OneWayToSource}" />
 
-        <ListBox x:Name="imageList" Grid.Row="1" Margin="10" ItemsSource="{Binding Images}" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseUp="GifEntryClicked" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox x:Name="imageList" Grid.Row="2" Margin="10" ItemsSource="{Binding Images}" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseUp="GifEntryClicked" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel />
@@ -71,6 +92,6 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Slider Name="zoom" Grid.Row="2" Margin="10" Width="200" HorizontalAlignment="Left" Minimum="10" Maximum="500" Value="{Binding Zoom}" />
+        <Slider Name="zoom" Grid.Row="3" Margin="10" Width="200" HorizontalAlignment="Left" Minimum="10" Maximum="500" Value="{Binding Zoom}" />
     </Grid>
 </Window>
