@@ -10,14 +10,23 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Windows;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GifWin
 {
     class GifHelper
     {
+        static Dictionary<int, Task<string>> CachedTasks;
+
         /// <returns>Path to the local file</returns>
         internal static Task<string> GetOrMakeSavedAsync(int gifId, string entryUrl)
         {
+            if (CachedTasks != null && CachedTasks.ContainsKey (gifId)) {
+                return CachedTasks[gifId];
+            }
+
             return Task.Run(async () => {
                 SHA1 sha1 = SHA1.Create();
                 byte[] hash = sha1.ComputeHash(Encoding.Unicode.GetBytes(entryUrl));
@@ -34,18 +43,68 @@ namespace GifWin
                         await stream.WriteAsync(contents, 0, contents.Length).ConfigureAwait(false);
                     }
 
+#pragma warning disable CS4014
                     // If we're redownloading the GIF for any reason, also update frame data. Do this
                     // off-thread, because we don't want to hold _this_ thread up any longer.
+                    // The pragma warning disable is because the compiler is _really_ irritating about this,
+                    // claiming we should await this.
                     Task.Run(async () => {
                         using (var helper = new GifWinDatabaseHelper()) {
                             var frameData = GetFrameData(file.FullName, frameNumber: 0);
                             await helper.UpdateSavedFirstFrameDataAsync(gifId, frameData).ConfigureAwait(false);
                         }
                     });
+#pragma warning restore CS4014
                 }
 
                 return file.FullName;
             });
+        }
+
+        internal static void StartPreCachingDatabase ()
+        {
+            var helper = new GifWinDatabaseHelper ();
+            var gifs = helper.QueryGifs (e => true, e => new { e.Id, e.Url });
+            CachedTasks = new Dictionary<int, Task<string>> ();
+            foreach (var gif in gifs) {
+                CachedTasks[gif.Id] = GetOrMakeSavedAsync (gif.Id, gif.Url);
+            }
+            Task.WhenAll (CachedTasks.Values).ContinueWith (t => {
+                CachedTasks = null;
+            });
+        }
+
+        internal static async Task ConvertGifWitLibraryToGifWinDatabaseAsync ()
+        {
+            if (!File.Exists ("library.gifwit")) {
+                return;
+            }
+
+            const string question = "You have a library.gifwit file available. Do you want to convert it to the GifWin database format?";
+            const string caption = "Convert GifWit Library?";
+
+            var mboxResult = MessageBox.Show (question, caption, MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (mboxResult == MessageBoxResult.Yes) {
+                using (var db = new GifWinDatabaseHelper ()) {
+                    try {
+                        var lib = await GifWitLibrary.LoadFromFileAsync ("library.gifwit").ConfigureAwait (false);
+                        var converted = await db.ConvertGifWitLibraryAsync (lib).ConfigureAwait (false);
+                        MessageBox.Show ($"Converted {converted} items successfully!", "Conversion succeeded!");
+                        var delete = MessageBox.Show ($"Do you want to delete the GifWit library file?", "Delete GifWit library?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                        if (delete == MessageBoxResult.Yes) {
+                            try {
+                                File.Delete ("library.gifwit");
+                            } catch (Exception e) {
+                                MessageBox.Show ($"Could not delete library.gifwit ({e.Message}), you may have to delete it manually.", "Delete failed.");
+                            }
+                        }
+                    } catch (Exception e) {
+                        MessageBox.Show ($"Conversion failed: {e.Message}.", "Conversion failed.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
         }
 
         internal static byte[] GetFrameData(string gifPath, int frameNumber)

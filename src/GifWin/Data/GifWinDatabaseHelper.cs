@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,6 +15,13 @@ namespace GifWin.Data
         public GifWinDatabaseHelper ()
         {
             db = new GifWinContext ();
+            db.Database.Migrate ();
+        }
+
+        public IQueryable<TResult> QueryGifs<TResult>(Expression<Func<GifEntry, bool>> filter,
+                                                      Expression<Func<GifEntry, TResult>> map)
+        {
+            return db.Gifs.Where (filter).Select (map);
         }
 
         public async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource)
