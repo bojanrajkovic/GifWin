@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>GifWin</id>
+        <version>$version$</version>
+        <authors>Bojan Rajkovic,Eric Maupin</authors>
+        <projectUrl>https://github.com/bojanrajkovic/GifWin</projectUrl>
+        <iconUrl>https://s3.amazonaws.com/gifwin-releases/gifwin.ico</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>GifWin is a reimagining of the excellent GifWit, but for Windows users, by Windows users.</description>
+        <language>en-US</language>
+    </metadata>
+    <files>
+        <file src="..\src\GifWin\bin\Release\x64\sqlite3.dll" target="lib\net45\x64\sqlite3.dll" />
+        <file src="..\src\GifWin\bin\Release\x86\sqlite3.dll" target="lib\net45\x86\sqlite3.dll" />
+        <file src="..\src\GifWin\bin\Release\AnimatedTextBoxBehavior.dll" target="lib\net45\AnimatedTextBoxBehavior.dll" />
+        <file src="..\src\GifWin\bin\Release\AnimatedTextBoxBehavior.pdb" target="lib\net45\AnimatedTextBoxBehavior.pdb" />
+        <file src="..\src\GifWin\bin\Release\DeltaCompressionDotNet.dll" target="lib\net45\DeltaCompressionDotNet.dll" />
+        <file src="..\src\GifWin\bin\Release\DeltaCompressionDotNet.MsDelta.dll" target="lib\net45\DeltaCompressionDotNet.MsDelta.dll" />
+        <file src="..\src\GifWin\bin\Release\DeltaCompressionDotNet.PatchApi.dll" target="lib\net45\DeltaCompressionDotNet.PatchApi.dll" />
+        <file src="..\src\GifWin\bin\Release\EntityFramework.Commands.dll" target="lib\net45\EntityFramework.Commands.dll" />
+        <file src="..\src\GifWin\bin\Release\EntityFramework.Core.dll" target="lib\net45\EntityFramework.Core.dll" />
+        <file src="..\src\GifWin\bin\Release\EntityFramework.Relational.Design.dll" target="lib\net45\EntityFramework.Relational.Design.dll" />
+        <file src="..\src\GifWin\bin\Release\EntityFramework.Relational.dll" target="lib\net45\EntityFramework.Relational.dll" />
+        <file src="..\src\GifWin\bin\Release\EntityFramework.Sqlite.dll" target="lib\net45\EntityFramework.Sqlite.dll" />
+        <file src="..\src\GifWin\bin\Release\GifWin.exe" target="lib\net45\GifWin.exe" />
+        <file src="..\src\GifWin\bin\Release\GifWin.exe.config" target="lib\net45\GifWin.exe.config" />
+        <file src="..\src\GifWin\bin\Release\GifWin.pdb" target="lib\net45\GifWin.pdb" />
+        <file src="..\src\GifWin\bin\Release\ICSharpCode.SharpZipLib.dll" target="lib\net45\ICSharpCode.SharpZipLib.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Data.Sqlite.dll" target="lib\net45\Microsoft.Data.Sqlite.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Expression.Interactions.dll" target="lib\net45\Microsoft.Expression.Interactions.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.Caching.Abstractions.dll" target="lib\net45\Microsoft.Extensions.Caching.Abstractions.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.Caching.Memory.dll" target="lib\net45\Microsoft.Extensions.Caching.Memory.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.Configuration.Abstractions.dll" target="lib\net45\Microsoft.Extensions.Configuration.Abstractions.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.Configuration.Binder.dll" target="lib\net45\Microsoft.Extensions.Configuration.Binder.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.Configuration.dll" target="lib\net45\Microsoft.Extensions.Configuration.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.DependencyInjection.Abstractions.dll" target="lib\net45\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.DependencyInjection.dll" target="lib\net45\Microsoft.Extensions.DependencyInjection.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.Logging.Abstractions.dll" target="lib\net45\Microsoft.Extensions.Logging.Abstractions.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.Logging.Debug.dll" target="lib\net45\Microsoft.Extensions.Logging.Debug.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.Logging.dll" target="lib\net45\Microsoft.Extensions.Logging.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.OptionsModel.dll" target="lib\net45\Microsoft.Extensions.OptionsModel.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.PlatformAbstractions.dll" target="lib\net45\Microsoft.Extensions.PlatformAbstractions.dll" />
+        <file src="..\src\GifWin\bin\Release\Microsoft.Extensions.Primitives.dll" target="lib\net45\Microsoft.Extensions.Primitives.dll" />
+        <file src="..\src\GifWin\bin\Release\Mono.Cecil.dll" target="lib\net45\Mono.Cecil.dll" />
+        <file src="..\src\GifWin\bin\Release\Mono.Cecil.Mdb.dll" target="lib\net45\Mono.Cecil.Mdb.dll" />
+        <file src="..\src\GifWin\bin\Release\Mono.Cecil.Pdb.dll" target="lib\net45\Mono.Cecil.Pdb.dll" />
+        <file src="..\src\GifWin\bin\Release\Mono.Cecil.Rocks.dll" target="lib\net45\Mono.Cecil.Rocks.dll" />
+        <file src="..\src\GifWin\bin\Release\Newtonsoft.Json.dll" target="lib\net45\Newtonsoft.Json.dll" />
+        <file src="..\src\GifWin\bin\Release\NuGet.Squirrel.dll" target="lib\net45\NuGet.Squirrel.dll" />
+        <file src="..\src\GifWin\bin\Release\NuGet.Squirrel.pdb" target="lib\net45\NuGet.Squirrel.pdb" />
+        <file src="..\src\GifWin\bin\Release\Remotion.Linq.dll" target="lib\net45\Remotion.Linq.dll" />
+        <file src="..\src\GifWin\bin\Release\Splat.dll" target="lib\net45\Splat.dll" />
+        <file src="..\src\GifWin\bin\Release\Splat.pdb" target="lib\net45\Splat.pdb" />
+        <file src="..\src\GifWin\bin\Release\Squirrel.dll" target="lib\net45\Squirrel.dll" />
+        <file src="..\src\GifWin\bin\Release\Squirrel.pdb" target="lib\net45\Squirrel.pdb" />
+        <file src="..\src\GifWin\bin\Release\System.Collections.Immutable.dll" target="lib\net45\System.Collections.Immutable.dll" />
+        <file src="..\src\GifWin\bin\Release\System.Diagnostics.DiagnosticSource.dll" target="lib\net45\System.Diagnostics.DiagnosticSource.dll" />
+        <file src="..\src\GifWin\bin\Release\System.Interactive.Async.dll" target="lib\net45\System.Interactive.Async.dll" />
+        <file src="..\src\GifWin\bin\Release\System.Windows.Interactivity.dll" target="lib\net45\System.Windows.Interactivity.dll" />
+    </files>
+</package>

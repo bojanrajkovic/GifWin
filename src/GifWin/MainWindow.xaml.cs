@@ -1,7 +1,11 @@
 ﻿using GifWin.Data;
+using Squirrel;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 
@@ -12,10 +16,28 @@ namespace GifWin
     /// </summary>
     public partial class MainWindow : Window
     {
+        Timer updateCheckTimer;
+
         public MainWindow ()
         {
             InitializeComponent ();
             ((MainWindowViewModel)DataContext).PropertyChanged += OnPropertyChanged;
+
+            updateCheckTimer = new Timer (TimeSpan.FromSeconds (10).TotalSeconds);
+            updateCheckTimer.Elapsed += CheckForUpdatesAsync;
+            updateCheckTimer.Start ();
+        }
+
+        async void CheckForUpdatesAsync (object sender, ElapsedEventArgs e)
+        {
+            try {
+                using (var updateMgr = new UpdateManager ("https://gifwin-releases.s3.amazonaws.com/")) {
+                    await updateMgr.UpdateApp ();
+                }
+            } catch (Exception ex) {
+                Debug.WriteLine ($"Error while calling UpdateManager!UpdateApp: {ex.Message}.");
+                Debug.WriteLine (ex.ToString ());
+            }
         }
 
         public new void Show ()
