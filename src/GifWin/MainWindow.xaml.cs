@@ -3,8 +3,9 @@ using Squirrel;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 
@@ -21,21 +22,22 @@ namespace GifWin
         {
             InitializeComponent ();
             ((MainWindowViewModel)DataContext).PropertyChanged += OnPropertyChanged;
-
-            updateCheckTimer = new Timer (TimeSpan.FromSeconds (10).TotalSeconds);
-            updateCheckTimer.Elapsed += CheckForUpdatesAsync;
-            updateCheckTimer.Start ();
+            updateCheckTimer = new Timer (CheckForUpdatesAsync, null, TimeSpan.FromMilliseconds(0), TimeSpan.FromHours(24));
         }
 
-        async void CheckForUpdatesAsync (object sender, ElapsedEventArgs e)
+        async void CheckForUpdatesAsync (object sender)
         {
             try {
                 using (var updateMgr = new UpdateManager ("https://gifwin-releases.s3.amazonaws.com/")) {
                     await updateMgr.UpdateApp ();
                 }
             } catch (Exception ex) {
-                Debug.WriteLine ($"Error while calling UpdateManager!UpdateApp: {ex.Message}.");
-                Debug.WriteLine (ex.ToString ());
+                DirectoryInfo storage = new DirectoryInfo (Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "GifWin", "Logs"));
+                storage.Create ();
+                var logPath = Path.Combine (storage.ToString (), $"Exception-Squirrel-{DateTimeOffset.UtcNow.ToUnixTimeSeconds ()}.log");
+                using (var sw = new StreamWriter (logPath)) {
+                    sw.WriteLine (ex.ToString ());
+                }
             }
         }
 
