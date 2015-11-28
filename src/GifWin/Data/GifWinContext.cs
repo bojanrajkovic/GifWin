@@ -4,6 +4,7 @@ using Microsoft.Data.Entity.Utilities;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 
 namespace GifWin.Data
 {
@@ -28,8 +29,12 @@ namespace GifWin.Data
 
         protected override void OnConfiguring (DbContextOptionsBuilder optionsBuilder)
         {
+            DirectoryInfo storage = new DirectoryInfo (Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "GifWin", "Data"));
+
+            storage.Create ();
+
             var csb = new SqliteConnectionStringBuilder {
-                DataSource = "gifwin.sqlite",
+                DataSource = Path.Combine(storage.ToString(), "gifwin.sqlite"),
                 Cache = SqliteConnectionCacheMode.Shared,
             };
             var connString = csb.ToString ();
