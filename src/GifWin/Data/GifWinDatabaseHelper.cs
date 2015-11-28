@@ -108,7 +108,7 @@ namespace GifWin.Data
             return await query.ToArrayAsync ();
         }
 
-        private bool disposedValue = false;
+        bool disposedValue = false;
 
         protected virtual void Dispose (bool disposing)
         {

@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace GifWin
 {
-    internal class GlobalHelper
+    class GlobalHelper
     {
         [Conditional("DEBUG")]
         internal static void PromptForDebuggerLaunch(Exception exception)

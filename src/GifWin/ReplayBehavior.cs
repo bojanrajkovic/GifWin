@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace GifWin
 {
-    internal static class ReplayBehavior
+    static class ReplayBehavior
     {
         public static readonly DependencyProperty RepeatsProperty = DependencyProperty.RegisterAttached (
             "Repeats", typeof (bool), typeof (ReplayBehavior), new PropertyMetadata (default(bool), OnRepeatsChanged));
@@ -15,12 +15,12 @@ namespace GifWin
             element.SetValue (RepeatsProperty, value);
         }
 
-        private static void OnMediaEnded (object sender, RoutedEventArgs routedEventArgs)
+        static void OnMediaEnded (object sender, RoutedEventArgs routedEventArgs)
         {
-            MediaElement element = (MediaElement) sender;
+            MediaElement element = (MediaElement)sender;
             if (GetRepeats (element)) {
                 element.Position = new TimeSpan (0, 0, 1);
-                element.Play();
+                element.Play ();
             }
         }
 
@@ -29,13 +29,13 @@ namespace GifWin
             return (bool) element.GetValue (RepeatsProperty);
         }
 
-        private static void OnRepeatsChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        static void OnRepeatsChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
-            MediaElement element = (MediaElement) dependencyObject;
+            MediaElement element = (MediaElement)dependencyObject;
             element.MediaEnded -= OnMediaEnded;
             element.MediaEnded += OnMediaEnded;
             if ((bool)e.NewValue)
-                element.Play();
+                element.Play ();
         }
     }
 }

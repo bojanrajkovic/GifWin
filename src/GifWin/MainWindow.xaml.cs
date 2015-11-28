@@ -3,7 +3,6 @@ using Squirrel;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -43,17 +42,17 @@ namespace GifWin
         public new void Show ()
         {
             base.Show ();
-            this.search.Focus ();
+            search.Focus ();
         }
 
         public new void Hide ()
         {
-            this.search.Clear ();
-            this.tag.Clear ();
+            search.Clear ();
+            tag.Clear ();
             base.Hide ();
         }
 
-        private void AddNewGif (string gifUrl, string tags)
+        void AddNewGif (string gifUrl, string tags)
         {
             var helper = new GifWinDatabaseHelper ();
             var tagsArray = tags.Split (' ');
@@ -70,15 +69,15 @@ namespace GifWin
                     }
 
                     GifHelper.GetOrMakeSavedAsync (t.Result.Id, t.Result.Url);
-                    Dispatcher.Invoke(Hide);
+                    Dispatcher.Invoke (Hide);
                 }
                 helper.Dispose ();
             });
         }
 
-        private void CopyImage ()
+        void CopyImage ()
         {
-            var entry = (GifEntryViewModel)this.imageList.SelectedItem;
+            var entry = (GifEntryViewModel)imageList.SelectedItem;
             if (entry == null)
                 return;
 
@@ -107,14 +106,14 @@ namespace GifWin
             Hide ();
         }
 
-        private void OnPropertyChanged (object sender, PropertyChangedEventArgs e)
+        void OnPropertyChanged (object sender, PropertyChangedEventArgs e)
         {
             // We listen to this instead of the input text so we can be sure the VM has had a chance to filter before we expand.
             if (e.PropertyName == "FilterText") {
-                if (this.search.Text == String.Empty)
+                if (search.Text == String.Empty)
                     VisualStateManager.GoToElementState (this, "NotSearching", useTransitions: true);
                 else {
-                    if (Uri.IsWellFormedUriString (this.search.Text, UriKind.Absolute)) {
+                    if (Uri.IsWellFormedUriString (search.Text, UriKind.Absolute)) {
                         VisualStateManager.GoToElementState (this, "Adding", useTransitions: true);
                     } else {
                         VisualStateManager.GoToElementState (this, "Searching", useTransitions: true);
@@ -123,7 +122,7 @@ namespace GifWin
             }
         }
 
-        private void GifEntryClicked (object sender, MouseButtonEventArgs e)
+        void GifEntryClicked (object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Left)
                 return;
@@ -131,19 +130,19 @@ namespace GifWin
             CopyImage ();
         }
 
-        private void GifEntryKeyPressed (object sender, KeyEventArgs e)
+        void GifEntryKeyPressed (object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return || e.Key == Key.Enter)
                 CopyImage ();
         }
 
-        private void OnWindowKeyUp (object sender, KeyEventArgs e)
+        void OnWindowKeyUp (object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
                 Hide ();
         }
 
-        private void SearchBoxKeyPressed (object sender, KeyEventArgs e)
+        void SearchBoxKeyPressed (object sender, KeyEventArgs e)
         {
             if (SearchStates.CurrentState == null || SearchStates.CurrentState.Name != "Searching")
                 return;
@@ -153,7 +152,7 @@ namespace GifWin
             }
         }
 
-        private void TagEntryKeyPressed (object sender, KeyEventArgs e)
+        void TagEntryKeyPressed (object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return || e.Key == Key.Enter)
                 AddNewGif (search.Text, tag.Text);

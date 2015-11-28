@@ -8,14 +8,13 @@ using GifWin.Data;
 
 namespace GifWin
 {
-    internal sealed class MainWindowViewModel
-        : ViewModelBase
+    sealed class MainWindowViewModel : ViewModelBase
     {
         GifWinDatabaseHelper helper;
         string newEntryTags;
-        private string filterText;
-        private readonly HashSet<string> filterKeywords = new HashSet<string> ();
-        private ICollectionView images;
+        string filterText;
+        readonly HashSet<string> filterKeywords = new HashSet<string> ();
+        ICollectionView images;
 
         public MainWindowViewModel ()
         {
@@ -43,29 +42,29 @@ namespace GifWin
 
         public ICollectionView Images
         {
-            get { return this.images; }
+            get { return images; }
             private set
             {
-                if (this.images == value)
+                if (images == value)
                     return;
 
-                this.images = value;
+                images = value;
                 OnPropertyChanged ();
             }
         }
 
         public string FilterText
         {
-            get { return this.filterText; }
+            get { return filterText; }
             set
             {
-                if (this.filterText == value)
+                if (filterText == value)
                     return;
 
-                this.filterText = value;
+                filterText = value;
 
-                this.filterKeywords.Clear ();
-                this.filterKeywords.UnionWith (value.Split (new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+                filterKeywords.Clear ();
+                filterKeywords.UnionWith (value.Split (new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
 
                 RefreshImageCollection ();
                 OnPropertyChanged ();

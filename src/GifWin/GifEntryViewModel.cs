@@ -9,7 +9,7 @@ namespace GifWin
 {
     class GifEntryViewModel : ViewModelBase
     {
-        private Task<string> cachedUri;
+        Task<string> cachedUri;
 
         public GifEntryViewModel (GifEntry entry)
         {
@@ -29,19 +29,19 @@ namespace GifWin
         {
             get
             {
-                if (this.cachedUri == null) {
-                    this.cachedUri = GifHelper.GetOrMakeSavedAsync (Id, Url);
-                    this.cachedUri.ContinueWith (t => {
+                if (cachedUri == null) {
+                    cachedUri = GifHelper.GetOrMakeSavedAsync (Id, Url);
+                    cachedUri.ContinueWith (t => {
                         OnPropertyChanged ();
                     }, CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext ());
 
                     return null;
                 }
 
-                if (this.cachedUri.Status == TaskStatus.Running)
+                if (cachedUri.Status == TaskStatus.Running)
                     return null;
 
-                return new Uri (this.cachedUri.Result);
+                return new Uri (cachedUri.Result);
             }
         }
 

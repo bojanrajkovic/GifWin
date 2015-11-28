@@ -1,18 +1,13 @@
 ﻿using GifWin.Data;
 using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GifWin
 {
@@ -130,13 +125,13 @@ namespace GifWin
             }
         }
 
-        private static string GetReadableHash(byte[] hash)
+        static string GetReadableHash (byte[] hash)
         {
-            StringBuilder builder = new StringBuilder(hash.Length * 2);
+            StringBuilder builder = new StringBuilder (hash.Length * 2);
             for (int i = 0; i < hash.Length; i++)
-                builder.Append(hash[i].ToString("X2"));
+                builder.Append (hash[i].ToString ("X2"));
 
-            return builder.ToString();
+            return builder.ToString ();
         }
     }
 }
