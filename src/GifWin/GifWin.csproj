@@ -64,6 +64,7 @@
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.1.0.0-rc1-final\lib\net451\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
@@ -142,6 +143,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -184,6 +186,10 @@
     <Compile Include="Migrations\20151127144929_AddFirstFrame.cs" />
     <Compile Include="Migrations\20151127144929_AddFirstFrame.designer.cs">
       <DependentUpon>20151127144929_AddFirstFrame.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20151127192604_AddIndexes.cs" />
+    <Compile Include="Migrations\20151127192604_AddIndexes.designer.cs">
+      <DependentUpon>20151127192604_AddIndexes.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\GifWinContextModelSnapshot.cs" />
     <Compile Include="NativeMethods.cs" />
@@ -234,7 +240,9 @@
     <None Include="library.gifwit">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
