@@ -57,11 +57,17 @@ namespace GifWin
             var textNode = textElements[1];
 
             titleNode.AppendChild (toastXml.CreateTextNode ("A new GifWin version is available!"));
-            textNode.AppendChild (toastXml.CreateTextNode ($"Version {obj} is now available. Restart GifWin to update."));
+            textNode.AppendChild (toastXml.CreateTextNode ($"Version {obj} is now available. Restart GifWin (or click here!) to update."));
 
             var toast = new ToastNotification (toastXml);
+            toast.Activated += RestartGifWin;
 
             toastNotifier.Show (toast);
+        }
+
+        static void RestartGifWin (ToastNotification sender, object args)
+        {
+            UpdateManager.RestartApp ();
         }
 
         NotifyIcon tray;
