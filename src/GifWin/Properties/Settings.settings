@@ -11,5 +11,8 @@
     <Setting Name="WindowWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">800</Value>
     </Setting>
+    <Setting Name="Hotkey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Shift-Win-G</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

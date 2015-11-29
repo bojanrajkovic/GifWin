@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
-using GifWin.Properties;
-using Application = System.Windows.Application;
-using System.Windows.Input;
 using System.Windows.Forms;
+using System.Windows.Input;
 using Squirrel;
 using Windows.UI.Notifications;
+using GifWin.Properties;
+using Application = System.Windows.Application;
+using WMessageBox = System.Windows.MessageBox;
 
 namespace GifWin
 {
@@ -30,12 +32,72 @@ namespace GifWin
             if (window == null) {
                 window = new MainWindow ();
 
-                hotkey = new HotKey (ModifierKeys.Windows | ModifierKeys.Shift, Key.G, window);
+                var hotkeyRegistration = ParseHotkeySetting ();
+                hotkey = new HotKey (hotkeyRegistration.Item1, hotkeyRegistration.Item2, window);
                 hotkey.HotKeyPressed += HotKeyPressed;
             }
 
             SetupTrayIcon ();
             SetupSquirrel ();
+        }
+
+        Tuple<ModifierKeys, Key> ParseHotkeySetting ()
+        {
+            var hotkeySetting = Settings.Default.Hotkey.OrIfBlank ("Win-Shift-G");
+            return ParseHotkeySettingImpl (hotkeySetting);
+        }
+
+        Tuple<ModifierKeys, Key> ParseHotkeySettingImpl (string hotkeySetting)
+        {
+            // Silently drop empty hotkey parts.
+            var hotkeyPieces = hotkeySetting.Split (new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var keyString = hotkeyPieces.Last ();
+            var modifierStrings = hotkeyPieces.TakeWhile (hkp => hkp != keyString).Distinct().ToArray ();
+
+            // Parse the hotkey itself.
+            Key key;
+            if (!Enum.TryParse (keyString, out key)) {
+                WMessageBox.Show ($"Invalid hotkey setting: the value {keyString} is not a valid hotkey key. Falling back to default Win-Shift-G hotkey.", "Invalid hotkey.");
+                Settings.Default.Hotkey = "Win-Shift-G";
+                return ParseHotkeySettingImpl (Settings.Default.Hotkey);
+            }
+
+            // Parse each modifier part to build the set of modifiers.
+            ModifierKeys modifiers = ModifierKeys.None;
+            foreach (var modifierString in modifierStrings) {
+                ModifierKeys tempModifier;
+
+                if (!Enum.TryParse (ExpandModifierString (modifierString), out tempModifier)) {
+                    WMessageBox.Show ($"Invalid hotkey setting: the value {modifierString} is not a valid hotkey modifier. Falling back to default Win-Shift-G hotkey.", "Invalid hotkey.");
+                    Settings.Default.Hotkey = "Win-Shift-G";
+                    return ParseHotkeySettingImpl (Settings.Default.Hotkey);
+                }
+
+                modifiers |= tempModifier;
+            }
+
+            // Don't allow modifier-less hotkeys
+            if (modifiers == ModifierKeys.None) {
+                var modifierString = string.Join ("-", modifierStrings);
+                WMessageBox.Show ($"Invalid hotkey setting: the modifier string {modifierString} is not valid. Falling back to default Win-Shift-G hotkey.", "Invalid hotkey.");
+                Settings.Default.Hotkey = "Win-Shift-G";
+                return ParseHotkeySettingImpl (Settings.Default.Hotkey);
+            }
+
+            return Tuple.Create (modifiers, key);
+        }
+
+        string ExpandModifierString (string input)
+        {
+            switch (input) {
+                case "Win":
+                    return "Windows";
+                case "Ctrl":
+                    return "Control";
+                default:
+                    return input;
+            }
         }
 
         void SetupSquirrel ()
