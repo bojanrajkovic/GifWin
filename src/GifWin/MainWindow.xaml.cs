@@ -1,4 +1,5 @@
 ﻿using GifWin.Data;
+using GifWin.Properties;
 using Squirrel;
 using System;
 using System.ComponentModel;
@@ -27,9 +28,10 @@ namespace GifWin
 
         async void CheckForUpdatesAsync (object sender)
         {
+#if !DEBUG
             try {
-                using (var updateMgr = new UpdateManager ("https://gifwin-releases.s3.amazonaws.com/")) {
-                    await updateMgr.UpdateApp ();
+                using (var updateMgr = new UpdateManager (Properties.Resources.UpdatePath)) {
+                    var re = await updateMgr.UpdateApp ();
                 }
             } catch (Exception ex) {
                 DirectoryInfo storage = new DirectoryInfo (Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "GifWin", "Logs"));
@@ -39,6 +41,7 @@ namespace GifWin
                     sw.WriteLine (ex.ToString ());
                 }
             }
+#endif
         }
 
         public new void Show ()

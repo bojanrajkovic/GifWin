@@ -4,6 +4,8 @@ using GifWin.Properties;
 using Application = System.Windows.Application;
 using System.Windows.Input;
 using System.Windows.Forms;
+using Squirrel;
+using Windows.UI.Notifications;
 
 namespace GifWin
 {
@@ -33,6 +35,33 @@ namespace GifWin
             }
 
             SetupTrayIcon();
+            SetupSquirrel ();
+        }
+
+        void SetupSquirrel ()
+        {
+#if !DEBUG
+            using (var um = new UpdateManager (GifWin.Properties.Resources.UpdatePath)) {
+                SquirrelAwareApp.HandleEvents (onAppUpdate: ShowUpdateNotification);
+            }
+#endif
+        }
+
+        void ShowUpdateNotification (Version obj)
+        {
+            var toastNotifier = ToastNotificationManager.CreateToastNotifier ("GifWin");
+            var toastXml = ToastNotificationManager.GetTemplateContent (ToastTemplateType.ToastText02);
+
+            var textElements = toastXml.GetElementsByTagName ("text");
+            var titleNode = textElements[0];
+            var textNode = textElements[1];
+
+            titleNode.AppendChild (toastXml.CreateTextNode ("A new GifWin version is available!"));
+            textNode.AppendChild (toastXml.CreateTextNode ($"Version {obj} is now available. Restart GifWin to update."));
+
+            var toast = new ToastNotification (toastXml);
+
+            toastNotifier.Show (toast);
         }
 
         NotifyIcon tray;

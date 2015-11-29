@@ -121,4 +121,7 @@
   <data name="TrayIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\TrayIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="UpdatePath" xml:space="preserve">
+    <value>https://gifwin-releases.s3.amazonaws.com/</value>
+  </data>
 </root>

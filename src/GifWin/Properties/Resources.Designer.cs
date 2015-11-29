@@ -69,5 +69,14 @@ namespace GifWin.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://gifwin-releases.s3.amazonaws.com/.
+        /// </summary>
+        internal static string UpdatePath {
+            get {
+                return ResourceManager.GetString("UpdatePath", resourceCulture);
+            }
+        }
     }
 }
