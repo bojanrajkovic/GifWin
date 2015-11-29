@@ -12,6 +12,7 @@ namespace GifWin.Data
     {
         public virtual DbSet<GifEntry> Gifs { get; set; }
         public virtual DbSet<GifTag> Tags { get; set; }
+        public virtual DbSet<GifUsage> Usages { get; set; }
 
         static bool didAddLoggerFactory = false;
         static readonly object syncRoot = new object ();

@@ -125,5 +125,18 @@ namespace GifWin.Data
         {
             Dispose (true);
         }
+
+        internal async Task DeleteGifAsync (int id)
+        {
+            var gif = await db.Gifs.Include (g => g.Tags).Include (g => g.Usages).SingleOrDefaultAsync (ge => ge.Id == id);
+
+            if (gif != null) {
+                db.Tags.RemoveRange (gif.Tags);
+                db.Usages.RemoveRange (gif.Usages);
+                db.Gifs.Remove (gif);
+
+                await db.SaveChangesAsync ();
+            }
+        }
     }
 }

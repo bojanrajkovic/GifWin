@@ -105,6 +105,27 @@ namespace GifWin
             Hide ();
         }
 
+        void DeleteImage ()
+        {
+            var entry = (GifEntryViewModel)imageList.SelectedItem;
+            if (entry == null) {
+                return;
+            }
+
+            Task.Run (async () => {
+                using (var helper = new GifWinDatabaseHelper ()) {
+                    try {
+                        await helper.DeleteGifAsync (entry.Id);
+                    } catch (Exception e) {
+                        MessageBox.Show ($"Couldn't delete GIF: {e.InnerException.Message}.", "Failed");
+                        GlobalHelper.PromptForDebuggerLaunch (e);
+                    }
+                }
+            });
+
+            Hide ();
+        }
+
         protected override void OnClosing (CancelEventArgs e)
         {
             e.Cancel = true;
@@ -139,6 +160,10 @@ namespace GifWin
         {
             if (e.Key == Key.Return || e.Key == Key.Enter)
                 CopyImage ();
+
+            if (e.Key == Key.Delete || e.Key == Key.Back) {
+                DeleteImage ();
+            }
         }
 
         void OnWindowKeyUp (object sender, KeyEventArgs e)
