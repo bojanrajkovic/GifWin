@@ -69,35 +69,24 @@ namespace GifWin
             });
         }
 
-        internal static async Task ConvertGifWitLibraryToGifWinDatabaseAsync ()
+        internal static async Task ConvertGifWitLibraryToGifWinDatabaseAsync (string path)
         {
-            if (!File.Exists ("library.gifwit")) {
-                return;
-            }
+            using (var db = new GifWinDatabaseHelper ()) {
+                try {
+                    var lib = await GifWitLibrary.LoadFromFileAsync (path).ConfigureAwait (false);
+                    var converted = await db.ConvertGifWitLibraryAsync (lib).ConfigureAwait (false);
+                    MessageBox.Show ($"Converted {converted} items successfully!", "Conversion succeeded!");
+                    var delete = MessageBox.Show ($"Do you want to delete the GifWit library file?", "Delete GifWit library?", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            const string question = "You have a library.gifwit file available. Do you want to convert it to the GifWin database format?";
-            const string caption = "Convert GifWit Library?";
-
-            var mboxResult = MessageBox.Show (question, caption, MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (mboxResult == MessageBoxResult.Yes) {
-                using (var db = new GifWinDatabaseHelper ()) {
-                    try {
-                        var lib = await GifWitLibrary.LoadFromFileAsync ("library.gifwit").ConfigureAwait (false);
-                        var converted = await db.ConvertGifWitLibraryAsync (lib).ConfigureAwait (false);
-                        MessageBox.Show ($"Converted {converted} items successfully!", "Conversion succeeded!");
-                        var delete = MessageBox.Show ($"Do you want to delete the GifWit library file?", "Delete GifWit library?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                        if (delete == MessageBoxResult.Yes) {
-                            try {
-                                File.Delete ("library.gifwit");
-                            } catch (Exception e) {
-                                MessageBox.Show ($"Could not delete library.gifwit ({e.Message}), you may have to delete it manually.", "Delete failed.");
-                            }
+                    if (delete == MessageBoxResult.Yes) {
+                        try {
+                            File.Delete (path);
+                        } catch (Exception e) {
+                            MessageBox.Show ($"Could not delete library.gifwit ({e.Message}), you may have to delete it manually.", "Delete failed.");
                         }
-                    } catch (Exception e) {
-                        MessageBox.Show ($"Conversion failed: {e.Message}.", "Conversion failed.", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
+                } catch (Exception e) {
+                    MessageBox.Show ($"Conversion failed: {e.Message}.", "Conversion failed.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

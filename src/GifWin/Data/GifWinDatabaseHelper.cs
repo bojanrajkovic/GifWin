@@ -27,6 +27,10 @@ namespace GifWin.Data
         internal async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource)
         {
             foreach (var entry in librarySource) {
+                if (db.Gifs.Any(ge => ge.Url.ToLower() == entry.Url.ToString().ToLower())) {
+                    continue;
+                }
+
                 var newGif = new GifEntry {
                     Url = entry.Url.ToString (),
                     AddedAt = DateTimeOffset.UtcNow,

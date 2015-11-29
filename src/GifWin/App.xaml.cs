@@ -26,7 +26,6 @@ namespace GifWin
         {
             base.OnStartup (e);
 
-            GifHelper.ConvertGifWitLibraryToGifWinDatabaseAsync ().GetAwaiter ().GetResult ();
             GifHelper.StartPreCachingDatabase ();
 
             if (window == null) {
@@ -158,21 +157,43 @@ namespace GifWin
         void SetupTrayIcon ()
         {
             var contextMenu = new ContextMenu (new[] {
+                new MenuItem ("Convert GifWit Library"),
                 new MenuItem ("Check For Updates"),
                 new MenuItem ("-"),
                 new MenuItem ("Exit"),
 
             });
+            contextMenu.MenuItems[0].Click += (sender, args) => ConvertGifWitLibrary ();
+            contextMenu.MenuItems[1].Click += (sender, args) => CheckForUpdatesAsync ();
             contextMenu.MenuItems[2].Click += (sender, args) => Shutdown ();
-            contextMenu.MenuItems[0].Click += (sender, args) => CheckForUpdatesAsync ();
 
             tray = new NotifyIcon {
                 ContextMenu = contextMenu,
                 Visible = true,
                 Icon = GifWin.Properties.Resources.TrayIcon
             };
+        }
 
-            tray.Click += OnTrayClicked;
+        void ConvertGifWitLibrary ()
+        {
+            var dlg = new Microsoft.Win32.OpenFileDialog {
+                CheckFileExists = true,
+                CheckPathExists = true,
+                DefaultExt = ".gifwit",
+                Filter = "GifWit Library Files (*.gifwit)|*.gifwit",
+                InitialDirectory = Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments),
+                Multiselect = false,
+            };
+
+            var result = dlg.ShowDialog ();
+
+            if (result == true) {
+                GifHelper.ConvertGifWitLibraryToGifWinDatabaseAsync (dlg.FileName).ContinueWith (t => {
+                    if (!t.IsFaulted) {
+                        GifHelper.StartPreCachingDatabase ();
+                    }
+                });
+            }
         }
 
         async void CheckForUpdatesAsync ()
