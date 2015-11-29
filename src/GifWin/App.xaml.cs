@@ -39,6 +39,7 @@ namespace GifWin
 
             SetupTrayIcon ();
             SetupSquirrel ();
+            ShowLaunchedNotification ();
         }
 
         Tuple<ModifierKeys, Key> ParseHotkeySetting ()
@@ -107,6 +108,24 @@ namespace GifWin
                 SquirrelAwareApp.HandleEvents (onAppUpdate: ShowUpdateNotification);
             }
 #endif
+        }
+
+        void ShowLaunchedNotification()
+        {
+            var toastNotifier = ToastNotificationManager.CreateToastNotifier ("GifWin");
+            var toastXml = ToastNotificationManager.GetTemplateContent (ToastTemplateType.ToastText02);
+
+            var textElements = toastXml.GetElementsByTagName ("text");
+            var titleNode = textElements[0];
+            var textNode = textElements[1];
+
+            titleNode.AppendChild (toastXml.CreateTextNode ("GifWin is now running!"));
+            textNode.AppendChild (toastXml.CreateTextNode ($"Hit {Settings.Default.Hotkey} to bring up your library."));
+
+            var toast = new ToastNotification (toastXml);
+            toast.Activated += RestartGifWin;
+
+            toastNotifier.Show (toast);
         }
 
         public static void ShowUpdateNotification (Version obj)
