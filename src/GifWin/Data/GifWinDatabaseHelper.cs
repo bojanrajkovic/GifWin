@@ -18,13 +18,13 @@ namespace GifWin.Data
             db.Database.Migrate ();
         }
 
-        public IQueryable<TResult> QueryGifs<TResult>(Expression<Func<GifEntry, bool>> filter,
-                                                      Expression<Func<GifEntry, TResult>> map)
+        internal IQueryable<TResult> QueryGifs<TResult>(Expression<Func<GifEntry, bool>> filter,
+                                                        Expression<Func<GifEntry, TResult>> map)
         {
             return db.Gifs.Where (filter).Select (map);
         }
 
-        public async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource)
+        internal async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource)
         {
             foreach (var entry in librarySource) {
                 var newGif = new GifEntry {
@@ -65,7 +65,7 @@ namespace GifWin.Data
             }
         }
 
-        public async Task RecordGifUsageAsync (int gifId, string searchTerm)
+        internal async Task RecordGifUsageAsync (int gifId, string searchTerm)
         {
             var gif = await db.Gifs.SingleOrDefaultAsync (ge => ge.Id == gifId).ConfigureAwait (false);
 
@@ -99,13 +99,6 @@ namespace GifWin.Data
 
                 await db.SaveChangesAsync ().ConfigureAwait (false);
             }
-        }
-
-        public async Task<IEnumerable<GifEntry>> LoadAllGifsAsync ()
-        {
-            var query = db.Gifs.Include (ge => ge.Tags);
-            await query.LoadAsync ().ConfigureAwait (false);
-            return await query.ToArrayAsync ();
         }
 
         bool disposedValue = false;

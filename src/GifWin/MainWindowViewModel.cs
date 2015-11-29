@@ -71,11 +71,6 @@ namespace GifWin
             }
         }
 
-        internal void RefreshImagesFromDatabase ()
-        {
-            RefreshImageCollection ();
-        }
-
         public string NewEntryTags
         {
             get { return newEntryTags; }
