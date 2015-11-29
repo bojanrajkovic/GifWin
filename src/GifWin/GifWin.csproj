@@ -222,10 +222,11 @@
     <Compile Include="Data\GifUsage.cs" />
     <Compile Include="Data\GifWinContext.cs" />
     <Compile Include="Data\GifWinDatabaseHelper.cs" />
-    <Compile Include="GifEntryViewModel.cs" />
-    <Compile Include="GifHelper.cs" />
-    <Compile Include="GlobalHelper.cs" />
-    <Compile Include="HotKey.cs" />
+    <Compile Include="ViewModels\GifEntryViewModel.cs" />
+    <Compile Include="Utility\GifHelper.cs" />
+    <Compile Include="Utility\GlobalHelper.cs" />
+    <Compile Include="Hotkey\HotKey.cs" />
+    <Compile Include="Hotkey\HotkeyParser.cs" />
     <Compile Include="Migrations\20151127010218_BaseDatabaseStructure.cs" />
     <Compile Include="Migrations\20151127010218_BaseDatabaseStructure.designer.cs">
       <DependentUpon>20151127010218_BaseDatabaseStructure.cs</DependentUpon>
@@ -247,8 +248,12 @@
       <DependentUpon>20151127192604_AddIndexes.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\GifWinContextModelSnapshot.cs" />
-    <Compile Include="NativeMethods.cs" />
-    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Hotkey\NativeMethods.cs" />
+    <Compile Include="SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\SettingsWindowViewModel.cs" />
+    <Compile Include="Utility\StringExtensions.cs" />
     <Compile Include="TagTextBox.xaml.cs">
       <DependentUpon>TagTextBox.xaml</DependentUpon>
     </Compile>
@@ -256,7 +261,11 @@
       <DependentUpon>SearchTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="ReplayBehavior.cs" />
-    <Compile Include="ViewModelBase.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TagTextBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -273,15 +282,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GifWitLibrary.cs" />
-    <Compile Include="GifWitLibraryEntry.cs" />
+    <Compile Include="GifWit\GifWitLibrary.cs" />
+    <Compile Include="GifWit\GifWitLibraryEntry.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

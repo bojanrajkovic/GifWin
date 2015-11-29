@@ -30,10 +30,7 @@ namespace GifWin
 
             if (window == null) {
                 window = new MainWindow ();
-
-                var hotkeyRegistration = ParseHotkeySetting ();
-                hotkey = new HotKey (hotkeyRegistration.Item1, hotkeyRegistration.Item2, window);
-                hotkey.HotKeyPressed += HotKeyPressed;
+                RegisterHotkey ();
             }
 
             SetupTrayIcon ();
@@ -41,63 +38,37 @@ namespace GifWin
             ShowLaunchedNotification ();
         }
 
-        Tuple<ModifierKeys, Key> ParseHotkeySetting ()
+        internal void RegisterHotkey ()
         {
-            var hotkeySetting = Settings.Default.Hotkey.OrIfBlank ("Win-Shift-G");
-            return ParseHotkeySettingImpl (hotkeySetting);
-        }
+            Tuple<ModifierKeys, Key> oldRegistration = null;
 
-        Tuple<ModifierKeys, Key> ParseHotkeySettingImpl (string hotkeySetting)
-        {
-            // Silently drop empty hotkey parts.
-            var hotkeyPieces = hotkeySetting.Split (new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+            if (hotkey != null) {
+                oldRegistration = Tuple.Create (hotkey.Modifiers, hotkey.Key);
 
-            var keyString = hotkeyPieces.Last ();
-            var modifierStrings = hotkeyPieces.TakeWhile (hkp => hkp != keyString).Distinct().ToArray ();
-
-            // Parse the hotkey itself.
-            Key key;
-            if (!Enum.TryParse (keyString, out key)) {
-                WMessageBox.Show ($"Invalid hotkey setting: the value {keyString} is not a valid hotkey key. Falling back to default Win-Shift-G hotkey.", "Invalid hotkey.");
-                Settings.Default.Hotkey = "Win-Shift-G";
-                return ParseHotkeySettingImpl (Settings.Default.Hotkey);
+                // Unregister
+                hotkey.HotKeyPressed -= HotKeyPressed;
+                hotkey.Unregister ();
+                hotkey.Dispose ();
+                hotkey = null;
             }
 
-            // Parse each modifier part to build the set of modifiers.
-            ModifierKeys modifiers = ModifierKeys.None;
-            foreach (var modifierString in modifierStrings) {
-                ModifierKeys tempModifier;
+            Tuple<ModifierKeys, Key> newRegistration;
+            string error;
 
-                if (!Enum.TryParse (ExpandModifierString (modifierString), out tempModifier)) {
-                    WMessageBox.Show ($"Invalid hotkey setting: the value {modifierString} is not a valid hotkey modifier. Falling back to default Win-Shift-G hotkey.", "Invalid hotkey.");
-                    Settings.Default.Hotkey = "Win-Shift-G";
-                    return ParseHotkeySettingImpl (Settings.Default.Hotkey);
-                }
+            var isHotkeyValid = HotkeyParser.ParseHotkeySetting (Settings.Default.Hotkey, out newRegistration, out error);
 
-                modifiers |= tempModifier;
+            if (!isHotkeyValid) {
+                var fallbackString = oldRegistration != null
+                    ? $"{oldRegistration.Item1.ToString ("").Replace (", ", "-")}-${oldRegistration.Item2}"
+                    : "Win-Shift-G";
+                WMessageBox.Show (error + $" Falling back to {fallbackString}.", "Invalid hotkey!");
+                Settings.Default.Hotkey = fallbackString;
+                Settings.Default.Save ();
+                HotkeyParser.ParseHotkeySetting (Settings.Default.Hotkey, out newRegistration, out error);
             }
 
-            // Don't allow modifier-less hotkeys
-            if (modifiers == ModifierKeys.None) {
-                var modifierString = string.Join ("-", modifierStrings);
-                WMessageBox.Show ($"Invalid hotkey setting: the modifier string {modifierString} is not valid. Falling back to default Win-Shift-G hotkey.", "Invalid hotkey.");
-                Settings.Default.Hotkey = "Win-Shift-G";
-                return ParseHotkeySettingImpl (Settings.Default.Hotkey);
-            }
-
-            return Tuple.Create (modifiers, key);
-        }
-
-        string ExpandModifierString (string input)
-        {
-            switch (input) {
-                case "Win":
-                    return "Windows";
-                case "Ctrl":
-                    return "Control";
-                default:
-                    return input;
-            }
+            hotkey = new HotKey (newRegistration.Item1, newRegistration.Item2, window);
+            hotkey.HotKeyPressed += HotKeyPressed;
         }
 
         void SetupSquirrel ()
@@ -156,22 +127,31 @@ namespace GifWin
 
         void SetupTrayIcon ()
         {
-            var contextMenu = new ContextMenu (new[] {
+            var menuItems = new[] {
                 new MenuItem ("Convert GifWit Library"),
                 new MenuItem ("Check For Updates"),
+                new MenuItem ("Settings"),
                 new MenuItem ("-"),
                 new MenuItem ("Exit"),
+            };
 
-            });
-            contextMenu.MenuItems[0].Click += (sender, args) => ConvertGifWitLibrary ();
-            contextMenu.MenuItems[1].Click += (sender, args) => CheckForUpdatesAsync ();
-            contextMenu.MenuItems[2].Click += (sender, args) => Shutdown ();
+            menuItems[0].Click += (sender, args) => ConvertGifWitLibrary ();
+            menuItems[1].Click += (sender, args) => CheckForUpdatesAsync ();
+            menuItems[2].Click += (sender, args) => ShowSettingsDialog ();
+            menuItems.Last ().Click += (sender, args) => Shutdown ();
+
+            var contextMenu = new ContextMenu (menuItems);
 
             tray = new NotifyIcon {
                 ContextMenu = contextMenu,
                 Visible = true,
                 Icon = GifWin.Properties.Resources.TrayIcon
             };
+        }
+
+        private void ShowSettingsDialog ()
+        {
+            throw new NotImplementedException ();
         }
 
         void ConvertGifWitLibrary ()
