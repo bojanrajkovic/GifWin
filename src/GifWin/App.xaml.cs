@@ -47,7 +47,7 @@ namespace GifWin
 #endif
         }
 
-        void ShowUpdateNotification (Version obj)
+        public static void ShowUpdateNotification (Version obj)
         {
             var toastNotifier = ToastNotificationManager.CreateToastNotifier ("GifWin");
             var toastXml = ToastNotificationManager.GetTemplateContent (ToastTemplateType.ToastText02);
