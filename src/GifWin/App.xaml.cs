@@ -77,9 +77,13 @@ namespace GifWin
         void SetupTrayIcon ()
         {
             var contextMenu = new ContextMenu (new[] {
+                new MenuItem("Check For Updates"),
+                new MenuItem("-"),
                 new MenuItem ("Exit"),
+
             });
-            contextMenu.MenuItems[0].Click += (sender, args) => Shutdown ();
+            contextMenu.MenuItems[2].Click += (sender, args) => Shutdown ();
+            contextMenu.MenuItems[0].Click += (sender, args) => CheckForUpdatesAsync ();
 
             tray = new NotifyIcon {
                 ContextMenu = contextMenu,
@@ -88,6 +92,13 @@ namespace GifWin
             };
 
             tray.Click += OnTrayClicked;
+        }
+
+        async void CheckForUpdatesAsync ()
+        {
+            using (var um = new UpdateManager (GifWin.Properties.Resources.UpdatePath)) {
+                await um.UpdateApp ();
+            }
         }
 
         void OnTrayClicked (object sender, EventArgs eventArgs)
