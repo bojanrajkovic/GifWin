@@ -7,11 +7,11 @@ namespace GifWin
     static class ReplayBehavior
     {
         public static readonly DependencyProperty RepeatsProperty = DependencyProperty.RegisterAttached (
-            "Repeats", typeof (bool), typeof (ReplayBehavior), new PropertyMetadata (default(bool), OnRepeatsChanged));
+            "Repeats", typeof (bool), typeof (ReplayBehavior), new PropertyMetadata (default (bool), OnRepeatsChanged));
 
         public static void SetRepeats (MediaElement element, bool value)
         {
-            
+
             element.SetValue (RepeatsProperty, value);
         }
 
@@ -26,7 +26,7 @@ namespace GifWin
 
         public static bool GetRepeats (MediaElement element)
         {
-            return (bool) element.GetValue (RepeatsProperty);
+            return (bool)element.GetValue (RepeatsProperty);
         }
 
         static void OnRepeatsChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)

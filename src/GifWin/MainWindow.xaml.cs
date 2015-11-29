@@ -23,7 +23,7 @@ namespace GifWin
         {
             InitializeComponent ();
             ((MainWindowViewModel)DataContext).PropertyChanged += OnPropertyChanged;
-            updateCheckTimer = new Timer (CheckForUpdatesAsync, null, TimeSpan.FromMilliseconds(0), TimeSpan.FromHours(24));
+            updateCheckTimer = new Timer (CheckForUpdatesAsync, null, TimeSpan.FromMilliseconds (0), TimeSpan.FromHours (24));
         }
 
         async void CheckForUpdatesAsync (object sender)

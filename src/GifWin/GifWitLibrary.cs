@@ -9,25 +9,25 @@ namespace GifWin
     [JsonObject]
     class GifWitLibrary : IEnumerable<GifWitLibraryEntry>
     {
-        public IEnumerator<GifWitLibraryEntry> GetEnumerator()
+        public IEnumerator<GifWitLibraryEntry> GetEnumerator ()
         {
-            return Images.AsReadOnly().GetEnumerator();
+            return Images.AsReadOnly ().GetEnumerator ();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator ()
         {
-            return GetEnumerator();
+            return GetEnumerator ();
         }
 
-        [JsonProperty("version")]
+        [JsonProperty ("version")]
         public int Version { get; set; }
-        [JsonProperty("images")]
+        [JsonProperty ("images")]
         internal List<GifWitLibraryEntry> Images { get; set; }
 
         internal static async Task<GifWitLibrary> LoadFromFileAsync (string path)
         {
             using (StreamReader reader = new StreamReader (File.Open (path, FileMode.Open))) {
-                string content = await reader.ReadToEndAsync().ConfigureAwait (false);
+                string content = await reader.ReadToEndAsync ().ConfigureAwait (false);
                 return JsonConvert.DeserializeObject<GifWitLibrary> (content);
             }
         }

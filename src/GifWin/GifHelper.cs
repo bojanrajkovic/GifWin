@@ -16,26 +16,26 @@ namespace GifWin
         static Dictionary<int, Task<string>> CachedTasks;
 
         /// <returns>Path to the local file</returns>
-        internal static Task<string> GetOrMakeSavedAsync(int gifId, string entryUrl)
+        internal static Task<string> GetOrMakeSavedAsync (int gifId, string entryUrl)
         {
             if (CachedTasks != null && CachedTasks.ContainsKey (gifId)) {
                 return CachedTasks[gifId];
             }
 
-            return Task.Run(async () => {
-                SHA1 sha1 = SHA1.Create();
-                byte[] hash = sha1.ComputeHash(Encoding.Unicode.GetBytes(entryUrl));
-                string readableHash = GetReadableHash(hash);
+            return Task.Run (async () => {
+                SHA1 sha1 = SHA1.Create ();
+                byte[] hash = sha1.ComputeHash (Encoding.Unicode.GetBytes (entryUrl));
+                string readableHash = GetReadableHash (hash);
 
-                DirectoryInfo storage = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GifWin", "Cache"));
-                storage.Create();
+                DirectoryInfo storage = new DirectoryInfo (Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "GifWin", "Cache"));
+                storage.Create ();
 
-                FileInfo file = new FileInfo(Path.Combine(storage.FullName, readableHash + ".gif"));
+                FileInfo file = new FileInfo (Path.Combine (storage.FullName, readableHash + ".gif"));
                 if (!file.Exists) {
-                    var client = new WebClient();
-                    byte[] contents = await client.DownloadDataTaskAsync(entryUrl).ConfigureAwait(false);
-                    using (FileStream stream = file.OpenWrite()) {
-                        await stream.WriteAsync(contents, 0, contents.Length).ConfigureAwait(false);
+                    var client = new WebClient ();
+                    byte[] contents = await client.DownloadDataTaskAsync (entryUrl).ConfigureAwait (false);
+                    using (FileStream stream = file.OpenWrite ()) {
+                        await stream.WriteAsync (contents, 0, contents.Length).ConfigureAwait (false);
                     }
 
 #pragma warning disable CS4014
@@ -43,10 +43,10 @@ namespace GifWin
                     // off-thread, because we don't want to hold _this_ thread up any longer.
                     // The pragma warning disable is because the compiler is _really_ irritating about this,
                     // claiming we should await this.
-                    Task.Run(async () => {
-                        using (var helper = new GifWinDatabaseHelper()) {
-                            var frameData = GetFrameData(file.FullName, frameNumber: 0);
-                            await helper.UpdateSavedFirstFrameDataAsync(gifId, frameData).ConfigureAwait(false);
+                    Task.Run (async () => {
+                        using (var helper = new GifWinDatabaseHelper ()) {
+                            var frameData = GetFrameData (file.FullName, frameNumber: 0);
+                            await helper.UpdateSavedFirstFrameDataAsync (gifId, frameData).ConfigureAwait (false);
                         }
                     });
 #pragma warning restore CS4014
@@ -102,25 +102,25 @@ namespace GifWin
             }
         }
 
-        internal static byte[] GetFrameData(string gifPath, int frameNumber)
+        internal static byte[] GetFrameData (string gifPath, int frameNumber)
         {
-            var fs = File.OpenRead(gifPath);
-            var decoder = BitmapDecoder.Create(fs, BitmapCreateOptions.None, BitmapCacheOption.Default);
+            var fs = File.OpenRead (gifPath);
+            var decoder = BitmapDecoder.Create (fs, BitmapCreateOptions.None, BitmapCacheOption.Default);
 
             if (frameNumber > decoder.Frames.Count) {
-                throw new ArgumentOutOfRangeException(nameof(frameNumber), $"Frame number {frameNumber} is greater than frame count {decoder.Frames.Count}");
+                throw new ArgumentOutOfRangeException (nameof (frameNumber), $"Frame number {frameNumber} is greater than frame count {decoder.Frames.Count}");
             }
 
             var frame = decoder.Frames[frameNumber];
 
             // Now convert it to PNG
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(frame);
+            var encoder = new PngBitmapEncoder ();
+            encoder.Frames.Add (frame);
 
             byte[] pngData;
-            using (var ms = new MemoryStream()) {
-                encoder.Save(ms);
-                pngData = ms.ToArray();
+            using (var ms = new MemoryStream ()) {
+                encoder.Save (ms);
+                pngData = ms.ToArray ();
                 return pngData;
             }
         }

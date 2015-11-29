@@ -13,7 +13,7 @@ namespace GifWin
         }
 
         // Ugh this is dumb.
-        [JsonProperty("keywords")]
+        [JsonProperty ("keywords")]
         public string KeywordString { get; set; }
     }
 }

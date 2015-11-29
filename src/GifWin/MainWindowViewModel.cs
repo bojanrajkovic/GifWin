@@ -25,7 +25,7 @@ namespace GifWin
         void RefreshImageCollection ()
         {
             helper.GetGifsbyTagAsync (filterKeywords.ToArray ()).ContinueWith (t => {
-                var filterResults = t.Result.Select(ge => new GifEntryViewModel(ge));
+                var filterResults = t.Result.Select (ge => new GifEntryViewModel (ge));
                 Images = CollectionViewSource.GetDefaultView (filterResults);
             });
         }

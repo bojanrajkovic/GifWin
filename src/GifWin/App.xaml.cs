@@ -16,7 +16,7 @@ namespace GifWin
     {
         protected override void OnExit (ExitEventArgs e)
         {
-            Settings.Default.Save();
+            Settings.Default.Save ();
             base.OnExit (e);
         }
 
@@ -24,17 +24,17 @@ namespace GifWin
         {
             base.OnStartup (e);
 
-            GifHelper.ConvertGifWitLibraryToGifWinDatabaseAsync().GetAwaiter().GetResult();
+            GifHelper.ConvertGifWitLibraryToGifWinDatabaseAsync ().GetAwaiter ().GetResult ();
             GifHelper.StartPreCachingDatabase ();
 
             if (window == null) {
-                window = new MainWindow();
+                window = new MainWindow ();
 
-                hotkey = new HotKey(ModifierKeys.Windows | ModifierKeys.Shift, Key.G, window);
+                hotkey = new HotKey (ModifierKeys.Windows | ModifierKeys.Shift, Key.G, window);
                 hotkey.HotKeyPressed += HotKeyPressed;
             }
 
-            SetupTrayIcon();
+            SetupTrayIcon ();
             SetupSquirrel ();
         }
 
@@ -77,8 +77,8 @@ namespace GifWin
         void SetupTrayIcon ()
         {
             var contextMenu = new ContextMenu (new[] {
-                new MenuItem("Check For Updates"),
-                new MenuItem("-"),
+                new MenuItem ("Check For Updates"),
+                new MenuItem ("-"),
                 new MenuItem ("Exit"),
 
             });

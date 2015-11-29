@@ -6,13 +6,13 @@ namespace GifWin
 {
     class GlobalHelper
     {
-        [Conditional("DEBUG")]
-        internal static void PromptForDebuggerLaunch(Exception exception)
+        [Conditional ("DEBUG")]
+        internal static void PromptForDebuggerLaunch (Exception exception)
         {
-            var result = MessageBox.Show("Do you want to launch the debugger?", "Launch debugger?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show ("Do you want to launch the debugger?", "Launch debugger?", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes) {
-                Debugger.Launch();
+                Debugger.Launch ();
             }
         }
     }

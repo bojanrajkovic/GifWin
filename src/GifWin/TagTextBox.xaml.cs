@@ -9,17 +9,17 @@ namespace GifWin
     /// </summary>
     public partial class TagTextBox
     {
-        public TagTextBox()
+        public TagTextBox ()
         {
-            InitializeComponent();
+            InitializeComponent ();
         }
 
         public static readonly DependencyProperty HintProperty = DependencyProperty.Register (
-            "Hint", typeof (string), typeof (TagTextBox), new PropertyMetadata (default(string)));
+            "Hint", typeof (string), typeof (TagTextBox), new PropertyMetadata (default (string)));
 
         public string Hint
         {
-            get { return (string) GetValue (HintProperty); }
+            get { return (string)GetValue (HintProperty); }
             set { SetValue (HintProperty, value); }
         }
 
@@ -28,7 +28,7 @@ namespace GifWin
 
         public Brush HintForeground
         {
-            get { return (Brush) GetValue (HintForegroundProperty); }
+            get { return (Brush)GetValue (HintForegroundProperty); }
             set { SetValue (HintForegroundProperty, value); }
         }
 
@@ -38,7 +38,7 @@ namespace GifWin
             if (actual == null)
                 return;
 
-            actual.Focus();
+            actual.Focus ();
         }
     }
 }
