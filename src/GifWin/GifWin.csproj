@@ -217,6 +217,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Data\GifEntry.cs" />
     <Compile Include="Data\GifTag.cs" />
     <Compile Include="Data\GifUsage.cs" />

@@ -26,7 +26,7 @@ namespace GifWin
 
             // Parse the hotkey itself.
             Key key;
-            if (!Enum.TryParse (keyString, out key)) {
+            if (!Enum.TryParse (keyString, ignoreCase: true, result: out key)) {
                 error = $"Invalid hotkey setting: the value {keyString} is not a valid hotkey key.";
                 return false;
             }
@@ -36,7 +36,7 @@ namespace GifWin
             foreach (var modifierString in modifierStrings) {
                 ModifierKeys tempModifier;
 
-                if (!Enum.TryParse (ExpandModifierString (modifierString), out tempModifier)) {
+                if (!Enum.TryParse (ExpandModifierString (modifierString), ignoreCase: true, result: out tempModifier)) {
                     error = $"Invalid hotkey setting: the value {modifierString} is not a valid hotkey modifier.";
                     return false;
                 }
@@ -58,10 +58,10 @@ namespace GifWin
 
         static string ExpandModifierString (string input)
         {
-            switch (input) {
-                case "Win":
+            switch (input.ToLower()) {
+                case "win":
                     return "Windows";
-                case "Ctrl":
+                case "ctrl":
                     return "Control";
                 default:
                     return input;

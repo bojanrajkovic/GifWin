@@ -149,9 +149,10 @@ namespace GifWin
             };
         }
 
-        private void ShowSettingsDialog ()
+        void ShowSettingsDialog ()
         {
-            throw new NotImplementedException ();
+            var sw = new SettingsWindow ();
+            sw.ShowDialog ();
         }
 
         void ConvertGifWitLibrary ()

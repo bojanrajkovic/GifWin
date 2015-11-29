@@ -4,9 +4,36 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GifWin"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:ermau="clr-namespace:ermau;assembly=AnimatedTextBoxBehavior"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="300" Width="300">
+        x:Name="TheWindow"
+        Title="SettingsWindow" MinHeight="150" MinWidth="300" Height="77" Width="159">
+    <Window.DataContext>
+        <local:SettingsWindowViewModel />
+    </Window.DataContext>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Button x:Name="button" Grid.Row="1" Content="Save Settings" Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=TheWindow}"  Margin="0,0,10,10" HorizontalAlignment="Right" Width="100" Height="30" VerticalAlignment="Bottom"/>
+        <Grid Margin="10,10,10,45" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="1" Grid.Column="0">Hotkey:</Label>
+            <TextBox Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Hotkey,Mode=TwoWay}">
+                <i:Interaction.Behaviors>
+                    <ermau:AnimatedTextBoxBehavior />
+                </i:Interaction.Behaviors>
+            </TextBox>
+        </Grid>
     </Grid>
 </Window>
