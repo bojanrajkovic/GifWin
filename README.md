@@ -14,7 +14,7 @@ See LICENSE.md, follow code style. Pull requests that don't will be mocked heavy
 
 * ~~Viewing library~~
 * ~~Search~~
-* Adding new gifs
+* ~~Adding new gifs~~
 * Merging libraries
 * Other library editing
 * Library sharing
