@@ -1,8 +1,8 @@
-﻿using GifWin.Commands;
-using GifWin.Properties;
+﻿using GifWin.Properties;
 using System;
 using System.Windows;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 
 namespace GifWin
 {
@@ -10,27 +10,13 @@ namespace GifWin
     {
         string theme;
         string hotkey;
-        readonly RelayCommand saveCommand;
+        readonly RelayCommand<Window> saveCommand;
 
         public SettingsWindowViewModel ()
         {
-            saveCommand = new RelayCommand (DoSave);
+            saveCommand = new RelayCommand<Window> (DoSave);
             hotkey = Settings.Default.Hotkey;
             theme = Settings.Default.Theme;
-        }
-
-        void DoSave (object obj)
-        {
-            string error;
-            var window = (SettingsWindow)obj;
-            var didSave = Save (out error);
-
-            if (didSave) {
-                MessageBox.Show ("Saved settings!", "Saved!");
-                window.Close ();
-            } else {
-                MessageBox.Show ("Error saving settings: " + error, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
 
         public string Theme
@@ -63,7 +49,7 @@ namespace GifWin
             }
         }
 
-        public RelayCommand SaveCommand
+        public ICommand SaveCommand
         {
             get { return saveCommand; }
         }
@@ -93,6 +79,19 @@ namespace GifWin
             }
 
             return true;
+        }
+
+        void DoSave (Window window)
+        {
+            string error;
+            var didSave = Save (out error);
+
+            if (didSave) {
+                MessageBox.Show ("Saved settings!", "Saved!");
+                window.Close ();
+            } else {
+                MessageBox.Show ("Error saving settings: " + error, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         bool HotKeyIsValid (string hotkey, out string error)
