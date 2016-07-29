@@ -22,7 +22,7 @@ namespace GifWin
         }
 
         public static readonly DependencyProperty HintForegroundProperty = DependencyProperty.Register (
-            "HintForeground", typeof (Brush), typeof (TagTextBox), new PropertyMetadata (new SolidColorBrush { Color = Colors.Black, Opacity = 0.5 }));
+            "HintForeground", typeof (Brush), typeof (TagTextBox), new PropertyMetadata (default (Brush)));
 
         public Brush HintForeground
         {
