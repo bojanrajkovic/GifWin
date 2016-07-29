@@ -4,14 +4,12 @@ using System.Windows.Media;
 
 namespace GifWin
 {
-    /// <summary>
-    /// Interaction logic for SearchTextBox.xaml
-    /// </summary>
-    public partial class TagTextBox
+    public class TagTextBox
+        : TextBox
     {
         public TagTextBox ()
         {
-            InitializeComponent ();
+            DefaultStyleKey = typeof(TagTextBox);
         }
 
         public static readonly DependencyProperty HintProperty = DependencyProperty.Register (

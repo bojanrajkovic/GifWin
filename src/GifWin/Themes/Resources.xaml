@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:GifWin"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                    xmlns:ermau="clr-namespace:ermau;assembly=AnimatedTextBoxBehavior">
+	<Style x:Key="LargeEntry" TargetType="TextBox">
+		<Setter Property="FontSize" Value="50" />
+		<Setter Property="BorderThickness" Value="0,0,0,1" />
+	</Style>
+    
+    <Style TargetType="local:TagTextBox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:TagTextBox">
+                    <Grid>
+                        <TextBox Name="hint" Text="{TemplateBinding Hint}" Foreground="{TemplateBinding HintForeground}" FontSize="{TemplateBinding FontSize}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Visibility="{Binding ElementName=actual, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <TextBox Name="actual" Text="{Binding Text,RelativeSource={RelativeSource TemplatedParent},UpdateSourceTrigger=PropertyChanged}" FontSize="{TemplateBinding FontSize}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Foreground="{TemplateBinding Foreground}">
+                            <i:Interaction.Behaviors>
+                                <ermau:AnimatedTextBoxBehavior />
+                            </i:Interaction.Behaviors>
+                        </TextBox>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

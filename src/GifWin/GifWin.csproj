@@ -220,6 +220,7 @@
     <Compile Include="Data\GifUsage.cs" />
     <Compile Include="Data\GifWinContext.cs" />
     <Compile Include="Data\GifWinDatabaseHelper.cs" />
+    <Compile Include="TagTextBox.cs" />
     <Compile Include="ViewModels\GifEntryViewModel.cs" />
     <Compile Include="Utility\GifHelper.cs" />
     <Compile Include="Utility\GlobalHelper.cs" />
@@ -252,21 +253,22 @@
     </Compile>
     <Compile Include="ViewModels\SettingsWindowViewModel.cs" />
     <Compile Include="Utility\StringExtensions.cs" />
-    <Compile Include="TagTextBox.xaml.cs">
-      <DependentUpon>TagTextBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="SearchTextBox.xaml.cs">
       <DependentUpon>SearchTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="ReplayBehavior.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Page Include="SettingsWindow.xaml">
+    <Page Include="Themes\DarkTheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TagTextBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Themes\LightTheme.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SearchTextBox.xaml">
       <SubType>Designer</SubType>
@@ -286,6 +288,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Themes\Resources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

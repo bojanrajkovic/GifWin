@@ -13,13 +13,6 @@
         <local:MainWindowViewModel />
     </Window.DataContext>
 
-    <Window.Resources>
-        <Style x:Key="LargeEntry" TargetType="TextBox">
-            <Setter Property="FontSize" Value="50" />
-            <Setter Property="BorderThickness" Value="0,0,0,1" />
-        </Style>
-    </Window.Resources>
-
     <VisualStateManager.VisualStateGroups>
         <VisualStateGroup x:Name="SearchStates">
             <VisualState Name="NotSearching">
