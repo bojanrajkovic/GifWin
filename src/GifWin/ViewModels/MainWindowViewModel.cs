@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
+using GalaSoft.MvvmLight;
 using GifWin.Properties;
 using GifWin.Data;
 
@@ -36,7 +37,7 @@ namespace GifWin
             set
             {
                 Settings.Default.Zoom = value;
-                OnPropertyChanged ();
+                RaisePropertyChanged ();
             }
         }
 
@@ -49,7 +50,7 @@ namespace GifWin
                     return;
 
                 images = value;
-                OnPropertyChanged ();
+                RaisePropertyChanged ();
             }
         }
 
@@ -67,7 +68,7 @@ namespace GifWin
                 filterKeywords.UnionWith (value.Split (new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
 
                 RefreshImageCollection ();
-                OnPropertyChanged ();
+                RaisePropertyChanged ();
             }
         }
 
@@ -77,7 +78,7 @@ namespace GifWin
             set
             {
                 newEntryTags = value;
-                OnPropertyChanged ();
+                RaisePropertyChanged ();
             }
         }
     }

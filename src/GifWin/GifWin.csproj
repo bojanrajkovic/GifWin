@@ -272,7 +272,6 @@
       <DependentUpon>SearchTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="ReplayBehavior.cs" />
-    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Page Include="Themes\DarkTheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
