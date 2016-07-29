@@ -1,20 +1,23 @@
 ﻿using GifWin.Properties;
 using System;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
 namespace GifWin
 {
     class SettingsWindowViewModel : ViewModelBase
     {
+        bool settingsDirty;
         string theme;
         string hotkey;
         readonly RelayCommand<Window> saveCommand;
 
         public SettingsWindowViewModel ()
         {
-            saveCommand = new RelayCommand<Window> (DoSave);
+            saveCommand = new RelayCommand<Window> (DoSave, w => settingsDirty);
             hotkey = Settings.Default.Hotkey;
             theme = Settings.Default.Theme;
         }
@@ -28,7 +31,7 @@ namespace GifWin
                     return;
 
                 theme = value;
-                OnPropertyChanged ();
+                OnSettingChanged ();
             }
         }
 
@@ -45,7 +48,7 @@ namespace GifWin
                 }
 
                 hotkey = value;
-                OnPropertyChanged ();
+                OnSettingChanged ();
             }
         }
 
@@ -54,9 +57,22 @@ namespace GifWin
             get { return saveCommand; }
         }
 
-        public bool Save (out string error)
+        bool SettingsDirty
         {
-            bool anyChanged = false;
+            get { return settingsDirty; }
+            set
+            {
+                if (settingsDirty == value)
+                    return;
+
+                settingsDirty = value;
+                RaisePropertyChanged ();
+                saveCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        bool Save (out string error)
+        {
             error = null;
 
             if (hotkey != Settings.Default.Hotkey) {
@@ -64,18 +80,17 @@ namespace GifWin
                     return false;
                 }
 
-                anyChanged = true;
                 Settings.Default.Hotkey = hotkey;
                 ((App)Application.Current).RegisterHotkey ();
             }
 
             if (theme != Settings.Default.Theme) {
-                anyChanged = true;
                 Settings.Default.Theme = theme;
             }
 
-            if (anyChanged) {
+            if (settingsDirty) {
                 Settings.Default.Save ();
+                settingsDirty = false;
             }
 
             return true;
@@ -87,11 +102,16 @@ namespace GifWin
             var didSave = Save (out error);
 
             if (didSave) {
-                MessageBox.Show ("Saved settings!", "Saved!");
-                window.Close ();
+                MessengerInstance.Send (new SettingsSaved());
             } else {
                 MessageBox.Show ("Error saving settings: " + error, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        void OnSettingChanged ([CallerMemberName] string propertyName = null)
+        {
+            SettingsDirty = true;
+            RaisePropertyChanged (propertyName);
         }
 
         bool HotKeyIsValid (string hotkey, out string error)

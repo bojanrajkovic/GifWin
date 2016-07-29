@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace GifWin
 {
@@ -10,6 +11,7 @@ namespace GifWin
         public SettingsWindow ()
         {
             InitializeComponent ();
+            Messenger.Default.Register<SettingsSaved> (this, s => Close());
         }
     }
 }
