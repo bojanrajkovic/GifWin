@@ -147,6 +147,7 @@ namespace GifWin
                 Visible = true,
                 Icon = GifWin.Properties.Resources.TrayIcon
             };
+            this.tray.MouseClick += OnTrayClicked;
         }
 
         void ShowSettingsDialog ()
