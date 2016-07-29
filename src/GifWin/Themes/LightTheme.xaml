@@ -5,6 +5,7 @@
 		<ResourceDictionary Source="Resources.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <SolidColorBrush x:Key="DefaultForegroundText" Color="Black" />
     <SolidColorBrush x:Key="WindowBackground" Color="White" />
     <SolidColorBrush x:Key="HintForeground" Color="Black" Opacity=".5" />
 </ResourceDictionary>

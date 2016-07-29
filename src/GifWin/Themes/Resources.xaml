@@ -2,11 +2,19 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:GifWin"
                     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-                    xmlns:ermau="clr-namespace:ermau;assembly=AnimatedTextBoxBehavior">
-	<Style x:Key="LargeEntry" TargetType="TextBox">
-		<Setter Property="FontSize" Value="50" />
-		<Setter Property="BorderThickness" Value="0,0,0,1" />
-	</Style>
+                    xmlns:ermau="clr-namespace:ermau;assembly=AnimatedTextBoxBehavior"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <system:Double x:Key="BaseFontSize">13</system:Double>
+
+    <Style TargetType="TextBox">
+        <Setter Property="FontSize" Value="{StaticResource BaseFontSize}" />
+    </Style>
+
+    <Style x:Key="LargeEntry" TargetType="TextBox">
+        <Setter Property="Foreground" Value="{DynamicResource DefaultForegroundText}" />
+        <Setter Property="FontSize" Value="50" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+    </Style>
 
     <Style TargetType="local:TagTextBox">
         <Setter Property="HintForeground" Value="{DynamicResource HintForeground}" />
@@ -24,5 +32,9 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style TargetType="ComboBox">
+        <Setter Property="FontSize" Value="{StaticResource BaseFontSize}" />
     </Style>
 </ResourceDictionary>

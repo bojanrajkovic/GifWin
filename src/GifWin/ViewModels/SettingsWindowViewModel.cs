@@ -8,6 +8,7 @@ namespace GifWin
 {
     class SettingsWindowViewModel : ViewModelBase
     {
+        string theme;
         string hotkey;
         readonly RelayCommand saveCommand;
 
@@ -15,6 +16,7 @@ namespace GifWin
         {
             saveCommand = new RelayCommand (DoSave);
             hotkey = Settings.Default.Hotkey;
+            theme = Settings.Default.Theme;
         }
 
         void DoSave (object obj)
@@ -28,6 +30,19 @@ namespace GifWin
                 window.Close ();
             } else {
                 MessageBox.Show ("Error saving settings: " + error, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public string Theme
+        {
+            get { return theme; }
+            set
+            {
+                if (theme == value)
+                    return;
+
+                theme = value;
+                OnPropertyChanged ();
             }
         }
 
@@ -66,6 +81,11 @@ namespace GifWin
                 anyChanged = true;
                 Settings.Default.Hotkey = hotkey;
                 ((App)Application.Current).RegisterHotkey ();
+            }
+
+            if (theme != Settings.Default.Theme) {
+                anyChanged = true;
+                Settings.Default.Theme = theme;
             }
 
             if (anyChanged) {
