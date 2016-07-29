@@ -73,9 +73,9 @@ namespace GifWin
             });
         }
 
-        void CopyImage ()
+        void CopyImage (GifEntryViewModel entry = null)
         {
-            var entry = (GifEntryViewModel)imageList.SelectedItem;
+            entry = entry ?? (GifEntryViewModel)imageList.SelectedItem;
             if (entry == null)
                 return;
 
@@ -146,7 +146,12 @@ namespace GifWin
             if (e.ChangedButton != MouseButton.Left)
                 return;
 
-            CopyImage ();
+            var element = InputHitTest (e.GetPosition (this)) as FrameworkElement;
+            var entry = element?.DataContext as GifEntryViewModel;
+            if (entry == null)
+                return;
+
+            CopyImage (entry);
         }
 
         void GifEntryKeyPressed (object sender, KeyEventArgs e)
