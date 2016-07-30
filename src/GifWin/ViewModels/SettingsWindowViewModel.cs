@@ -118,8 +118,10 @@ namespace GifWin
         {
             Tuple<ModifierKeys, Key> keys;
             var parses = HotkeyParser.ParseHotkeySetting (hotkey, out keys, out error);
-            bool registrable = false;
+            if (!parses)
+                return false;
 
+            bool registrable = false;
             HotKey hk = null;
             try {
                 hk = new HotKey (keys.Item1, keys.Item2, Application.Current.MainWindow);
