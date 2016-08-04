@@ -12,7 +12,7 @@
         <ControlTemplate TargetType="gifWin:SearchTextBox">
             <Grid>
                 <TextBox Name="hint" Text="{TemplateBinding Hint}" Foreground="{TemplateBinding HintForeground}" FontSize="{TemplateBinding FontSize}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Visibility="{Binding ElementName=actual, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <TextBox Name="actual" Text="{Binding Text,RelativeSource={RelativeSource TemplatedParent},UpdateSourceTrigger=PropertyChanged}" FontSize="{TemplateBinding FontSize}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Foreground="{TemplateBinding Foreground}">
+                <TextBox Name="actual" CaretBrush="{TemplateBinding CaretBrush}" Text="{Binding Text,RelativeSource={RelativeSource TemplatedParent},UpdateSourceTrigger=PropertyChanged}" FontSize="{TemplateBinding FontSize}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Foreground="{TemplateBinding Foreground}">
                     <i:Interaction.Behaviors>
                         <ermau:AnimatedTextBoxBehavior />
                     </i:Interaction.Behaviors>
