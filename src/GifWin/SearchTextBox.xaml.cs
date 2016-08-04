@@ -11,6 +11,7 @@ namespace GifWin
     {
         public SearchTextBox ()
         {
+            DefaultStyleKey = typeof(SearchTextBox);
             InitializeComponent ();
         }
 

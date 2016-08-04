@@ -6,6 +6,8 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     <system:Double x:Key="BaseFontSize">13</system:Double>
 
+    <SolidColorBrush x:Key="AccentBrush" Color="#FF0075DA" />
+
     <Style TargetType="TextBox">
         <Setter Property="FontSize" Value="{StaticResource BaseFontSize}" />
     </Style>
@@ -13,6 +15,7 @@
     <Style x:Key="LargeEntry" TargetType="TextBox">
         <Setter Property="Foreground" Value="{DynamicResource DefaultForegroundText}" />
         <Setter Property="CaretBrush" Value="{DynamicResource DefaultForegroundText}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="FontSize" Value="50" />
         <Setter Property="BorderThickness" Value="0,0,0,1" />
         <Setter Property="local:SearchTextBox.HintForeground" Value="{DynamicResource HintForeground}" />
