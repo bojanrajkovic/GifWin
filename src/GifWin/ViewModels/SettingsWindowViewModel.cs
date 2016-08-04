@@ -52,6 +52,8 @@ namespace GifWin
             }
         }
 
+        public bool SupportsGlobalTheme => Environment.OSVersion.Version >= new Version (10, 0, 14393);
+
         public ICommand SaveCommand
         {
             get { return saveCommand; }

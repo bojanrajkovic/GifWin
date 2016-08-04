@@ -9,7 +9,8 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         x:Name="TheWindow"
-        Title="GifWin Settings" MinHeight="200" MinWidth="300" Height="200" Width="159">
+        Title="GifWin Settings" MinHeight="200" MinWidth="300" Height="200" Width="159"
+        d:DataContext="{d:DesignInstance local:SettingsWindowViewModel}">
     <Window.DataContext>
         <local:SettingsWindowViewModel />
     </Window.DataContext>
@@ -22,11 +23,22 @@
     </Window.Resources>
     <StackPanel Margin="10,0,10,0">
         <Label>Choose a theme</Label>
-        <ComboBox SelectedValue="{Binding Theme,Mode=TwoWay}">
-            <ComboBox.Items>
-                <system:String>Light</system:String>
-                <system:String>Dark</system:String>
-            </ComboBox.Items>
+        <ComboBox SelectedValue="{Binding Theme,Mode=TwoWay}" SelectedValuePath="DataContext">
+            <ComboBoxItem Content="Match Windows" Visibility="{Binding DataContext.SupportsGlobalTheme,Converter={StaticResource BooleanToVisibilityConverter},Mode=OneTime,ElementName=TheWindow}">
+                <ComboBoxItem.DataContext>
+                    <system:String>Windows</system:String>
+                </ComboBoxItem.DataContext>
+            </ComboBoxItem>
+            <ComboBoxItem Content="Light">
+                <ComboBoxItem.DataContext>
+                    <system:String>Light</system:String>
+                </ComboBoxItem.DataContext>
+            </ComboBoxItem>
+            <ComboBoxItem Content="Dark">
+                <ComboBoxItem.DataContext>
+                    <system:String>Dark</system:String>
+                </ComboBoxItem.DataContext>
+            </ComboBoxItem>
         </ComboBox>
 
         <Label>Choose a global hotkey</Label>

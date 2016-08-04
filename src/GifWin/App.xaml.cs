@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Squirrel;
 using Windows.UI.Notifications;
 using GifWin.Properties;
+using Microsoft.Win32;
 using Application = System.Windows.Application;
 using WMessageBox = System.Windows.MessageBox;
 
@@ -28,6 +29,8 @@ namespace GifWin
 
             GifHelper.StartPreCachingDatabase ();
 
+            SetupTheme();
+			
             if (window == null) {
                 window = new MainWindow ();
                 RegisterHotkey ();
@@ -195,6 +198,24 @@ namespace GifWin
         {
             window.Show ();
             window.Activate ();
+        }
+
+        void SetupTheme()
+        {
+            bool light = true;
+            if (Settings.Default.Theme == "Windows") {
+                var personalTheme = Registry.CurrentUser.OpenSubKey ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
+                if (personalTheme != null) {
+                    int useLightTheme = (int) personalTheme.GetValue ("AppsUseLightTheme", 1);
+                    light = (useLightTheme == 1);
+                }
+            } else {
+                light = (Settings.Default.Theme == "Light");
+            }
+
+            Resources.MergedDictionaries.Add (new ResourceDictionary {
+                Source = new Uri ("Resources/" + ((light) ? "Light" : "Dark") + "Theme.xaml", UriKind.Relative)
+            });
         }
     }
 }
