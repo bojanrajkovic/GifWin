@@ -7,5 +7,5 @@
     
     <SolidColorBrush x:Key="DefaultForegroundText" Color="White" />
     <SolidColorBrush x:Key="WindowBackground" Color="Black" />
-    <SolidColorBrush x:Key="HintForeground" Color="Black" Opacity=".5" />
+    <SolidColorBrush x:Key="HintForeground" Color="White" Opacity="0.4" />
 </ResourceDictionary>

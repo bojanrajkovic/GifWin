@@ -14,10 +14,10 @@
         <Setter Property="Foreground" Value="{DynamicResource DefaultForegroundText}" />
         <Setter Property="FontSize" Value="50" />
         <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="local:SearchTextBox.HintForeground" Value="{DynamicResource HintForeground}" />
     </Style>
 
     <Style TargetType="local:TagTextBox">
-        <Setter Property="HintForeground" Value="{DynamicResource HintForeground}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:TagTextBox">
