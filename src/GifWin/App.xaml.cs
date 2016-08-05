@@ -33,6 +33,7 @@ namespace GifWin
 
             SetupTheme();
 
+            SystemEvents.UserPreferenceChanged += OnUserSystemPreferenceChanged;
             Settings.Default.PropertyChanged += OnSettingChanged;
 			
             if (window == null) {
@@ -213,13 +214,22 @@ namespace GifWin
                 SetupTheme();
         }
 
+        const string MatchWindows = "Windows";
+        void OnUserSystemPreferenceChanged (object sender, UserPreferenceChangedEventArgs e)
+        {
+            if (e.Category == UserPreferenceCategory.General || e.Category == UserPreferenceCategory.Color) {
+                if (Settings.Default.Theme == MatchWindows)
+                    SetupTheme();
+            }
+        }
+
         void SetupTheme()
         {
             if (Resources.MergedDictionaries.Count > 0)
                 Resources.MergedDictionaries.RemoveAt (0);
 
             bool light = true;
-            if (Settings.Default.Theme == "Windows") {
+            if (Settings.Default.Theme == MatchWindows) {
                 var personalTheme = Registry.CurrentUser.OpenSubKey ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
                 if (personalTheme != null) {
                     int useLightTheme = (int) personalTheme.GetValue ("AppsUseLightTheme", 1);
