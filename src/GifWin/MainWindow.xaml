@@ -62,7 +62,7 @@
         </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
 
-    <Border BorderThickness="1" BorderBrush="{DynamicResource AccentBrush}">
+    <Border BorderThickness="1" BorderBrush="{DynamicResource SystemAccentBrush}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
