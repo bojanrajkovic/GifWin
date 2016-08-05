@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
@@ -30,6 +31,8 @@ namespace GifWin
             GifHelper.StartPreCachingDatabase ();
 
             SetupTheme();
+
+            Settings.Default.PropertyChanged += OnSettingChanged;
 			
             if (window == null) {
                 window = new MainWindow ();
@@ -200,8 +203,17 @@ namespace GifWin
             window.Activate ();
         }
 
+        void OnSettingChanged (object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof (Settings.Theme))
+                SetupTheme();
+        }
+
         void SetupTheme()
         {
+            if (Resources.MergedDictionaries.Count > 0)
+                Resources.MergedDictionaries.RemoveAt (0);
+
             bool light = true;
             if (Settings.Default.Theme == "Windows") {
                 var personalTheme = Registry.CurrentUser.OpenSubKey ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
