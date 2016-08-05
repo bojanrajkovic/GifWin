@@ -26,17 +26,10 @@
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
-	<Style x:Key="LargeEntry" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-        <Setter Property="FontSize" Value="50" />
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
-        <Setter Property="BorderThickness" Value="0,0,0,1" />
-        <Setter Property="local:SearchTextBox.HintForeground" Value="{DynamicResource HintForeground}" />
-    </Style>
-
-    <Style TargetType="local:TagTextBox">
+    <Style TargetType="local:HintTextBox">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:TagTextBox">
+                <ControlTemplate TargetType="local:HintTextBox">
                     <Grid>
                         <TextBox Name="hint" Text="{TemplateBinding Hint}" Foreground="{TemplateBinding HintForeground}" FontSize="{TemplateBinding FontSize}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" Visibility="{Binding ElementName=actual, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <TextBox Name="actual" Text="{Binding Text,RelativeSource={RelativeSource TemplatedParent},UpdateSourceTrigger=PropertyChanged}" FontSize="{TemplateBinding FontSize}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="Transparent" Foreground="{TemplateBinding Foreground}">
@@ -48,6 +41,13 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="LargeEntry" TargetType="local:HintTextBox" BasedOn="{StaticResource {x:Type local:HintTextBox}}">
+        <Setter Property="FontSize" Value="50" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="HintForeground" Value="{DynamicResource HintForeground}" />
     </Style>
 
     <Style x:Key="FocusVisual">

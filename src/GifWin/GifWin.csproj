@@ -238,7 +238,7 @@
     <Compile Include="Data\GifUsage.cs" />
     <Compile Include="Data\GifWinContext.cs" />
     <Compile Include="Data\GifWinDatabaseHelper.cs" />
-    <Compile Include="TagTextBox.cs" />
+    <Compile Include="HintTextBox.cs" />
     <Compile Include="ViewModels\GifEntryViewModel.cs" />
     <Compile Include="Utility\GifHelper.cs" />
     <Compile Include="Utility\GlobalHelper.cs" />
@@ -272,9 +272,6 @@
     <Compile Include="ViewModels\SettingsSaved.cs" />
     <Compile Include="ViewModels\SettingsWindowViewModel.cs" />
     <Compile Include="Utility\StringExtensions.cs" />
-    <Compile Include="SearchTextBox.xaml.cs">
-      <DependentUpon>SearchTextBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ReplayBehavior.cs" />
     <Page Include="Resources\DarkTheme.xaml">
       <SubType>Designer</SubType>
@@ -285,10 +282,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SearchTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -4,16 +4,18 @@ using System.Windows.Media;
 
 namespace GifWin
 {
-    public class TagTextBox
+    public class HintTextBox
         : TextBox
     {
-        public TagTextBox ()
+        static HintTextBox()
         {
-            DefaultStyleKey = typeof(TagTextBox);
+            DefaultStyleKeyProperty.OverrideMetadata (
+                typeof(HintTextBox),
+                new FrameworkPropertyMetadata (typeof(HintTextBox)));
         }
 
         public static readonly DependencyProperty HintProperty = DependencyProperty.Register (
-            "Hint", typeof (string), typeof (TagTextBox), new PropertyMetadata (default (string)));
+            "Hint", typeof (string), typeof (HintTextBox), new PropertyMetadata (default (string)));
 
         public string Hint
         {
@@ -22,7 +24,7 @@ namespace GifWin
         }
 
         public static readonly DependencyProperty HintForegroundProperty = DependencyProperty.Register (
-            "HintForeground", typeof (Brush), typeof (TagTextBox), new PropertyMetadata (default (Brush)));
+            "HintForeground", typeof (Brush), typeof (HintTextBox), new PropertyMetadata (default (Brush)));
 
         public Brush HintForeground
         {
