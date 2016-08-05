@@ -9,7 +9,7 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         x:Name="TheWindow"
-        Title="GifWin Settings" MinHeight="200" MinWidth="300" Height="200" Width="159" WindowStartupLocation="CenterScreen"
+        Title="GifWin Settings" MinHeight="220" MinWidth="300" Height="220" Width="159" WindowStartupLocation="CenterScreen"
         Background="{DynamicResource WindowBackground}"
         d:DataContext="{d:DesignInstance local:SettingsWindowViewModel}">
     <Window.DataContext>
@@ -17,14 +17,16 @@
     </Window.DataContext>
     <Window.Resources>
         <Style TargetType="Label">
-            <Setter Property="FontSize" Value="{DynamicResource BaseFontSize}" />
             <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0,10,0,5" />
+            <Setter Property="Foreground" Value="{DynamicResource DefaultForegroundText}" />
+            <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
+            <Setter Property="FontFamily" Value="{DynamicResource ContentControlThemeFontFamily}" />
         </Style>
     </Window.Resources>
     <StackPanel Margin="10,0,10,0">
-        <Label>Choose a theme</Label>
-        <ComboBox SelectedValue="{Binding Theme,Mode=TwoWay}" SelectedValuePath="DataContext">
+        <Label Target="{Binding ElementName=theme,Mode=OneTime}">Choose a theme</Label>
+        <ComboBox Name="theme" SelectedValue="{Binding Theme,Mode=TwoWay}" SelectedValuePath="DataContext">
             <ComboBoxItem Content="Match Windows" Visibility="{Binding DataContext.SupportsGlobalTheme,Converter={StaticResource BooleanToVisibilityConverter},Mode=OneTime,ElementName=TheWindow}">
                 <ComboBoxItem.DataContext>
                     <system:String>Windows</system:String>
@@ -42,13 +44,13 @@
             </ComboBoxItem>
         </ComboBox>
 
-        <Label>Choose a global hotkey</Label>
-        <TextBox VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Hotkey,Mode=TwoWay}">
+        <Label Target="{Binding ElementName=hotkey,Mode=OneTime}">Choose a global hotkey</Label>
+        <TextBox Name="hotkey" Height="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Hotkey,Mode=TwoWay}">
             <i:Interaction.Behaviors>
                 <ermau:AnimatedTextBoxBehavior />
             </i:Interaction.Behaviors>
         </TextBox>
 
-        <Button Content="Save Settings" Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=TheWindow}" HorizontalAlignment="Right" Margin="0,10,0,0" Width="100" Height="30" VerticalAlignment="Bottom"/>
+        <Button Content="Save Settings" Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=TheWindow}" HorizontalAlignment="Right" Margin="0,10,0,0" Width="120" VerticalAlignment="Bottom"/>
     </StackPanel>
 </Window>
