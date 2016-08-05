@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
 
 namespace GifWin
 {
@@ -32,7 +33,7 @@ namespace GifWin
                 if (cachedUri == null) {
                     cachedUri = GifHelper.GetOrMakeSavedAsync (Id, Url);
                     cachedUri.ContinueWith (t => {
-                        OnPropertyChanged ();
+                        RaisePropertyChanged ();
                     }, CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext ());
 
                     return null;

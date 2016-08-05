@@ -8,17 +8,12 @@
         mc:Ignorable="d"
         Name="window"
         Title="GifWin" MinHeight="90" MinWidth="500" Height="90" Width="1000"
-        KeyUp="OnWindowKeyUp" WindowStyle="None" AllowsTransparency="True" ShowInTaskbar="True">
+        KeyUp="OnWindowKeyUp" WindowStyle="None" AllowsTransparency="True" ShowInTaskbar="True"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource WindowBackground}">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
-
-    <Window.Resources>
-        <Style x:Key="LargeEntry" TargetType="TextBox">
-            <Setter Property="FontSize" Value="50" />
-            <Setter Property="BorderThickness" Value="0,0,0,1" />
-        </Style>
-    </Window.Resources>
 
     <VisualStateManager.VisualStateGroups>
         <VisualStateGroup x:Name="SearchStates">
@@ -67,31 +62,33 @@
         </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <Border BorderThickness="1" BorderBrush="{DynamicResource SystemAccentBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <local:SearchTextBox x:Name="search" KeyUp="SearchBoxKeyPressed" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=300,UpdateSourceTrigger=PropertyChanged}" />
-        <local:TagTextBox x:Name="tag" Grid.Row="1" Visibility="Collapsed" Hint="tags" Margin="10" Style="{DynamicResource LargeEntry}" KeyDown="TagEntryKeyPressed" Text="{Binding NewEntryTags,Mode=OneWayToSource}" />
+            <local:HintTextBox x:Name="search" KeyUp="SearchBoxKeyPressed" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=300,UpdateSourceTrigger=PropertyChanged}" />
+            <local:HintTextBox x:Name="tag" Grid.Row="1" Visibility="Collapsed" Hint="tags" Margin="10" Style="{DynamicResource LargeEntry}" KeyDown="TagEntryKeyPressed" Text="{Binding NewEntryTags,Mode=OneWayToSource}" />
 
-        <ListBox x:Name="imageList" Grid.Row="2" Margin="10" ItemsSource="{Binding Images}" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseUp="GifEntryClicked" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="local:GifEntryViewModel">
-                    <MediaElement Name="gif" Height="{Binding Value,ElementName=zoom}" Width="{Binding Value,ElementName=zoom}" Source="{Binding CachedUri}" ToolTip="{Binding Path=KeywordString, StringFormat=Tags: {0}}"
-									UnloadedBehavior="Close" LoadedBehavior="Manual" Stretch="Uniform" local:ReplayBehavior.Repeats="True" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            <ListBox x:Name="imageList" Grid.Row="2" Margin="10" ItemsSource="{Binding Images}" Background="Transparent" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseUp="GifEntryClicked" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="local:GifEntryViewModel">
+                        <MediaElement Name="gif" Height="{Binding Value,ElementName=zoom}" Width="{Binding Value,ElementName=zoom}" Source="{Binding CachedUri}" ToolTip="{Binding Path=KeywordString, StringFormat=Tags: {0}}"
+									    UnloadedBehavior="Close" LoadedBehavior="Manual" Stretch="Uniform" local:ReplayBehavior.Repeats="True" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
-        <Slider Name="zoom" Grid.Row="3" Margin="10" Width="200" HorizontalAlignment="Left" Minimum="10" Maximum="500" Value="{Binding Zoom}" />
-    </Grid>
+            <Slider Name="zoom" Grid.Row="3" Margin="10" Width="200" HorizontalAlignment="Left" Minimum="10" Maximum="500" Value="{Binding Zoom}" />
+        </Grid>
+    </Border>
 </Window>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
@@ -6,7 +7,9 @@ using System.Windows.Input;
 using Squirrel;
 using Windows.UI.Notifications;
 using GifWin.Properties;
+using Microsoft.Win32;
 using Application = System.Windows.Application;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using WMessageBox = System.Windows.MessageBox;
 
 namespace GifWin
@@ -16,6 +19,11 @@ namespace GifWin
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            InitializeComponent();
+        }
+
         protected override void OnExit (ExitEventArgs e)
         {
             Settings.Default.Save ();
@@ -28,6 +36,11 @@ namespace GifWin
 
             GifHelper.StartPreCachingDatabase ();
 
+            SetupTheme();
+
+            SystemEvents.UserPreferenceChanged += OnUserSystemPreferenceChanged;
+            Settings.Default.PropertyChanged += OnSettingChanged;
+			
             if (window == null) {
                 window = new MainWindow ();
                 RegisterHotkey ();
@@ -185,8 +198,11 @@ namespace GifWin
             }
         }
 
-        void OnTrayClicked (object sender, EventArgs eventArgs)
+        void OnTrayClicked (object sender, MouseEventArgs e)
         {
+            if (e.Button != MouseButtons.Left)
+                return;
+
             window.Show ();
             window.Activate ();
         }
@@ -195,6 +211,42 @@ namespace GifWin
         {
             window.Show ();
             window.Activate ();
+        }
+
+        void OnSettingChanged (object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof (Settings.Theme))
+                SetupTheme();
+        }
+
+        const string MatchWindows = "Windows";
+        void OnUserSystemPreferenceChanged (object sender, UserPreferenceChangedEventArgs e)
+        {
+            if (e.Category == UserPreferenceCategory.General || e.Category == UserPreferenceCategory.Color) {
+                if (Settings.Default.Theme == MatchWindows)
+                    SetupTheme();
+            }
+        }
+
+        void SetupTheme()
+        {
+            if (Resources.MergedDictionaries.Count > 0)
+                Resources.MergedDictionaries.RemoveAt (0);
+
+            bool light = true;
+            if (Settings.Default.Theme == MatchWindows) {
+                var personalTheme = Registry.CurrentUser.OpenSubKey ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
+                if (personalTheme != null) {
+                    int useLightTheme = (int) personalTheme.GetValue ("AppsUseLightTheme", 1);
+                    light = (useLightTheme == 1);
+                }
+            } else {
+                light = (Settings.Default.Theme == "Light");
+            }
+
+            Resources.MergedDictionaries.Add (new ResourceDictionary {
+                Source = new Uri ("Resources/" + ((light) ? "Light" : "Dark") + "Theme.xaml", UriKind.Relative)
+            });
         }
     }
 }

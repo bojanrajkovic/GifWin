@@ -1,33 +1,37 @@
-﻿using GifWin.Commands;
-using GifWin.Properties;
+﻿using GifWin.Properties;
 using System;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 
 namespace GifWin
 {
     class SettingsWindowViewModel : ViewModelBase
     {
+        bool settingsDirty;
+        string theme;
         string hotkey;
-        readonly RelayCommand saveCommand;
+        readonly RelayCommand<Window> saveCommand;
 
         public SettingsWindowViewModel ()
         {
-            saveCommand = new RelayCommand (DoSave);
+            saveCommand = new RelayCommand<Window> (DoSave, w => settingsDirty);
             hotkey = Settings.Default.Hotkey;
+            theme = Settings.Default.Theme;
         }
 
-        void DoSave (object obj)
+        public string Theme
         {
-            string error;
-            var window = (SettingsWindow)obj;
-            var didSave = Save (out error);
+            get { return theme; }
+            set
+            {
+                if (theme == value)
+                    return;
 
-            if (didSave) {
-                MessageBox.Show ("Saved settings!", "Saved!");
-                window.Close ();
-            } else {
-                MessageBox.Show ("Error saving settings: " + error, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                theme = value;
+                OnSettingChanged ();
             }
         }
 
@@ -44,18 +48,33 @@ namespace GifWin
                 }
 
                 hotkey = value;
-                OnPropertyChanged ();
+                OnSettingChanged ();
             }
         }
 
-        public RelayCommand SaveCommand
+        public bool SupportsGlobalTheme => Environment.OSVersion.Version >= new Version (10, 0, 14393);
+
+        public ICommand SaveCommand
         {
             get { return saveCommand; }
         }
 
-        public bool Save (out string error)
+        bool SettingsDirty
         {
-            bool anyChanged = false;
+            get { return settingsDirty; }
+            set
+            {
+                if (settingsDirty == value)
+                    return;
+
+                settingsDirty = value;
+                RaisePropertyChanged ();
+                saveCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        bool Save (out string error)
+        {
             error = null;
 
             if (hotkey != Settings.Default.Hotkey) {
@@ -63,24 +82,48 @@ namespace GifWin
                     return false;
                 }
 
-                anyChanged = true;
                 Settings.Default.Hotkey = hotkey;
                 ((App)Application.Current).RegisterHotkey ();
             }
 
-            if (anyChanged) {
+            if (theme != Settings.Default.Theme) {
+                Settings.Default.Theme = theme;
+            }
+
+            if (settingsDirty) {
                 Settings.Default.Save ();
+                settingsDirty = false;
             }
 
             return true;
+        }
+
+        void DoSave (Window window)
+        {
+            string error;
+            var didSave = Save (out error);
+
+            if (didSave) {
+                MessengerInstance.Send (new SettingsSaved());
+            } else {
+                MessageBox.Show ("Error saving settings: " + error, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        void OnSettingChanged ([CallerMemberName] string propertyName = null)
+        {
+            SettingsDirty = true;
+            RaisePropertyChanged (propertyName);
         }
 
         bool HotKeyIsValid (string hotkey, out string error)
         {
             Tuple<ModifierKeys, Key> keys;
             var parses = HotkeyParser.ParseHotkeySetting (hotkey, out keys, out error);
-            bool registrable = false;
+            if (!parses)
+                return false;
 
+            bool registrable = false;
             HotKey hk = null;
             try {
                 hk = new HotKey (keys.Item1, keys.Item2, Application.Current.MainWindow);

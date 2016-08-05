@@ -14,5 +14,8 @@
     <Setting Name="Hotkey" Type="System.String" Scope="User">
       <Value Profile="(Default)">Shift-Win-G</Value>
     </Setting>
+    <Setting Name="Theme" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Windows</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
