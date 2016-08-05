@@ -9,6 +9,7 @@ using Windows.UI.Notifications;
 using GifWin.Properties;
 using Microsoft.Win32;
 using Application = System.Windows.Application;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using WMessageBox = System.Windows.MessageBox;
 
 namespace GifWin
@@ -191,8 +192,11 @@ namespace GifWin
             }
         }
 
-        void OnTrayClicked (object sender, EventArgs eventArgs)
+        void OnTrayClicked (object sender, MouseEventArgs e)
         {
+            if (e.Button != MouseButtons.Left)
+                return;
+
             window.Show ();
             window.Activate ();
         }
