@@ -1,3 +1,5 @@
+[![Gitter](https://badges.gitter.im/gifwin/Lobby.svg)](https://gitter.im/gifwin/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 # GifWin
 
 GifWit, for Windows
