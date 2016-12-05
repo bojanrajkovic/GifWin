@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,12 +94,15 @@ namespace GifWin.Data
                            .ConfigureAwait (false);
         }
 
-        internal async Task UpdateSavedFirstFrameDataAsync (int gifId, byte[] frameData)
+        internal async Task UpdateSavedFirstFrameDataAsync (int gifId, FrameData frameData)
         {
             var gif = await db.Gifs.SingleOrDefaultAsync (ge => ge.Id == gifId).ConfigureAwait (false);
 
             if (gif != null) {
-                gif.FirstFrame = frameData;
+                gif.FirstFrame = frameData.PngImage;
+                gif.Width = frameData.Width;
+                gif.Height = frameData.Height;
+
 
                 await db.SaveChangesAsync ().ConfigureAwait (false);
             }

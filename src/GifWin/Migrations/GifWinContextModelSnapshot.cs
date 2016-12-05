@@ -1,8 +1,8 @@
-using System;
-using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
-using Microsoft.Data.Entity.Metadata;
-using Microsoft.Data.Entity.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using GifWin.Data;
 
 namespace GifWin.Migrations
@@ -13,7 +13,7 @@ namespace GifWin.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0-rc1-16348");
+                .HasAnnotation("ProductVersion", "1.1.0-rtm-22752");
 
             modelBuilder.Entity("GifWin.Data.GifEntry", b =>
                 {
@@ -24,6 +24,8 @@ namespace GifWin.Migrations
 
                     b.Property<byte[]>("FirstFrame");
 
+                    b.Property<int>("Height");
+
                     b.Property<DateTimeOffset?>("LastUsed");
 
                     b.Property<string>("Url")
@@ -31,9 +33,11 @@ namespace GifWin.Migrations
 
                     b.Property<int>("UsedCount");
 
+                    b.Property<int>("Width");
+
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "gifs");
+                    b.ToTable("gifs");
                 });
 
             modelBuilder.Entity("GifWin.Data.GifTag", b =>
@@ -48,7 +52,9 @@ namespace GifWin.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "tags");
+                    b.HasIndex("GifId");
+
+                    b.ToTable("tags");
                 });
 
             modelBuilder.Entity("GifWin.Data.GifUsage", b =>
@@ -64,20 +70,22 @@ namespace GifWin.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAnnotation("Relational:TableName", "usages");
+                    b.HasIndex("GifId");
+
+                    b.ToTable("usages");
                 });
 
             modelBuilder.Entity("GifWin.Data.GifTag", b =>
                 {
-                    b.HasOne("GifWin.Data.GifEntry")
-                        .WithMany()
+                    b.HasOne("GifWin.Data.GifEntry", "Gif")
+                        .WithMany("Tags")
                         .HasForeignKey("GifId");
                 });
 
             modelBuilder.Entity("GifWin.Data.GifUsage", b =>
                 {
-                    b.HasOne("GifWin.Data.GifEntry")
-                        .WithMany()
+                    b.HasOne("GifWin.Data.GifEntry", "Gif")
+                        .WithMany("Usages")
                         .HasForeignKey("GifId");
                 });
         }

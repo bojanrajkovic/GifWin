@@ -91,7 +91,7 @@ namespace GifWin
             }
         }
 
-        internal static byte[] GetFrameData (string gifPath, int frameNumber)
+        internal static FrameData GetFrameData (string gifPath, int frameNumber)
         {
             var fs = File.OpenRead (gifPath);
             var decoder = BitmapDecoder.Create (fs, BitmapCreateOptions.None, BitmapCacheOption.Default);
@@ -110,8 +110,13 @@ namespace GifWin
             using (var ms = new MemoryStream ()) {
                 encoder.Save (ms);
                 pngData = ms.ToArray ();
-                return pngData;
             }
+
+            return new FrameData {
+                PngImage = pngData,
+                Width = frame.PixelWidth,
+                Height = frame.PixelHeight,
+            };
         }
 
         static string GetReadableHash (byte[] hash)

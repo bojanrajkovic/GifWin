@@ -1,6 +1,6 @@
-﻿using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
-using Microsoft.Data.Entity.Utilities;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Utilities;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,7 +22,7 @@ namespace GifWin.Data
             if (!didAddLoggerFactory) {
                 lock (syncRoot) {
                     var lf = this.GetService<ILoggerFactory> ();
-                    lf.AddDebug (LogLevel.Debug);
+                    lf.AddDebug ();
                     didAddLoggerFactory = true;
                 }
             }
@@ -35,13 +35,16 @@ namespace GifWin.Data
             storage.Create ();
 
             var csb = new SqliteConnectionStringBuilder {
-                DataSource = Path.Combine(storage.ToString(), "gifwin.sqlite"),
-                Cache = SqliteConnectionCacheMode.Shared,
+                DataSource = Path.Combine (storage.ToString (), "gifwin.sqlite"),
+                Cache = SqliteCacheMode.Shared,
             };
+
             var connString = csb.ToString ();
             var conn = new SqliteConnection (connString);
 
-            optionsBuilder.UseSqlite (conn).UseRelationalNulls ();
+            optionsBuilder.UseSqlite (conn, sqliteOptions => {
+                sqliteOptions.UseRelationalNulls ();
+            }).UseMemoryCache (null);
         }
     }
 }
