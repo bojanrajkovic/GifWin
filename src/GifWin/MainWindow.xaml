@@ -39,6 +39,9 @@
                     <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="tag" Storyboard.TargetProperty="Visibility">
                         <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Visible}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="previewGif" Storyboard.TargetProperty="Visibility">
+                        <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Visible}" />
+                    </ObjectAnimationUsingKeyFrames>
                 </Storyboard>
             </VisualState>
 
@@ -71,10 +74,17 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <local:HintTextBox x:Name="search" KeyUp="SearchBoxKeyPressed" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=300,UpdateSourceTrigger=PropertyChanged}" />
-            <local:HintTextBox x:Name="tag" Grid.Row="1" Visibility="Collapsed" Hint="tags" Margin="10" Style="{DynamicResource LargeEntry}" KeyDown="TagEntryKeyPressed" Text="{Binding NewEntryTags,Mode=OneWayToSource}" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-            <ListBox x:Name="imageList" Grid.Row="2" Margin="10" ItemsSource="{Binding Images}" Background="Transparent" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseUp="GifEntryClicked" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <local:HintTextBox x:Name="search" Grid.Row="0" Grid.Column="0" KeyUp="SearchBoxKeyPressed" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=300,UpdateSourceTrigger=PropertyChanged}" />
+            <local:HintTextBox x:Name="tag" Grid.Row="1" Grid.Column="0" Visibility="Collapsed" Hint="tags" Margin="10" Style="{DynamicResource LargeEntry}" KeyDown="TagEntryKeyPressed" Text="{Binding NewEntryTags,Mode=OneWayToSource}" />
+
+            <MediaElement Name="previewGif" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Source="{Binding FilterText,Mode=OneWay}" UnloadedBehavior="Close" LoadedBehavior="Manual" Height="180" Stretch="Uniform" local:ReplayBehavior.Repeats="True" Visibility="Collapsed" />
+
+            <ListBox x:Name="imageList" Grid.Row="2" Grid.Column="0" Margin="10" ItemsSource="{Binding Images}" Background="Transparent" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseUp="GifEntryClicked" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
