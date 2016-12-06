@@ -14,19 +14,20 @@
     <Thickness x:Key="ButtonBorderThemeThickness">2</Thickness>
 
     <Style TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="{DynamicResource DefaultForegroundText}" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
         <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
     </Style>
 	
     <Style TargetType="{x:Type TextBox}">
         <Setter Property="FontSize" Value="{StaticResource ControlContentThemeFontSize}" />
         <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}" />
-        <Setter Property="Foreground" Value="{DynamicResource DefaultForegroundText}" />
-        <Setter Property="CaretBrush" Value="{DynamicResource DefaultForegroundText}" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <Style TargetType="local:HintTextBox">
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:HintTextBox">

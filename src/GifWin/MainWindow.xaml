@@ -10,7 +10,7 @@
         Title="GifWin" MinHeight="90" MinWidth="500" Height="90" Width="1000"
         KeyUp="OnWindowKeyUp" WindowStyle="None" AllowsTransparency="True" ShowInTaskbar="True"
         WindowStartupLocation="CenterScreen"
-        Background="{DynamicResource WindowBackground}">
+        Background="{DynamicResource WindowBackground}" Foreground="{DynamicResource DefaultForegroundColor}">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
