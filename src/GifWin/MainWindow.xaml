@@ -27,7 +27,7 @@
             </VisualState>
             <VisualState Name="Searching">
                 <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="700" />
+                    <DoubleAnimation Storyboard.TargetName="window" Storyboard.TargetProperty="Height" To="500" />
                     <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="tag" Storyboard.TargetProperty="Visibility">
                         <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Collapsed}" />
                     </ObjectAnimationUsingKeyFrames>
