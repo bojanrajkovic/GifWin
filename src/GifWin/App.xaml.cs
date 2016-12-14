@@ -4,13 +4,18 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+
+using Microsoft.Win32;
 using Squirrel;
 using Windows.UI.Notifications;
+
+using GifWin.Utility;
 using GifWin.Properties;
-using Microsoft.Win32;
+
 using Application = System.Windows.Application;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using WMessageBox = System.Windows.MessageBox;
+
 
 namespace GifWin
 {
@@ -19,6 +24,13 @@ namespace GifWin
     /// </summary>
     public partial class App : Application
     {
+
+        NotifyIcon tray;
+        MainWindow window;
+        HotKey hotkey;
+
+        public string ForwarderUrl { get; private set; }
+
         public App()
         {
             InitializeComponent();
@@ -49,6 +61,7 @@ namespace GifWin
             SetupTrayIcon ();
             SetupSquirrel ();
             ShowLaunchedNotification ();
+            ImageForwardingListener.Instance.Start ();
         }
 
         internal void RegisterHotkey ()
@@ -133,10 +146,6 @@ namespace GifWin
         {
             UpdateManager.RestartApp ();
         }
-
-        NotifyIcon tray;
-        MainWindow window;
-        HotKey hotkey;
 
         void SetupTrayIcon ()
         {

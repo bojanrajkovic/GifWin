@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
+
 using GalaSoft.MvvmLight;
+
 using GifWin.Properties;
 using GifWin.Data;
+using GifWin.Utility;
 
 namespace GifWin
 {
@@ -14,6 +17,7 @@ namespace GifWin
         GifWinDatabaseHelper helper;
         string newEntryTags;
         string filterText;
+        string imageSource;
         readonly HashSet<string> filterKeywords = new HashSet<string> ();
         ICollectionView images;
 
@@ -54,6 +58,26 @@ namespace GifWin
             }
         }
 
+        public string ImageSource
+        {
+            get { return imageSource; }
+            set
+            {
+                if (imageSource == value)
+                    return;
+
+                var uri = new Uri (value, UriKind.Absolute);
+                var finalValue = value;
+
+                if (uri.Scheme == Uri.UriSchemeHttps)
+                    finalValue = ImageForwardingListener.Instance.BuildForwardingUrl (value);
+
+                imageSource = finalValue;
+
+                RaisePropertyChanged ();
+            }
+        }
+
         public string FilterText
         {
             get { return filterText; }
@@ -66,6 +90,9 @@ namespace GifWin
 
                 filterKeywords.Clear ();
                 filterKeywords.UnionWith (value.Split (new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+
+                if (Uri.IsWellFormedUriString (filterText, UriKind.Absolute))
+                    ImageSource = value;
 
                 RefreshImageCollection ();
                 RaisePropertyChanged ();
