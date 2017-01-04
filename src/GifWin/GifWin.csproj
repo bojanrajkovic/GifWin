@@ -377,6 +377,9 @@
     <Compile Include="Data\GifUsage.cs" />
     <Compile Include="Data\GifWinContext.cs" />
     <Compile Include="Data\GifWinDatabaseHelper.cs" />
+    <Compile Include="GifWitConversionProgressWindow.xaml.cs">
+      <DependentUpon>GifWitConversionProgressWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HintTextBox.cs" />
     <Compile Include="Migrations\20161205234441_AddWidthAndHeight.cs" />
     <Compile Include="Migrations\20161205234441_AddWidthAndHeight.designer.cs">
@@ -414,10 +417,15 @@
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\GifWitConversionProgressViewModel.cs" />
     <Compile Include="ViewModels\SettingsSaved.cs" />
     <Compile Include="ViewModels\SettingsWindowViewModel.cs" />
     <Compile Include="Utility\StringExtensions.cs" />
     <Compile Include="ReplayBehavior.cs" />
+    <Page Include="GifWitConversionProgressWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\DarkTheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

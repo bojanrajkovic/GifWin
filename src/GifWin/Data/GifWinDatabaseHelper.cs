@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GifWin.Data
@@ -24,7 +23,7 @@ namespace GifWin.Data
             return db.Gifs.Where (filter).Select (map);
         }
 
-        internal async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource, IProgress<float> progress = null)
+        internal async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource, IProgress<int> progress = null)
         {
             for (int i = 0; i < librarySource.Count; i++) {
                 var entry = librarySource[i];
@@ -44,8 +43,10 @@ namespace GifWin.Data
 
                 db.Gifs.Add (newGif);
 
-                progress?.Report((float)i / librarySource.Count * 100);
+                progress?.Report(i+1);
             }
+
+            progress?.Report(librarySource.Count);
 
             return await db.SaveChangesAsync ().ConfigureAwait (false);
         }

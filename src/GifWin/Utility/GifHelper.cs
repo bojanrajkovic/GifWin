@@ -69,28 +69,6 @@ namespace GifWin
             });
         }
 
-        internal static async Task ConvertGifWitLibraryToGifWinDatabaseAsync (string path)
-        {
-            using (var db = new GifWinDatabaseHelper ()) {
-                try {
-                    var lib = await GifWitLibrary.LoadFromFileAsync (path).ConfigureAwait (false);
-                    var converted = await db.ConvertGifWitLibraryAsync (lib).ConfigureAwait (false);
-                    MessageBox.Show ($"Converted {converted} items successfully!", "Conversion succeeded!");
-                    var delete = MessageBox.Show ($"Do you want to delete the GifWit library file?", "Delete GifWit library?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                    if (delete == MessageBoxResult.Yes) {
-                        try {
-                            File.Delete (path);
-                        } catch (Exception e) {
-                            MessageBox.Show ($"Could not delete library.gifwit ({e.Message}), you may have to delete it manually.", "Delete failed.");
-                        }
-                    }
-                } catch (Exception e) {
-                    MessageBox.Show ($"Conversion failed: {e.Message}.", "Conversion failed.", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-
         internal static FrameData GetFrameData (string gifPath, int frameNumber)
         {
             var fs = File.OpenRead (gifPath);

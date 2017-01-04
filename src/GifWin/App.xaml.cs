@@ -15,7 +15,7 @@ using GifWin.Properties;
 using Application = System.Windows.Application;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using WMessageBox = System.Windows.MessageBox;
-
+using GifWin.ViewModels;
 
 namespace GifWin
 {
@@ -52,7 +52,7 @@ namespace GifWin
 
             SystemEvents.UserPreferenceChanged += OnUserSystemPreferenceChanged;
             Settings.Default.PropertyChanged += OnSettingChanged;
-			
+
             if (window == null) {
                 window = new MainWindow ();
                 RegisterHotkey ();
@@ -157,7 +157,7 @@ namespace GifWin
                 new MenuItem ("Exit"),
             };
 
-            menuItems[0].Click += (sender, args) => ConvertGifWitLibrary ();
+            menuItems[0].Click += (sender, args) => ConvertGifWitLibraryAsync ();
             menuItems[1].Click += (sender, args) => CheckForUpdatesAsync ();
             menuItems[2].Click += (sender, args) => ShowSettingsDialog ();
             menuItems.Last ().Click += (sender, args) => Shutdown ();
@@ -178,7 +178,7 @@ namespace GifWin
             sw.ShowDialog ();
         }
 
-        void ConvertGifWitLibrary ()
+        async void ConvertGifWitLibraryAsync ()
         {
             var dlg = new Microsoft.Win32.OpenFileDialog {
                 CheckFileExists = true,
@@ -189,13 +189,15 @@ namespace GifWin
                 Multiselect = false,
             };
 
-            var result = dlg.ShowDialog ();
+            var result = Dispatcher.Invoke(() => dlg.ShowDialog ());
 
             if (result == true) {
-                GifHelper.ConvertGifWitLibraryToGifWinDatabaseAsync (dlg.FileName).ContinueWith (t => {
-                    if (!t.IsFaulted) {
-                        GifHelper.StartPreCachingDatabase ();
-                    }
+                var gifWitLibrary = await GifWitLibrary.LoadFromFileAsync(dlg.FileName).ConfigureAwait(false);
+                Dispatcher.Invoke(() => {
+                    var conversionWindow = new GifWitConversionProgressWindow();
+                    var conversionVm = new GifWitConversionProgressViewModel(gifWitLibrary, conversionWindow);
+                    conversionWindow.DataContext = conversionVm;
+                    conversionWindow.ShowDialog();
                 });
             }
         }
