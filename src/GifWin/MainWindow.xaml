@@ -84,7 +84,8 @@
 
             <MediaElement Name="previewGif" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Source="{Binding ImageSource,Mode=OneWay}" UnloadedBehavior="Close" LoadedBehavior="Manual" Height="180" Stretch="Uniform" local:ReplayBehavior.Repeats="True" Visibility="Collapsed" />
 
-            <ListBox x:Name="imageList" Grid.Row="2" Grid.Column="0" Margin="10" ItemsSource="{Binding Images}" Background="Transparent" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseUp="GifEntryClicked" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox x:Name="imageList" Grid.Row="2" Grid.Column="0" Margin="10" ItemsSource="{Binding Images}" Background="Transparent" BorderThickness="0" SelectionMode="Single" KeyDown="GifEntryKeyPressed" MouseUp="GifEntryClicked" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     SelectedIndex="-1" IsSynchronizedWithCurrentItem="False">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />

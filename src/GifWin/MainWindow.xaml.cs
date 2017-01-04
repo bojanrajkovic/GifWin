@@ -76,6 +76,10 @@ namespace GifWin
         void CopyImage (GifEntryViewModel entry = null)
         {
             entry = entry ?? (GifEntryViewModel)imageList.SelectedItem;
+
+            if (entry == null && imageList.Items.Count == 1)
+                entry = (GifEntryViewModel)imageList.Items[0];
+
             if (entry == null)
                 return;
 
@@ -174,6 +178,9 @@ namespace GifWin
         {
             if (SearchStates.CurrentState == null || SearchStates.CurrentState.Name != "Searching")
                 return;
+
+            if (e.Key == Key.Return || e.Key == Key.Enter)
+                CopyImage();
 
             if (e.Key == Key.Down) {
                 imageList.Focus ();
