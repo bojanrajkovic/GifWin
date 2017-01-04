@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using Newtonsoft.Json;
 namespace GifWin
 {
     [JsonObject]
-    class GifWitLibrary : IEnumerable<GifWitLibraryEntry>
+    class GifWitLibrary : IEnumerable<GifWitLibraryEntry>, IReadOnlyList<GifWitLibraryEntry>
     {
         public IEnumerator<GifWitLibraryEntry> GetEnumerator ()
         {
@@ -23,6 +24,10 @@ namespace GifWin
         public int Version { get; set; }
         [JsonProperty ("images")]
         internal List<GifWitLibraryEntry> Images { get; set; }
+
+        public int Count => Images.Count;
+
+        public GifWitLibraryEntry this[int index] => Images[index];
 
         internal static async Task<GifWitLibrary> LoadFromFileAsync (string path)
         {
