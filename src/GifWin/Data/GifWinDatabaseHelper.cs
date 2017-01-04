@@ -24,9 +24,11 @@ namespace GifWin.Data
             return db.Gifs.Where (filter).Select (map);
         }
 
-        internal async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource)
+        internal async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource, IProgress<float> progress = null)
         {
-            foreach (var entry in librarySource) {
+            for (int i = 0; i < librarySource.Count; i++) {
+                var entry = librarySource[i];
+
                 if (db.Gifs.Any(ge => ge.Url.ToLower() == entry.Url.ToString().ToLower())) {
                     continue;
                 }
@@ -41,6 +43,8 @@ namespace GifWin.Data
                 }
 
                 db.Gifs.Add (newGif);
+
+                progress?.Report((float)i / librarySource.Count * 100);
             }
 
             return await db.SaveChangesAsync ().ConfigureAwait (false);
