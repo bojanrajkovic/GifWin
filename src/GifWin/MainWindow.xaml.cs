@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Linq;
 
 namespace GifWin
 {
@@ -60,7 +61,7 @@ namespace GifWin
         void AddNewGif (string gifUrl, string tags)
         {
             var helper = new GifWinDatabaseHelper ();
-            var tagsArray = tags.Split (' ');
+            var tagsArray = tags.Split (',').Select (tag => tag.Trim ()).ToArray ();
             helper.AddNewGifAsync (gifUrl, tagsArray).ContinueWith (t => {
                 if (t.IsFaulted) {
                     MessageBox.Show ("Could not save GIF to database.", "Could not save GIF", MessageBoxButton.OK, MessageBoxImage.Error);

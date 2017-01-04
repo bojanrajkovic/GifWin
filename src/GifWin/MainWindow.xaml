@@ -80,7 +80,7 @@
             </Grid.ColumnDefinitions>
 
             <local:HintTextBox x:Name="search" Grid.Row="0" Grid.Column="0" KeyUp="SearchBoxKeyPressed" Hint="filter" Margin="10" Style="{DynamicResource LargeEntry}" Text="{Binding FilterText,Mode=OneWayToSource,Delay=300,UpdateSourceTrigger=PropertyChanged}" />
-            <local:HintTextBox x:Name="tag" Grid.Row="1" Grid.Column="0" Visibility="Collapsed" Hint="tags" Margin="10" Style="{DynamicResource LargeEntry}" KeyDown="TagEntryKeyPressed" Text="{Binding NewEntryTags,Mode=OneWayToSource}" />
+            <local:HintTextBox x:Name="tag" Grid.Row="1" Grid.Column="0" Visibility="Collapsed" Hint="tags (comma-separated)" Margin="10" Style="{DynamicResource LargeEntry}" KeyDown="TagEntryKeyPressed" Text="{Binding NewEntryTags,Mode=OneWayToSource}" />
 
             <MediaElement Name="previewGif" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Source="{Binding ImageSource,Mode=OneWay}" UnloadedBehavior="Close" LoadedBehavior="Manual" Height="180" Stretch="Uniform" local:ReplayBehavior.Repeats="True" Visibility="Collapsed" />
 
