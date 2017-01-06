@@ -26,24 +26,26 @@ namespace GifWin.Data
         internal async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource, IProgress<int> progress = null)
         {
             for (int i = 0; i < librarySource.Count; i++) {
-                var entry = librarySource[i];
+                try {
+                    var entry = librarySource[i];
 
-                if (db.Gifs.Any(ge => ge.Url.ToLower() == entry.Url.ToString().ToLower())) {
-                    continue;
+                    if (db.Gifs.Any (ge => ge.Url.ToLower () == entry.Url.ToString ().ToLower ())) {
+                        continue;
+                    }
+
+                    var newGif = new GifEntry {
+                        Url = entry.Url.ToString (),
+                        AddedAt = DateTimeOffset.UtcNow,
+                    };
+
+                    foreach (var tag in entry.KeywordString.Split (' ')) {
+                        newGif.Tags.Add (new GifTag { Tag = tag });
+                    }
+
+                    db.Gifs.Add (newGif);
+                } finally {
+                    progress?.Report (i + 1);
                 }
-
-                var newGif = new GifEntry {
-                    Url = entry.Url.ToString (),
-                    AddedAt = DateTimeOffset.UtcNow,
-                };
-
-                foreach (var tag in entry.KeywordString.Split (' ')) {
-                    newGif.Tags.Add (new GifTag { Tag = tag });
-                }
-
-                db.Gifs.Add (newGif);
-
-                progress?.Report(i+1);
             }
 
             progress?.Report(librarySource.Count);

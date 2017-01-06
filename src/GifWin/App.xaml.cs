@@ -189,16 +189,14 @@ namespace GifWin
                 Multiselect = false,
             };
 
-            var result = Dispatcher.Invoke(() => dlg.ShowDialog ());
+            var result = dlg.ShowDialog ();
 
             if (result == true) {
-                var gifWitLibrary = await GifWitLibrary.LoadFromFileAsync(dlg.FileName).ConfigureAwait(false);
-                Dispatcher.Invoke(() => {
-                    var conversionWindow = new GifWitConversionProgressWindow();
-                    var conversionVm = new GifWitConversionProgressViewModel(gifWitLibrary, conversionWindow);
-                    conversionWindow.DataContext = conversionVm;
-                    conversionWindow.ShowDialog();
-                });
+                var gifWitLibrary = await GifWitLibrary.LoadFromFileAsync(dlg.FileName);
+                var conversionWindow = new GifWitConversionProgressWindow();
+                var conversionVm = new GifWitConversionProgressViewModel(gifWitLibrary, conversionWindow);
+                conversionWindow.DataContext = conversionVm;
+                conversionWindow.ShowDialog();
             }
         }
 

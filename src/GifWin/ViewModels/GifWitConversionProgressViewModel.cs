@@ -19,6 +19,8 @@ namespace GifWin.ViewModels
             this.window = window;
         }
 
+        public string LibraryFileName => Path.GetFileName (libraryToConvert.LibrarySourcePath);
+
         int converted;
         public int Converted
         {
@@ -26,41 +28,12 @@ namespace GifWin.ViewModels
             set { converted = value; RaisePropertyChanged (); }
         }
 
-        internal void ConvertLibrary ()
+        internal Task ConvertLibraryAsync ()
         {
-            Task.Run (async () => {
-                using (var db = new GifWinDatabaseHelper ()) {
-                    int converted;
-
-                    try {
-                        converted = await db.ConvertGifWitLibraryAsync (libraryToConvert, this);
-
-                        window.Dispatcher.Invoke (() => {
-                            MessageBox.Show ($"Converted {TotalItemsToConvert} entries successfully!", "Conversion succeeded!");
-                            var delete = MessageBox.Show (
-                                $"Do you want to delete the GifWit library file?",
-                                "Delete GifWit library?",
-                                MessageBoxButton.YesNo,
-                                MessageBoxImage.Question
-                            );
-
-                            if (delete == MessageBoxResult.Yes) {
-                                try {
-                                    File.Delete (libraryToConvert.LibrarySourcePath);
-                                } catch (Exception e) {
-                                    MessageBox.Show (
-                                        $"Could not delete {Path.GetFileName (libraryToConvert.LibrarySourcePath)} ({e.Message}), you may have to delete it manually.",
-                                        "Delete failed."
-                                    );
-                                }
-                            }
-
-                            window.Close ();
-                        });
-                    } catch (Exception e) {
-                        window.Dispatcher.Invoke (() => MessageBox.Show ($"Something went wrong while converting GifWit library: {e.Message}.", "Conversion failed."));
-                    }
-                }
+            return Task.Run (async () => {
+                using (var db = new GifWinDatabaseHelper ())
+                    await db.ConvertGifWitLibraryAsync (libraryToConvert, this);
+                GifHelper.StartPreCachingDatabase ();
             });
         }
 
@@ -75,10 +48,18 @@ namespace GifWin.ViewModels
 
         public void Report (int value)
         {
-            window.Dispatcher.Invoke (() => {
-                Converted = value;
-                Progress = Math.Round ((double)Converted / TotalItemsToConvert * 100, 2);
-            });
+            Converted = value;
+            Progress = Math.Round ((double)Converted / TotalItemsToConvert * 100, 2);
+        }
+
+        internal bool DeleteConvertedLibrary ()
+        {
+            try {
+                File.Delete (libraryToConvert.LibrarySourcePath);
+                return true;
+            } catch {
+                return false;
+            }
         }
     }
 }
