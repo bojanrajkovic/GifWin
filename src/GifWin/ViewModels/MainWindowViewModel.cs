@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 
 using GalaSoft.MvvmLight;
@@ -29,7 +30,15 @@ namespace GifWin
 
         void RefreshImageCollection ()
         {
-            helper.GetGifsbyTagAsync (filterKeywords.ToArray ()).ContinueWith (t => {
+            Task<IEnumerable<GifEntry>> gifs;
+
+            var filterArray = filterKeywords.ToArray ();
+            if (filterArray.Length == 1 && filterArray[0] == "*")
+                gifs = Task.FromResult(helper.QueryGifs (e => true, e => e).AsEnumerable ());
+            else
+                gifs = helper.GetGifsbyTagAsync (filterArray);
+
+            gifs.ContinueWith (t => {
                 var filterResults = t.Result.Select (ge => new GifEntryViewModel (ge));
                 Images = CollectionViewSource.GetDefaultView (filterResults);
             });
