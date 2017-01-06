@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GifWin"
+        xmlns:vwp="clr-namespace:MyWinCollection"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Name="window"
@@ -88,13 +89,13 @@
                      SelectedIndex="-1" IsSynchronizedWithCurrentItem="False">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel />
+                        <vwp:VirtualizingWrapPanel />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="local:GifEntryViewModel">
                         <MediaElement Name="gif" Height="{Binding Value,ElementName=zoom}" Width="{Binding Value,ElementName=zoom}" Source="{Binding CachedUri}" ToolTip="{Binding Path=KeywordString, StringFormat=Tags: {0}}"
-									    UnloadedBehavior="Close" LoadedBehavior="Manual" Stretch="Uniform" local:ReplayBehavior.Repeats="True" />
+                                      UnloadedBehavior="Close" LoadedBehavior="Manual" Stretch="Uniform" local:ReplayBehavior.Repeats="True" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
