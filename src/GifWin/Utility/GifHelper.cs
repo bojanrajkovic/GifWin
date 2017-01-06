@@ -6,17 +6,34 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using System.Windows;
 using System.Collections.Generic;
+using System.Timers;
+using System.Linq;
 
 namespace GifWin
 {
     class GifHelper
     {
         static Dictionary<int, Task<string>> CachedTasks;
+        static Timer CachedTasksCleanupTimer;
+
+        static GifHelper ()
+        {
+            CachedTasksCleanupTimer = new Timer () {
+                AutoReset = true,
+                Interval = 5 * 60 * 1000, // 5m * 60s/m * 1000ms/s
+            };
+
+            CachedTasksCleanupTimer.Elapsed += (sender, args) => {
+                if (CachedTasks != null && CachedTasks.Values.All (t => t.IsCompleted))
+                    CachedTasks = null;
+            };
+
+            CachedTasksCleanupTimer.Start ();
+        }
 
         /// <returns>Path to the local file</returns>
-        internal static Task<string> GetOrMakeSavedAsync (int gifId, string entryUrl)
+        internal static Task<string> GetOrMakeSavedAsync (int gifId, string entryUrl, byte[] firstFrame)
         {
             if (CachedTasks != null && CachedTasks.ContainsKey (gifId)) {
                 return CachedTasks[gifId];
@@ -37,12 +54,13 @@ namespace GifWin
                     using (FileStream stream = file.OpenWrite ()) {
                         await stream.WriteAsync (contents, 0, contents.Length).ConfigureAwait (false);
                     }
+                }
 
+                if (firstFrame == null) {
 #pragma warning disable CS4014
-                    // If we're redownloading the GIF for any reason, also update frame data. Do this
-                    // off-thread, because we don't want to hold _this_ thread up any longer.
-                    // The pragma warning disable is because the compiler is _really_ irritating about this,
-                    // claiming we should await this.
+                    // If we don't have first frame data, get it. Do this off-thread, because we don't want to hold
+                    //  _this_ thread up any longer. The pragma warning disable is because the compiler is _really_
+                    // irritating about this, claiming we should await the Task.Run.
                     Task.Run (async () => {
                         using (var helper = new GifWinDatabaseHelper ()) {
                             var frameData = GetFrameData (file.FullName, frameNumber: 0);
@@ -59,35 +77,13 @@ namespace GifWin
         internal static void StartPreCachingDatabase ()
         {
             var helper = new GifWinDatabaseHelper ();
-            var gifs = helper.QueryGifs (e => true, e => new { e.Id, e.Url });
-            CachedTasks = new Dictionary<int, Task<string>> ();
+            var gifs = helper.QueryGifs (e => true, e => new { e.Id, e.Url, e.FirstFrame });
+
+            CachedTasks = CachedTasks ?? new Dictionary<int, Task<string>> ();
+
             foreach (var gif in gifs) {
-                CachedTasks[gif.Id] = GetOrMakeSavedAsync (gif.Id, gif.Url);
-            }
-            Task.WhenAll (CachedTasks.Values).ContinueWith (t => {
-                CachedTasks = null;
-            });
-        }
-
-        internal static async Task ConvertGifWitLibraryToGifWinDatabaseAsync (string path)
-        {
-            using (var db = new GifWinDatabaseHelper ()) {
-                try {
-                    var lib = await GifWitLibrary.LoadFromFileAsync (path).ConfigureAwait (false);
-                    var converted = await db.ConvertGifWitLibraryAsync (lib).ConfigureAwait (false);
-                    MessageBox.Show ($"Converted {converted} items successfully!", "Conversion succeeded!");
-                    var delete = MessageBox.Show ($"Do you want to delete the GifWit library file?", "Delete GifWit library?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                    if (delete == MessageBoxResult.Yes) {
-                        try {
-                            File.Delete (path);
-                        } catch (Exception e) {
-                            MessageBox.Show ($"Could not delete library.gifwit ({e.Message}), you may have to delete it manually.", "Delete failed.");
-                        }
-                    }
-                } catch (Exception e) {
-                    MessageBox.Show ($"Conversion failed: {e.Message}.", "Conversion failed.", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                if (!CachedTasks.ContainsKey (gif.Id))
+                    CachedTasks[gif.Id] = GetOrMakeSavedAsync (gif.Id, gif.Url, gif.FirstFrame);
             }
         }
 

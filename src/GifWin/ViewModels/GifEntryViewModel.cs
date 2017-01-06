@@ -20,9 +20,11 @@ namespace GifWin
 
             Id = entry.Id;
             Url = entry.Url;
+            FirstFrame = entry.FirstFrame;
             Keywords = entry.Tags.Select (t => t.Tag).ToArray ();
         }
 
+        public byte[] FirstFrame { get; }
         public int Id { get; }
         public string Url { get; }
 
@@ -31,7 +33,7 @@ namespace GifWin
             get
             {
                 if (cachedUri == null) {
-                    cachedUri = GifHelper.GetOrMakeSavedAsync (Id, Url);
+                    cachedUri = GifHelper.GetOrMakeSavedAsync (Id, Url, FirstFrame);
                     cachedUri.ContinueWith (t => {
                         RaisePropertyChanged ();
                     }, CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext ());

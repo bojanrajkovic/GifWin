@@ -67,7 +67,7 @@ namespace GifWin
                     MessageBox.Show ("Could not save GIF to database.", "Could not save GIF", MessageBoxButton.OK, MessageBoxImage.Error);
                     GlobalHelper.PromptForDebuggerLaunch (t.Exception);
                 } else {
-                    GifHelper.GetOrMakeSavedAsync (t.Result.Id, t.Result.Url);
+                    GifHelper.GetOrMakeSavedAsync (t.Result.Id, t.Result.Url, t.Result.FirstFrame);
                     Dispatcher.Invoke (Hide);
                 }
                 helper.Dispose ();

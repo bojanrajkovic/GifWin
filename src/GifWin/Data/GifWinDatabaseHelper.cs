@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GifWin.Data
@@ -24,24 +23,32 @@ namespace GifWin.Data
             return db.Gifs.Where (filter).Select (map);
         }
 
-        internal async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource)
+        internal async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource, IProgress<int> progress = null)
         {
-            foreach (var entry in librarySource) {
-                if (db.Gifs.Any(ge => ge.Url.ToLower() == entry.Url.ToString().ToLower())) {
-                    continue;
+            for (int i = 0; i < librarySource.Count; i++) {
+                try {
+                    var entry = librarySource[i];
+
+                    if (db.Gifs.Any (ge => ge.Url.ToLower () == entry.Url.ToString ().ToLower ())) {
+                        continue;
+                    }
+
+                    var newGif = new GifEntry {
+                        Url = entry.Url.ToString (),
+                        AddedAt = DateTimeOffset.UtcNow,
+                    };
+
+                    foreach (var tag in entry.KeywordString.Split (' ')) {
+                        newGif.Tags.Add (new GifTag { Tag = tag });
+                    }
+
+                    db.Gifs.Add (newGif);
+                } finally {
+                    progress?.Report (i + 1);
                 }
-
-                var newGif = new GifEntry {
-                    Url = entry.Url.ToString (),
-                    AddedAt = DateTimeOffset.UtcNow,
-                };
-
-                foreach (var tag in entry.KeywordString.Split (' ')) {
-                    newGif.Tags.Add (new GifTag { Tag = tag });
-                }
-
-                db.Gifs.Add (newGif);
             }
+
+            progress?.Report(librarySource.Count);
 
             return await db.SaveChangesAsync ().ConfigureAwait (false);
         }
