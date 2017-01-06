@@ -181,7 +181,7 @@ namespace GifWin
                 return;
 
             if (e.Key == Key.Return || e.Key == Key.Enter)
-                CopyImage();
+                CopyImage ();
 
             if (e.Key == Key.Down) {
                 imageList.Focus ();
