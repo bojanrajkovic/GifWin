@@ -419,6 +419,7 @@
     <Compile Include="ViewModels\SettingsWindowViewModel.cs" />
     <Compile Include="Utility\StringExtensions.cs" />
     <Compile Include="ReplayBehavior.cs" />
+    <Compile Include="VirtualizingWrapPanel.cs" />
     <Page Include="Resources\DarkTheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
