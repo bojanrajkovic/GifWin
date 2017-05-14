@@ -22,7 +22,9 @@ namespace GifWin.Data
             if (!didAddLoggerFactory) {
                 lock (syncRoot) {
                     var lf = this.GetService<ILoggerFactory> ();
+#if !CORE
                     lf.AddDebug ();
+#endif
                     didAddLoggerFactory = true;
                 }
             }
@@ -30,12 +32,16 @@ namespace GifWin.Data
 
         protected override void OnConfiguring (DbContextOptionsBuilder optionsBuilder)
         {
+#if !CORE
             DirectoryInfo storage = new DirectoryInfo (Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "GifWin", "Data"));
-
             storage.Create ();
+            string source = Path.Combine (storage.ToString (), "gifwin.sqlite");
+#else
+            string source = "gifwin.sqlite";
+#endif
 
-            var csb = new SqliteConnectionStringBuilder {
-                DataSource = Path.Combine (storage.ToString (), "gifwin.sqlite"),
+			var csb = new SqliteConnectionStringBuilder {
+                DataSource = source,
                 Cache = SqliteCacheMode.Shared,
             };
 

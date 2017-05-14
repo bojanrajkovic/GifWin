@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
 
-namespace GifWin
+namespace GifWin.ViewModels
 {
-    class GifEntryViewModel : ViewModelBase
+    public class GifEntryViewModel : ViewModelBase
     {
         Task<string> cachedUri;
 
@@ -22,33 +21,15 @@ namespace GifWin
             Url = entry.Url;
             FirstFrame = entry.FirstFrame;
             Keywords = entry.Tags.Select (t => t.Tag).ToArray ();
+            Width = entry.Width;
+            Height = entry.Height;
         }
 
         public byte[] FirstFrame { get; }
         public int Id { get; }
         public string Url { get; }
-
-#if !CORE
-        public Uri CachedUri
-        {
-            get
-            {
-                if (cachedUri == null) {
-                    cachedUri = GifHelper.GetOrMakeSavedAsync (Id, Url, FirstFrame);
-                    cachedUri.ContinueWith (t => {
-                        RaisePropertyChanged ();
-                    }, CancellationToken.None, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.FromCurrentSynchronizationContext ());
-
-                    return null;
-                }
-
-                if (cachedUri.Status == TaskStatus.Running)
-                    return null;
-
-                return new Uri (cachedUri.Result);
-            }
-        }
-#endif
+        public int Width { get; }
+        public int Height { get; }
 
         public string KeywordString => string.Join (" ", Keywords);
 
