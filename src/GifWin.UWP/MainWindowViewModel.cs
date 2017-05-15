@@ -1,25 +1,104 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 using GifWin.Data;
 using System.Windows.Input;
+using Windows.Storage;
+using System.Text;
+using Windows.Graphics.Imaging;
 
 namespace GifWin.ViewModels
 {
-    public sealed class MainWindowViewModel : ViewModelBase
+    public sealed class MainPageViewModel : ViewModelBase
     {
-        public MainWindowViewModel ()
+        public MainPageViewModel ()
         {
             helper = new GifWinDatabaseHelper ();
             helper.AddNewGifAsync("http://i.giphy.com/wofftnAdDtx4s.gif", new[] {
                 "spongebob",
                 "nope"
-            }).ContinueWith(t => {
+            }).ContinueWith(async t =>
+            {
+                var cache = ApplicationData.Current.LocalCacheFolder;
+                var gifEntry = t.Result;
+
+                if (gifEntry.FirstFrame == null)
+                {
+                    var cacheFile = $"{GetReadableHash(Encoding.UTF8.GetBytes(gifEntry.Url))}.gif";
+                    var maybeFile = await cache.TryGetItemAsync(cacheFile) as IStorageFile;
+
+                    if (maybeFile == null)
+                    {
+                        maybeFile = await cache.CreateFileAsync(cacheFile);
+                        using (var stream = await maybeFile.OpenAsync(FileAccessMode.ReadWrite))
+                        {
+                            using (var client = new System.Net.Http.HttpClient())
+                            {
+                                using (var gifStream = await client.GetStreamAsync(gifEntry.Url))
+                                {
+                                    await gifStream.CopyToAsync(stream.AsStreamForWrite());
+                                }
+                            }
+                        }
+                    }
+
+                    var fd = await GetFrameData(maybeFile, 0).ConfigureAwait(false);
+                    if (fd != null)
+                        await helper.UpdateSavedFirstFrameDataAsync(gifEntry.Id, fd);
+                }
+            }, TaskScheduler.Default).Unwrap().ContinueWith(t => {
                 RefreshImageCollection();
             }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        internal static async Task<FrameData> GetFrameData(IStorageFile gifFile, uint frameNumber)
+        {
+            try
+            {
+                var decoder = await BitmapDecoder.CreateAsync(await gifFile.OpenReadAsync());
+
+                if (frameNumber > decoder.FrameCount)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(frameNumber), $"Frame number {frameNumber} is greater than frame count {decoder.FrameCount}");
+                }
+
+                var frame = await decoder.GetFrameAsync(frameNumber);
+
+                // Now convert it to PNG
+                var ms = new MemoryStream();
+                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms.AsRandomAccessStream());
+                var pixelData = await frame.GetPixelDataAsync();
+                var pixelBytes = pixelData.DetachPixelData();
+
+                encoder.SetPixelData(frame.BitmapPixelFormat, frame.BitmapAlphaMode, frame.PixelWidth, frame.PixelHeight, frame.DpiX, frame.DpiY, pixelBytes);
+
+                await encoder.FlushAsync().AsTask().ConfigureAwait(false);
+
+                byte[] pngData = ms.ToArray();
+
+                return new FrameData
+                {
+                    PngImage = pngData,
+                    Width = (int)frame.PixelWidth,
+                    Height = (int)frame.PixelHeight,
+                };
+            } catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        static string GetReadableHash(byte[] hash)
+        {
+            StringBuilder builder = new StringBuilder(hash.Length * 2);
+            for (int i = 0; i < hash.Length; i++)
+                builder.Append(hash[i].ToString("X2"));
+
+            return builder.ToString();
         }
 
         public ICommand AddNewGif => new AddNewGifCommand();

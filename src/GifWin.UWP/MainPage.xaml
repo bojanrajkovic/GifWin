@@ -8,45 +8,38 @@
     xmlns:vm="using:GifWin.ViewModels"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <Pivot Title="GifWin">
+        <PivotItem Header="My Library">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState />
-                <VisualState x:Name="Searching">
-                    <VisualState.StateTriggers>
-                        
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="results.Visibility" Value="Visible" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
 
-        <TextBox FontSize="50" MaxHeight="80" MaxWidth="1000" Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
-            <TextBox.Transitions>
-                <TransitionCollection>
-                    <RepositionThemeTransition />
-                </TransitionCollection>
-            </TextBox.Transitions>
-        </TextBox>
-        
-        <GridView x:Name="results" Grid.Row="1" ItemsSource="{Binding Images}">
-            <GridView.ItemTemplate>
-                <DataTemplate>
-                    <Image Source="{Binding Url}" Width="{Binding Width}" Height="{Binding Height}"  />
-                </DataTemplate>
-            </GridView.ItemTemplate>
-            <GridView.Transitions>
-                <TransitionCollection>
-                    <EntranceThemeTransition />
-                </TransitionCollection>
-            </GridView.Transitions>
-        </GridView>
-    </Grid>
+                <ListView x:Name="tags" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Tags}" />
+                <GridView x:Name="results" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Images}">
+                    <GridView.ItemTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Url}" Width="{Binding Width}" Height="{Binding Height}" Loaded="Image_Loaded"/>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                    <GridView.Transitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition />
+                        </TransitionCollection>
+                    </GridView.Transitions>
+                </GridView>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                    <Button Content="Add New GIF" Command="{Binding AddNewGif}"/>
+                </StackPanel>
+            </Grid>
+        </PivotItem>
+        <PivotItem Header="Preferences" />
+    </Pivot>
 </Page>

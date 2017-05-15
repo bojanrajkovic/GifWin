@@ -6,6 +6,10 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 
+#if CORE
+using System.Diagnostics;
+#endif
+
 namespace GifWin.Data
 {
     class GifWinContext : DbContext
@@ -22,9 +26,7 @@ namespace GifWin.Data
             if (!didAddLoggerFactory) {
                 lock (syncRoot) {
                     var lf = this.GetService<ILoggerFactory> ();
-#if !CORE
-                    lf.AddDebug ();
-#endif
+                    lf.AddDebug();
                     didAddLoggerFactory = true;
                 }
             }
@@ -35,17 +37,12 @@ namespace GifWin.Data
 #if !CORE
             DirectoryInfo storage = new DirectoryInfo (Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData), "GifWin", "Data"));
             storage.Create ();
-            string source = Path.Combine (storage.ToString (), "gifwin.sqlite");
+            var source = Path.Combine (storage.ToString (), "gifwin.sqlite");
 #else
-            string source = "gifwin.sqlite";
+            var source = "gifwin.sqlite";
 #endif
 
-			var csb = new SqliteConnectionStringBuilder {
-                DataSource = source,
-                Cache = SqliteCacheMode.Shared,
-            };
-
-            var connString = csb.ToString ();
+            var connString = $"Filename={source}";
             var conn = new SqliteConnection (connString);
 
             optionsBuilder.UseSqlite (conn, sqliteOptions => {

@@ -1,23 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.Sqlite.Internal;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace GifWin.Data
 {
-    class GifWinDatabaseHelper : IDisposable
+    public class GifWinDatabaseHelper : IDisposable
     {
         GifWinContext db;
 
         public GifWinDatabaseHelper ()
         {
+#if CORE
+            SqliteEngine.UseWinSqlite3();
+#endif
+
             db = new GifWinContext ();
             db.Database.Migrate ();
         }
 
-        internal IQueryable<TResult> QueryGifs<TResult>(Expression<Func<GifEntry, bool>> filter,
+        public IQueryable<TResult> QueryGifs<TResult>(Expression<Func<GifEntry, bool>> filter,
                                                         Expression<Func<GifEntry, TResult>> map)
         {
             return db.Gifs.Where (filter).Select (map);
@@ -53,7 +59,7 @@ namespace GifWin.Data
             return await db.SaveChangesAsync ().ConfigureAwait (false);
         }
 
-        internal async Task<GifEntry> AddNewGifAsync (string gifUrl, string[] tags)
+        public async Task<GifEntry> AddNewGifAsync (string gifUrl, string[] tags)
         {
             var existing = await db.Gifs.SingleOrDefaultAsync (ge => ge.Url.ToLower () == gifUrl.ToLower ());
             if (existing != null) {
@@ -92,7 +98,7 @@ namespace GifWin.Data
             }
         }
 
-        internal async Task<IEnumerable<GifEntry>> GetGifsbyTagAsync (string[] tags)
+        public async Task<IEnumerable<GifEntry>> GetGifsbyTagAsync (string[] tags)
         {
             return await db.Tags.Where (gt => tags.Contains (gt.Tag))
                            .Select (gt => gt.Gif)
@@ -101,7 +107,7 @@ namespace GifWin.Data
                            .ConfigureAwait (false);
         }
 
-        internal async Task UpdateSavedFirstFrameDataAsync (int gifId, FrameData frameData)
+        public async Task UpdateSavedFirstFrameDataAsync (int gifId, FrameData frameData)
         {
             var gif = await db.Gifs.SingleOrDefaultAsync (ge => ge.Id == gifId).ConfigureAwait (false);
 

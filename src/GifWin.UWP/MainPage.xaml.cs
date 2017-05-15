@@ -28,12 +28,17 @@ namespace GifWin.UWP
         public MainPage()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel ();
+            DataContext = new MainPageViewModel ();
 
             var title = CoreApplication.GetCurrentView().TitleBar;
             if (title != null) {
                 title.ExtendViewIntoTitleBar = true;
             }
+        }
+
+        private void Image_Loaded(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource;
         }
     }
 }
