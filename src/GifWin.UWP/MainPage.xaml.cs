@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Navigation;
 
 using GifWin.ViewModels;
 using Windows.ApplicationModel.Core;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.Foundation.Metadata;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -34,11 +36,34 @@ namespace GifWin.UWP
             if (title != null) {
                 title.ExtendViewIntoTitleBar = true;
             }
-        }
+        }   
 
         private void Image_Loaded(object sender, RoutedEventArgs e)
         {
-            var source = e.OriginalSource;
+            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay") == true)
+            {
+                var imageSource = ((BitmapImage)((Image)sender).Source);
+                imageSource.AutoPlay = false;
+                imageSource.Stop();
+            }
+        }
+
+        private void Image_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "IsPlaying"))
+            {
+                var imageSource = ((BitmapImage)((Image)sender).Source);
+                imageSource.Play();
+            }
+        }
+
+        private void Image_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "IsPlaying"))
+            {
+                var imageSource = ((BitmapImage)((Image)sender).Source);
+                imageSource.Stop();
+            }
         }
     }
 }

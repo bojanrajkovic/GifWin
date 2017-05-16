@@ -34,7 +34,7 @@ namespace GifWin
 
             var filterArray = filterKeywords.ToArray ();
             if (filterArray.Length == 1 && filterArray[0] == "*")
-                gifs = Task.FromResult(helper.QueryGifs (e => true, e => e).AsEnumerable ());
+                gifs = Task.FromResult(helper.QueryGifs (e => true, e => e, Array.Empty<string>()).AsEnumerable ());
             else
                 gifs = helper.GetGifsbyTagAsync (filterArray);
 

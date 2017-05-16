@@ -25,7 +25,13 @@
                 <GridView x:Name="results" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Images}">
                     <GridView.ItemTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding Url}" Width="{Binding Width}" Height="{Binding Height}" Loaded="Image_Loaded"/>
+                            <Image Width="200" Height="200" 
+                                   PointerEntered="Image_PointerEntered" PointerExited="Image_PointerExited"
+                                   ImageOpened="Image_Loaded">
+                                <Image.Source>
+                                    <BitmapImage UriSource="{Binding Url}" />
+                                </Image.Source>
+                            </Image>
                         </DataTemplate>
                     </GridView.ItemTemplate>
                     <GridView.Transitions>

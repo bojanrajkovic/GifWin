@@ -24,9 +24,13 @@ namespace GifWin.Data
         }
 
         public IQueryable<TResult> QueryGifs<TResult>(Expression<Func<GifEntry, bool>> filter,
-                                                        Expression<Func<GifEntry, TResult>> map)
+                                                      Expression<Func<GifEntry, TResult>> map,
+                                                      string[] includes)
         {
-            return db.Gifs.Where (filter).Select (map);
+            IQueryable<GifEntry> gifs = db.Gifs;
+            foreach (var include in includes)
+                gifs = gifs.Include(include);
+            return gifs.Where (filter).Select (map);
         }
 
         internal async Task<int> ConvertGifWitLibraryAsync (GifWitLibrary librarySource, IProgress<int> progress = null)

@@ -1,6 +1,7 @@
 ﻿using GifWin.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,13 +20,13 @@ namespace GifWin.ViewModels
 
             Id = entry.Id;
             Url = entry.Url;
-            FirstFrame = entry.FirstFrame;
             Keywords = entry.Tags.Select (t => t.Tag).ToArray ();
             Width = entry.Width;
             Height = entry.Height;
         }
 
         public byte[] FirstFrame { get; }
+        public Stream FirstFrameStream { get; }
         public int Id { get; }
         public string Url { get; }
         public int Width { get; }

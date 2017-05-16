@@ -106,7 +106,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <Content Include="gifwin.sqlite">
+    <Content Include="Assets\gifwin.sqlite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="GifWin.UWP_TemporaryKey.pfx" />

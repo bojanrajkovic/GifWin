@@ -17,40 +17,17 @@ namespace GifWin.ViewModels
     {
         public MainPageViewModel ()
         {
-            helper = new GifWinDatabaseHelper ();
-            helper.AddNewGifAsync("http://i.giphy.com/wofftnAdDtx4s.gif", new[] {
-                "spongebob",
-                "nope"
-            }).ContinueWith(async t =>
-            {
-                var cache = ApplicationData.Current.LocalCacheFolder;
-                var gifEntry = t.Result;
-
-                if (gifEntry.FirstFrame == null)
-                {
-                    var cacheFile = $"{GetReadableHash(Encoding.UTF8.GetBytes(gifEntry.Url))}.gif";
-                    var maybeFile = await cache.TryGetItemAsync(cacheFile) as IStorageFile;
-
-                    if (maybeFile == null)
-                    {
-                        maybeFile = await cache.CreateFileAsync(cacheFile);
-                        using (var stream = await maybeFile.OpenAsync(FileAccessMode.ReadWrite))
-                        {
-                            using (var client = new System.Net.Http.HttpClient())
-                            {
-                                using (var gifStream = await client.GetStreamAsync(gifEntry.Url))
-                                {
-                                    await gifStream.CopyToAsync(stream.AsStreamForWrite());
-                                }
-                            }
-                        }
-                    }
-
-                    var fd = await GetFrameData(maybeFile, 0).ConfigureAwait(false);
-                    if (fd != null)
-                        await helper.UpdateSavedFirstFrameDataAsync(gifEntry.Id, fd);
+            Task.Run(async () => {
+                StorageFile file;
+                try {
+                    file = await ApplicationData.Current.LocalFolder.GetFileAsync("GifWin.sqlite");
+                } catch {
+                    var importedFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/GifWin.sqlite"));
+                    file = await importedFile.CopyAsync(Windows.Storage.ApplicationData.Current.LocalFolder);
                 }
-            }, TaskScheduler.Default).Unwrap().ContinueWith(t => {
+                return file.Path;
+            }).ContinueWith(t => {
+                helper = new GifWinDatabaseHelper();
                 RefreshImageCollection();
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
@@ -194,7 +171,7 @@ namespace GifWin.ViewModels
 
             var filterArray = filterKeywords.ToArray ();
             if (filterArray.Length == 1 && filterArray[0] == "*")
-                gifs = Task.FromResult (helper.QueryGifs (e => true, e => e).AsEnumerable ());
+                gifs = Task.FromResult (helper.QueryGifs (e => true, e => e, new[] { "Tags" }).AsEnumerable ());
             else
                 gifs = helper.GetGifsbyTagAsync (filterArray);
 

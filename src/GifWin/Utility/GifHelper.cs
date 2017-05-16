@@ -77,7 +77,7 @@ namespace GifWin
         internal static void StartPreCachingDatabase ()
         {
             var helper = new GifWinDatabaseHelper ();
-            var gifs = helper.QueryGifs (e => true, e => new { e.Id, e.Url, e.FirstFrame });
+            var gifs = helper.QueryGifs (e => true, e => new { e.Id, e.Url, e.FirstFrame }, Array.Empty<string>());
 
             CachedTasks = CachedTasks ?? new Dictionary<int, Task<string>> ();
 
