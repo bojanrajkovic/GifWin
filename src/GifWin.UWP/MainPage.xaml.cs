@@ -17,6 +17,7 @@ using GifWin.ViewModels;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Foundation.Metadata;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -64,6 +65,32 @@ namespace GifWin.UWP
                 var imageSource = ((BitmapImage)((Image)sender).Source);
                 imageSource.Stop();
             }
+        }
+
+        private async void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            var imageSource = ((BitmapImage)((Image)sender).Source);
+            using (var client = new System.Net.Http.HttpClient())
+            {
+                try
+                {
+                    var res = await client.GetAsync(imageSource.UriSource);
+                    if (!res.IsSuccessStatusCode)
+                    {
+                        Debug.WriteLine($"Could not load image from {imageSource.UriSource}, server returned {res.StatusCode}.");
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Could not load image from {imageSource.UriSource}, UWP says: {e.ErrorMessage}.");
+                    }
+                } catch (Exception ex)
+                {
+                    Debug.WriteLine($"Could not load image from {imageSource.UriSource}, UWP says: {e.ErrorMessage}, trying to use HttpClient failed with: {ex.Message}");
+                }
+            }
+            var gifEntry = (GifEntryViewModel)((Image)sender).DataContext;
+            if (gifEntry.FirstFrame != null)
+                await imageSource.SetSourceAsync(new MemoryStream(gifEntry.FirstFrame).AsRandomAccessStream());
         }
     }
 }

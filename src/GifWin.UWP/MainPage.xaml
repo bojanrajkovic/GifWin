@@ -27,7 +27,7 @@
                         <DataTemplate>
                             <Image Width="200" Height="200" 
                                    PointerEntered="Image_PointerEntered" PointerExited="Image_PointerExited"
-                                   ImageOpened="Image_Loaded">
+                                   ImageOpened="Image_Loaded" ImageFailed="Image_ImageFailed">
                                 <Image.Source>
                                     <BitmapImage UriSource="{Binding Url}" />
                                 </Image.Source>
