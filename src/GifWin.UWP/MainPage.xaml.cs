@@ -18,6 +18,7 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Foundation.Metadata;
 using System.Diagnostics;
+using Windows.ApplicationModel.DataTransfer;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -91,6 +92,14 @@ namespace GifWin.UWP
             var gifEntry = (GifEntryViewModel)((Image)sender).DataContext;
             if (gifEntry.FirstFrame != null)
                 await imageSource.SetSourceAsync(new MemoryStream(gifEntry.FirstFrame).AsRandomAccessStream());
+        }
+
+        private void Image_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            var gifEntry = (GifEntryViewModel)((Image)sender).DataContext;
+            var dp = new DataPackage();
+            dp.SetText(gifEntry.Url);
+            Clipboard.SetContent(dp);
         }
     }
 }
