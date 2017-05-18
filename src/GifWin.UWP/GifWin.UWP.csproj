@@ -139,12 +139,6 @@
       <Version>5.3.3</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GifWin.Core\GifWin.Core.csproj">
-      <Project>{6ec218b5-4730-4bd2-977f-ea00319feffa}</Project>
-      <Name>GifWin.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

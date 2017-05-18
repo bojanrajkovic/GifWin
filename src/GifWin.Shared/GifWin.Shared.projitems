@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>a14741ba-9945-428c-871e-a974570cd322</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>GifWin.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)GifEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GifTag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GifUsage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GifWit\GifWitLibrary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GifWit\GifWitLibraryEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\FrameData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\GifHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\GlobalHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\ImageForwardingListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\StringExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\GifEntryViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\GifWitConversionProgressViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SettingsSaved.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SettingsWindowViewModel.cs" />
+  </ItemGroup>
+</Project>
