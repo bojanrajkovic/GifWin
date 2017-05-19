@@ -1,26 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Dapper;
 using Microsoft.Data.Sqlite;
 
 using GifWin.Core.Models;
-using System.Linq;
+using System.Reflection;
 
 namespace GifWin.Core.Data
 {
-    public class GifwinDatabase : IDisposable
+    public class GifWinDatabase : IDisposable
     {
         const string dateTimeOffsetFormat = "yyyy-MM-dd hh:mm:ss.fffffffzzzz";
 
+        static readonly string[] Pragmas = new[] {
+            // Automatic indexing is good.
+            "PRAGMA automatic_index = true",
+            // We definitely want foreign-keys.
+            "PRAGMA foreign_keys = true",
+            // WAL journaling makes the DB more resilient to crashes/etc.
+            "PRAGMA journal_mode = wal",
+            // The "NORMAL" synchronous mode is safe in WAL mode
+            "PRAGMA synchronous = NORMAL",
+            // Allow using a few threads.
+            $"PRAGMA threads = {Environment.ProcessorCount}"
+        };
+
         IDbConnection connection;
 
-        public GifwinDatabase(string databaseFile)
+        public GifWinDatabase(string databaseFile)
         {
+            // Open the connection.
             connection = new SqliteConnection($"Filename={databaseFile}");
             connection.Open();
+
+            // Set up pragmas.
+            Pragmas.ForEach(pragma => connection.Execute(pragma));
+        }
+
+        public async Task<bool> ExecuteMigrationsAsync()
+        {
+            var migrator = new Migrator(typeof(GifWinDatabase).GetTypeInfo().Assembly, connection);
+            return await migrator.MigrateAsync();
         }
 
         public async Task<IEnumerable<GifEntry>> GetAllGifsAsync()
@@ -43,9 +67,8 @@ namespace GifWin.Core.Data
             await connection.QueryAsync<GifTag>("SELECT * FROM Tags");
 
         public async Task<IEnumerable<GifEntry>> GetGifsByTagAsync(string tag) =>
-            await connection.QueryAsync<GifTag, GifEntry, GifEntry>(
+            await connection.QueryAsync<GifEntry>(
                 "SELECT g.* FROM Tags t JOIN Gifs g ON t.GifId = g.Id WHERE t.Tag = @tag",
-                (dbTag, entry) => entry,
                 new { tag }
             );
 
@@ -53,15 +76,47 @@ namespace GifWin.Core.Data
         {
             GifEntry realEntry = null;
             await connection.QueryAsync<GifTag, GifEntry, GifEntry>(
-                "SELECT g.* FROM Tags t JOIN Gifs g ON t.GifId = g.Id WHERE g.Id = @id",
+                "SELECT t.*, g.* FROM Tags t JOIN Gifs g ON t.GifId = g.Id WHERE g.Id = @id",
                 (tag, entry) => {
                     realEntry = realEntry ?? entry;
-                    entry.Tags = (entry.Tags ?? Array.Empty<GifTag>()).Concat(new[] { tag });
+                    entry.Tags = (realEntry.Tags ?? Array.Empty<GifTag>()).Concat(new[] { tag });
+                    realEntry = entry;
                     return entry;
                 },
                 new { id }
+                //splitOn: "g.Id"
             );
             return realEntry;
+        }
+
+        public async Task RecordGifUsageAsync(int gifId, string searchTerm)
+        {
+            var lastUsed = DateTimeOffset.UtcNow.ToString(dateTimeOffsetFormat);
+            await connection.ExecuteAsync(@"
+                UPDATE Gifs
+                SET LastUsed = @lastUsed, UsedCount = UsedCount + 1
+                WHERE Id = @gifId
+            ", new {
+                gifId,
+                lastUsed,
+            });
+            await connection.ExecuteAsync(@"
+                INSERT INTO Usages(GifId, UsedAt, SearchTerm)
+                VALUES(@gifId, @lastUsed, @searchTerm)
+            ", new {
+                gifId,
+                lastUsed,
+                searchTerm
+            });
+        }
+
+        public async Task DeleteGifAsync(int gifId)
+        {
+            await connection.ExecuteAsync(@"
+                DELETE FROM Gifs WHERE Id = @gifId
+            ", new {
+                gifId
+            });
         }
 
         public async Task<GifEntry> UpdateFrameDataAsync(int gifId, FrameData data)
@@ -105,6 +160,9 @@ namespace GifWin.Core.Data
         {
             if (!disposed) {
                 if (disposing) {
+                    // It's recommended to do this before closing the DB connection,
+                    // in the SQLite documentation: http://www.sqlite.org/pragma.html#pragma_optimize
+                    connection.Execute("PRAGMA optimize;");
                     connection.Dispose();
                 }
 
