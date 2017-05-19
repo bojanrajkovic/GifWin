@@ -11,18 +11,15 @@ namespace GifWin
     [JsonObject]
     class GifWitLibrary : IEnumerable<GifWitLibraryEntry>, IReadOnlyList<GifWitLibraryEntry>
     {
-        public IEnumerator<GifWitLibraryEntry> GetEnumerator ()
-        {
-            return Images.AsReadOnly ().GetEnumerator ();
-        }
+        public IEnumerator<GifWitLibraryEntry> GetEnumerator () =>
+            Images.AsReadOnly ().GetEnumerator ();
 
-        IEnumerator IEnumerable.GetEnumerator ()
-        {
-            return GetEnumerator ();
-        }
+        IEnumerator IEnumerable.GetEnumerator () =>
+            GetEnumerator ();
 
         [JsonProperty ("version")]
         public int Version { get; set; }
+
         [JsonProperty ("images")]
         internal List<GifWitLibraryEntry> Images { get; set; }
 
