@@ -52,7 +52,7 @@ namespace GifWin.Core
                 Path.GetInvalidFileNameChars().ForEach(c => {
                     base64 = base64.Replace(c, '-');
                 });
-                return Convert.ToBase64String(hash);
+                return base64;
             }
         }
 
