@@ -72,6 +72,12 @@ namespace GifWin.Core.Data
                 new { tag }
             );
 
+        public async Task<IEnumerable<GifEntry>> GetGifsbyTagAsync(string[] filterArray) =>
+            await connection.QueryAsync<GifEntry>(
+                "SELECT g.* FROM Tags t JOIN Gifs g ON t.GifId = g.Id WHERE t.Tag IN @filterArray",
+                new { filterArray }
+            );
+
         public async Task<GifEntry> GetGifByIdAsync(int id)
         {
             GifEntry realEntry = null;

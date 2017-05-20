@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace GifWin.Core
 {
-    static class EnumerableUtilities
+    public static class EnumerableUtilities
     {
         public static void ForEach<T>(this IEnumerable<T> self, Action<T> action)
         {

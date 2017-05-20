@@ -15,11 +15,9 @@ namespace TestApp
         {
             this.InitializeComponent();
 
-            SQLitePCL.Batteries_V2.Init();
-
-            var db = new GifWin.Core.Data.GifwinDatabase("GifWin.sqlite");
-            db.GetGifsByTagAsync("nope").ContinueWith(t => {
-                Console.WriteLine(t.Result.Count());
+            var db = new GifWin.Core.Data.GifWinDatabase("GifWin.sqlite");
+            db.GetGifByIdAsync(1).ContinueWith(t => {
+                Console.WriteLine(t.Result);
             });
         }
     }

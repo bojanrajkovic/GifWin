@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Data.Sqlite.Internal;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+
+using GifWin.Core;
+using GifWin.Core.Data;
 
 namespace GifWin.UWP
 {
@@ -23,10 +27,12 @@ namespace GifWin.UWP
             this.InitializeComponent();
             this.Suspending += OnSuspending;
 
-            CopyDatabaseSeedAsync().Wait();
+            CacheHelper.Init(ApplicationData.Current.LocalCacheFolder.Path);
+            SqliteEngine.UseWinSqlite3();
+            SetUpDatabaseAsync().Wait();
         }
 
-        async Task CopyDatabaseSeedAsync()
+        async Task SetUpDatabaseAsync()
         {
             // Copy the database into place.
             StorageFile file;
@@ -44,6 +50,31 @@ namespace GifWin.UWP
                                          .ConfigureAwait(false);
                 ;
             }
+
+            var db = new GifWinDatabase(file.Path);
+            var migrated = await db.ExecuteMigrationsAsync().ConfigureAwait(false);
+
+            if (!migrated) {
+                var cd = new ContentDialog {
+                    Title = "Database failed to migrate",
+                    Content = "Failed to migrate database to latest version.",
+                    CloseButtonText = "Ok",
+                };
+                await cd.ShowAsync();
+                Current.Exit();
+            }
+
+#pragma warning disable CS4014
+            Task.Run(async () => {
+                var allGifs = await db.GetAllGifsAsync();
+
+                // Don't keep this alive any longer than it needs to be.
+                db.Dispose();
+
+                // Build cache.
+                await allGifs.ForEach(async g => await GifHelper.GetOrMakeSavedAsync(g, g.FirstFrame));
+            });
+#pragma warning restore CS4014
         }
 
         /// <summary>

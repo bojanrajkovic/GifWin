@@ -7,6 +7,9 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
+using GifWin.Core.Data;
+using Microsoft.Data.Sqlite.Internal;
+
 namespace TestApp
 {
     /// <summary>
@@ -22,10 +25,13 @@ namespace TestApp
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            CopyDatabaseSeedAsync().Wait();
+
+            SqliteEngine.UseWinSqlite3();
+
+            SetUpDatabaseAsync().Wait();
         }
 
-        async Task CopyDatabaseSeedAsync()
+        async Task SetUpDatabaseAsync()
         {
             // Copy the database into place.
             StorageFile file;
@@ -42,6 +48,19 @@ namespace TestApp
                                          .AsTask()
                                          .ConfigureAwait(false);
                 ;
+            }
+
+            var db = new GifWinDatabase(file.Path);
+            var migrated = await db.ExecuteMigrationsAsync().ConfigureAwait(false);
+
+            if (!migrated) {
+                var cd = new ContentDialog {
+                    Title = "Database failed to migrate",
+                    Content = "Failed to migrate database to latest version.",
+                    CloseButtonText = "Ok",
+                };
+                await cd.ShowAsync();
+                Current.Exit();
             }
         }
 
