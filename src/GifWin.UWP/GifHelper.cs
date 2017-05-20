@@ -15,34 +15,39 @@ namespace GifWin
         public static Task<string> GetOrMakeSavedAsync(GifEntry entry, byte[] frameData)
         {
             return Task.Run(async () => {
-                var expectedCacheName = $"{CacheHelper.ComputeHash(entry.Url)}.gif";
-                var cachedFileExists = CacheHelper.CacheContainsFile(expectedCacheName);
+                try {
+                    var expectedCacheName = $"{CacheHelper.ComputeFilesystemSafeHash(entry.Url)}.gif";
+                    var cachedFileExists = CacheHelper.CacheContainsFile(expectedCacheName);
 
-                if (!cachedFileExists) {
-                    using (var http = new System.Net.Http.HttpClient()) {
-                        var download = await http.GetAsync(entry.Url);
-                        if (download.IsSuccessStatusCode)
-                            await CacheHelper.SaveFileToCacheAsync(
-                                await download.Content.ReadAsStreamAsync(),
-                                expectedCacheName,
-                                true
-                            );
+                    if (!cachedFileExists) {
+                        using (var http = new System.Net.Http.HttpClient()) {
+                            var download = await http.GetAsync(entry.Url);
+                            if (download.IsSuccessStatusCode)
+                                await CacheHelper.SaveFileToCacheAsync(
+                                    await download.Content.ReadAsStreamAsync(),
+                                    expectedCacheName,
+                                    true
+                                );
+                        }
                     }
-                }
 
-                string fullCachePath = CacheHelper.GetFullPathToCachedFile(expectedCacheName);
+                    string fullCachePath = CacheHelper.GetFullPathToCachedFile(expectedCacheName);
 
-                if (entry.FirstFrame == null) {
+                    if (entry.FirstFrame == null) {
 #pragma warning disable CS4014
-                    Task.Run(async () => {
-                        var frame = await GetFrameDataAsync(fullCachePath, 1);
-                        using (var db = new GifWinDatabase("GifWin.sqlite"))
-                            await db.UpdateFrameDataAsync(entry.Id, frame);
-                    });
+                        Task.Run(async () => {
+                            var frame = await GetFrameDataAsync(fullCachePath, 1);
+                            using (var db = new GifWinDatabase("GifWin.sqlite"))
+                                await db.UpdateFrameDataAsync(entry.Id, frame);
+                        });
 #pragma warning restore CS4014
-                }
+                    }
 
-                return fullCachePath;
+                    return fullCachePath;
+                } catch (Exception e) {
+                    System.Diagnostics.Debug.WriteLine($"Exception while caching image {entry.Url}: {e.Message}");
+                    return null;
+                }
             });
         }
 

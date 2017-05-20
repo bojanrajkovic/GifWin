@@ -44,10 +44,14 @@ namespace GifWin.Core
             }
         }
 
-        public static string ComputeHash(string str)
+        public static string ComputeFilesystemSafeHash(string str)
         {
             using (var ha = SHA256.Create()) {
                 var hash = ha.ComputeHash(Encoding.UTF8.GetBytes(str));
+                var base64 = Convert.ToBase64String(hash);
+                Path.GetInvalidFileNameChars().ForEach(c => {
+                    base64 = base64.Replace(c, '-');
+                });
                 return Convert.ToBase64String(hash);
             }
         }
