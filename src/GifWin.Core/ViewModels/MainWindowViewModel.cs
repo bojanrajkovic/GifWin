@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 using GifWin.Core.Data;
 
@@ -33,7 +34,7 @@ namespace GifWin.Core.ViewModels
             db.GetAllTagsAsync().ContinueWith(t => {
                 tags = t.Result.Select(tag => tag.Tag).ToArray();
             }, TaskScheduler.FromCurrentSynchronizationContext());
-            
+
             db.GetAllGifsAsync().ContinueWith(t => {
                 images = t.Result.Select(ge => new GifEntryViewModel(ge)).ToArray();
             }, TaskScheduler.FromCurrentSynchronizationContext());

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 using GifWin.Core.Models;
 
@@ -22,6 +23,9 @@ namespace GifWin.Core.ViewModels
             FirstFrame = entry.FirstFrame;
             Keywords = entry.Tags.Select (t => t.Tag).ToArray ();
         }
+
+
+        public ICommand CopyImageUrlCommand => new CopyImageUrlCommand();
 
         public byte[] FirstFrame { get; }
         public int Id { get; }

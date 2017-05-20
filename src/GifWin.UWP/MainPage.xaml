@@ -2,10 +2,8 @@
     x:Class="GifWin.UWP.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:GifWin.UWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:GifWin.ViewModels"
     mc:Ignorable="d">
 
     <Pivot Title="GifWin">
@@ -32,6 +30,13 @@
                                 <Image.Source>
                                     <BitmapImage UriSource="{Binding Url}" />
                                 </Image.Source>
+                                <Image.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem Text="Copy URL" CommandParameter="{Binding}" Command="{Binding CopyImageUrlCommand}"/>
+                                        <MenuFlyoutItem Text="Copy Image" CommandParameter="{Binding}" Command="{Binding CopyImageCommand}"/>
+                                        <MenuFlyoutItem Text="Delete Image" CommandParameter="{Binding}" Command="{Binding DeleteImageCommand}"/>
+                                    </MenuFlyout>
+                                </Image.ContextFlyout>
                             </Image>
                         </DataTemplate>
                     </GridView.ItemTemplate>

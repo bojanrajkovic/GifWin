@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Navigation;
 
 using GifWin.Core;
 using GifWin.Core.Data;
+using GifWin.Core.Services;
 
 namespace GifWin.UWP
 {
@@ -29,6 +30,9 @@ namespace GifWin.UWP
 
             CacheHelper.Init(ApplicationData.Current.LocalCacheFolder.Path);
             SqliteEngine.UseWinSqlite3();
+
+            ServiceContainer.Instance.RegisterService<IClipboardService>(new UWPClipboardService());
+
             SetUpDatabaseAsync().Wait();
         }
 
