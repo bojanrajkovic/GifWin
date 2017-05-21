@@ -20,14 +20,15 @@
                     <RowDefinition Height="50" />
                 </Grid.RowDefinitions>
 
-                <ListView x:Name="tags" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Tags}" />
+                <ListView x:Name="tags" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Tags}"
+                          SelectedItem="{Binding SelectedTag, Mode=TwoWay}" SelectionMode="Single"
+                          ItemClick="tags_ItemClick" IsItemClickEnabled="True" />
                 <GridView x:Name="results" Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Images}">
                     <GridView.ItemTemplate>
                         <DataTemplate>
                             <Image Width="200" Height="200" 
                                    PointerEntered="Image_PointerEntered" PointerExited="Image_PointerExited"
-                                   ImageOpened="Image_Loaded" ImageFailed="Image_ImageFailed"
-                                   DoubleTapped="Image_DoubleTapped">
+                                   ImageOpened="Image_Loaded" DoubleTapped="Image_DoubleTapped">
                                 <Image.Source>
                                     <BitmapImage UriSource="{Binding Url}" />
                                 </Image.Source>

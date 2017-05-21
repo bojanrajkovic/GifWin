@@ -12,14 +12,16 @@ namespace GifWin.Core.ViewModels
     public sealed class GifEntryViewModel : ViewModelBase
     {
         readonly Task<string> cachedUri;
-        string url;
+        string url, searchTerm;
 
         public event EventHandler EntryDeleted;
 
-        public GifEntryViewModel (GifEntry entry)
+        public GifEntryViewModel (GifEntry entry, string searchTerm = null)
         {
             if (entry == null)
                 throw new ArgumentNullException (nameof (entry));
+
+            this.searchTerm = searchTerm;
 
             Id = entry.Id;
 
@@ -46,8 +48,8 @@ namespace GifWin.Core.ViewModels
         internal void RaiseDeleted() =>
             EntryDeleted?.Invoke(this, null);
 
-        public ICommand CopyImageUrlCommand => new CopyImageUrlCommand();
-        public ICommand CopyImageCommand => new CopyImageCommand();
+        public ICommand CopyImageUrlCommand => new CopyImageUrlCommand(searchTerm);
+        public ICommand CopyImageCommand => new CopyImageCommand(searchTerm);
         public ICommand DeleteImageCommand => new DeleteImageCommand();
 
         public byte[] FirstFrame { get; }

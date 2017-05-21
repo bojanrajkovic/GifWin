@@ -86,7 +86,7 @@ namespace GifWin.Core.Data
             );
         }
 
-        public async Task<IEnumerable<GifEntry>> GetGifsbyTagAsync(string[] filterArray)
+        public async Task<IEnumerable<GifEntry>> GetGifsByTagAsync(string[] filterArray)
         {
             CheckDisposed();
 

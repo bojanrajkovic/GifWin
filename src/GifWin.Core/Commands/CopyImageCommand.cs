@@ -11,6 +11,11 @@ namespace GifWin.Core.Commands
 {
     sealed class CopyImageCommand : ICommand
     {
+        string searchTerm;
+
+        public CopyImageCommand(string searchTerm) =>
+            this.searchTerm = searchTerm;
+
         public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter) =>
@@ -22,7 +27,7 @@ namespace GifWin.Core.Commands
             var db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
             var gifEntry = (GifEntryViewModel)parameter;
 
-            db.RecordGifUsageAsync(gifEntry.Id, "*").FireAndForget();
+            db.RecordGifUsageAsync(gifEntry.Id, searchTerm).FireAndForget();
 
             db.GetGifByIdAsync(gifEntry.Id).ContinueOrFault(
                 @continue: t => clipService.PutImageOnClipboard(t.Result),

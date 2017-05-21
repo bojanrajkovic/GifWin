@@ -43,7 +43,6 @@ namespace GifWin.UWP
 
             var dbPath = SetUpDatabaseAsync().GetAwaiter().GetResult();
             var migrated = MigrateDatabaseAsync(dbPath).GetAwaiter().GetResult();
-
             if (!migrated)
                 Current.Exit();
 

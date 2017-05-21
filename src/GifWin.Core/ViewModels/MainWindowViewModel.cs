@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +12,7 @@ namespace GifWin.Core.ViewModels
     {
         GifWinDatabase db;
 
+        string selectedTag;
         ObservableCollection<string> tags;
         ObservableCollection<GifEntryViewModel> images;
 
@@ -25,11 +25,14 @@ namespace GifWin.Core.ViewModels
         void RefreshImageCollection()
         {
             db.GetAllTagsAsync().ContinueWith(t => {
-                tags = new ObservableCollection<string>(t.Result.Select(tag => tag.Tag));
+                Tags = new ObservableCollection<string>(
+                    t.Result.Select(tag => tag.Tag).Distinct()
+                     .OrderBy(tag => tag)
+                );
             }, TaskScheduler.FromCurrentSynchronizationContext());
 
             db.GetAllGifsAsync().ContinueWith(t => {
-                images = new ObservableCollection<GifEntryViewModel>(
+                Images = new ObservableCollection<GifEntryViewModel>(
                     t.Result.Select(ge => {
                         var model = new GifEntryViewModel(ge);
                         model.EntryDeleted += Model_EntryDeleted;
@@ -46,12 +49,36 @@ namespace GifWin.Core.ViewModels
 
             var mainThread = ServiceContainer.Instance.GetRequiredService<IMainThread>();
             mainThread.RunAsync(() => {
-                images.Remove(gifEntry);
+                Images.Remove(gifEntry);
             });
         }
 
+        public string SelectedTag {
+            get => selectedTag;
+            set {
+                if (selectedTag == value)
+                    return;
+
+                selectedTag = value;
+
+
+                var gifs = string.IsNullOrWhiteSpace(selectedTag) ? db.GetAllGifsAsync() : db.GetGifsByTagAsync(selectedTag);
+                gifs.ContinueWith(t => {
+                    var mainThread = ServiceContainer.Instance.GetRequiredService<IMainThread>();
+                    mainThread.RunAsync(() => {
+                        Images.Clear();
+                        Images = new ObservableCollection<GifEntryViewModel>(t.Result.Select(ge => {
+                            var model = new GifEntryViewModel(ge, searchTerm: selectedTag);
+                            model.EntryDeleted += Model_EntryDeleted;
+                            return model;
+                        }));
+                    });
+                }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            }
+        }
+
         public ObservableCollection<string> Tags {
-            get { return tags; }
+            get => tags;
             private set {
                 if (tags == value)
                     return;
@@ -62,7 +89,7 @@ namespace GifWin.Core.ViewModels
         }
 
         public ObservableCollection<GifEntryViewModel> Images {
-            get { return images; }
+            get => images;
             private set {
                 if (images == value)
                     return;

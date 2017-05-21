@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel.DataTransfer;
+﻿using Windows.ApplicationModel.Core;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -54,24 +50,17 @@ namespace GifWin.UWP
             }
         }
 
-        private async void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        void Image_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
-            var imageSource = ((BitmapImage)((Image)sender).Source);
-            Debug.WriteLine($"Could not load image from {imageSource.UriSource}, UWP says: {e.ErrorMessage}.");
-
             var gifEntry = (GifEntryViewModel)((Image)sender).DataContext;
-            if (gifEntry.FirstFrame != null)
-                await imageSource.SetSourceAsync(new MemoryStream(gifEntry.FirstFrame).AsRandomAccessStream());
+            gifEntry.CopyImageUrlCommand.Execute(gifEntry);
         }
 
-        private void Image_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        void tags_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var gifEntry = (GifEntryViewModel)((Image)sender).DataContext;
-
-            var clipboardPackage = new DataPackage();
-            clipboardPackage.SetText(gifEntry.Url);
-
-            Clipboard.SetContent(clipboardPackage);
+            var tags = (ListView)sender;
+            if (e.ClickedItem == tags.SelectedItem)
+                tags.SelectedItem = null;
         }
     }
 }
