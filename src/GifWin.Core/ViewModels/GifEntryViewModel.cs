@@ -26,6 +26,7 @@ namespace GifWin.Core.ViewModels
 
 
         public ICommand CopyImageUrlCommand => new CopyImageUrlCommand();
+        public ICommand CopyImageCommand => new CopyImageCommand();
 
         public byte[] FirstFrame { get; }
         public int Id { get; }

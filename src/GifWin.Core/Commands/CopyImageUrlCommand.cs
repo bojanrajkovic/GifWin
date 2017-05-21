@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Windows.Input;
-using GifWin.Core.Services;
 
-namespace GifWin.Core.ViewModels
+using GifWin.Core.Services;
+using GifWin.Core.ViewModels;
+
+namespace GifWin.Core.Commands
 {
     internal class CopyImageUrlCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
+        public bool CanExecute(object parameter) =>
+            parameter is GifEntryViewModel;
 
         public void Execute(object parameter)
         {
