@@ -8,9 +8,10 @@
 
     <Pivot Title="GifWin">
         <PivotItem Header="My Library">
-            <Grid>
+            <Grid Padding="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="10" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
@@ -20,7 +21,7 @@
                 </Grid.RowDefinitions>
 
                 <ListView x:Name="tags" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Tags}" />
-                <GridView x:Name="results" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Images}">
+                <GridView x:Name="results" Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Images}">
                     <GridView.ItemTemplate>
                         <DataTemplate>
                             <Image Width="200" Height="200" 
