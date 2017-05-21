@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 using Microsoft.Extensions.Logging;
@@ -30,10 +31,37 @@ namespace GifWin.Core.Commands
             db.RecordGifUsageAsync(gifEntry.Id, searchTerm).FireAndForget();
 
             db.GetGifByIdAsync(gifEntry.Id).ContinueOrFault(
-                @continue: t => clipService.PutImageOnClipboard(t.Result),
-                fault: t => ServiceContainer.Instance.GetLogger<CopyImageCommand>()
-                                           ?.LogWarning(new EventId(), t.Exception, "Could not copy image to clipboard.")
+                @continue: async t => {
+                    try {
+                        var gif = await t;
+                        var savedImage = await GifHelper.GetOrMakeSavedAsync(gif, gif.FirstFrame);
+                        var mt = ServiceContainer.Instance.GetRequiredService<IMainThread>();
+                        await mt.RunAsync(() => clipService.PutImageOnClipboard(savedImage));
+                    } catch (Exception e) {
+                        FaultHandler(e);
+                    }
+                },
+                fault: t => FaultHandler(t.Exception)
             );
+        }
+
+        void FaultHandler(Exception e)
+        {
+            ServiceContainer.Instance.GetLogger<CopyImageCommand>()
+                                    ?.LogWarning(
+                                        new EventId(),
+                                        e,
+                                        "Could not copy image to clipboard."
+                                    );
+
+            var mt = ServiceContainer.Instance.GetRequiredService<IMainThread>();
+            mt.RunAsync(() => {
+                ServiceContainer.Instance.GetOptionalService<IPrompter>()
+                               ?.ShowMessageAsync(
+                                   "Error",
+                                   "Could not copy image to clipboard."
+                               ).FireAndForget();
+            });
         }
     }
 }

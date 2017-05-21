@@ -7,6 +7,7 @@ using Windows.UI.Core;
 
 using Microsoft.Extensions.Logging;
 
+using GifWin.Core;
 using GifWin.Core.Models;
 using GifWin.Core.Services;
 
@@ -14,26 +15,17 @@ namespace GifWin.UWP
 {
     class UWPClipboardService : IClipboardService
     {
-        public void PutImageOnClipboard(GifEntry entry)
+        public void PutImageOnClipboard(string imagePath)
         {
-            GifHelper.GetOrMakeSavedAsync(entry, entry.FirstFrame)
-                     .ContinueWith(async t => {
-                         var path = await t;
-                         if (path != null) {
-                             var pack = new DataPackage();
-                             var storageFile = await StorageFile.GetFileFromPathAsync(path);
-                             pack.SetBitmap(RandomAccessStreamReference.CreateFromFile(storageFile));
+            var pack = new DataPackage();
+            var storageFile = StorageFile.GetFileFromPathAsync(imagePath)
+                                         .AsTask()
+                                         .ConfigureAwait(false)
+                                         .GetAwaiter()
+                                         .GetResult();
+            pack.SetBitmap(RandomAccessStreamReference.CreateFromFile(storageFile));
 
-                             try {
-                                 await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                                     Clipboard.SetContent(pack);
-                                 });
-                             } catch (Exception e) {
-                                 ServiceContainer.Instance.GetLogger<UWPClipboardService>()
-                                                ?.LogWarning(new EventId(), e, "Could not place image on clipboard.");
-                             }
-                         }
-                     });
+            Clipboard.SetContent(pack);
         }
 
         public void PutTextOnClipboard(string text)

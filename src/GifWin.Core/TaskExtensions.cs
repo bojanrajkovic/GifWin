@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using GifWin.Core.Services;
+
 using Microsoft.Extensions.Logging;
+
+using GifWin.Core.Services;
 
 namespace GifWin.Core
 {
-    static class TaskExtensions
+    public static class TaskExtensions
     {
         public static void FireAndForget(this Task self)
         {
