@@ -21,8 +21,8 @@
                 </Grid.RowDefinitions>
 
                 <ListView x:Name="tags" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Tags}"
-                          SelectedItem="{Binding SelectedTag, Mode=TwoWay}" SelectionMode="Single"
-                          ItemClick="tags_ItemClick" IsItemClickEnabled="True" />
+                          SelectionChanged="{x:Bind TagSelectionChanged}" SelectionMode="Extended">
+                </ListView>
                 <GridView x:Name="results" Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Images}">
                     <GridView.ItemTemplate>
                         <DataTemplate>

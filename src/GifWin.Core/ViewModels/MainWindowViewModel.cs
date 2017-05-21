@@ -12,7 +12,7 @@ namespace GifWin.Core.ViewModels
     {
         GifWinDatabase db;
 
-        string selectedTag;
+        string[] selectedTag;
         ObservableCollection<string> tags;
         ObservableCollection<GifEntryViewModel> images;
 
@@ -53,7 +53,7 @@ namespace GifWin.Core.ViewModels
             });
         }
 
-        public string SelectedTag {
+        public string[] SelectedTag {
             get => selectedTag;
             set {
                 if (selectedTag == value)
@@ -61,14 +61,13 @@ namespace GifWin.Core.ViewModels
 
                 selectedTag = value;
 
-
-                var gifs = string.IsNullOrWhiteSpace(selectedTag) ? db.GetAllGifsAsync() : db.GetGifsByTagAsync(selectedTag);
+                var gifs = selectedTag.Length == 0 ? db.GetAllGifsAsync() : db.GetGifsByTagAsync(selectedTag);
                 gifs.ContinueWith(t => {
                     var mainThread = ServiceContainer.Instance.GetRequiredService<IMainThread>();
                     mainThread.RunAsync(() => {
                         Images.Clear();
                         Images = new ObservableCollection<GifEntryViewModel>(t.Result.Select(ge => {
-                            var model = new GifEntryViewModel(ge, searchTerm: selectedTag);
+                            var model = new GifEntryViewModel(ge, searchTerm: string.Join(", ", selectedTag));
                             model.EntryDeleted += Model_EntryDeleted;
                             return model;
                         }));

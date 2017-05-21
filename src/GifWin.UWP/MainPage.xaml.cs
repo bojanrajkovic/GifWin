@@ -1,4 +1,5 @@
-﻿using Windows.ApplicationModel.Core;
+﻿using System.Linq;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -25,30 +26,24 @@ namespace GifWin.UWP
             }
         }
 
-        private void Image_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay") == true) {
+        private void Image_Loaded(object sender, RoutedEventArgs e) =>
+            ApiHelper.RunIfPropertyIsPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay", () => {
                 var imageSource = ((BitmapImage)((Image)sender).Source);
                 imageSource.AutoPlay = false;
                 imageSource.Stop();
-            }
-        }
+            });
 
-        private void Image_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "IsPlaying")) {
+        private void Image_PointerEntered(object sender, PointerRoutedEventArgs e) =>
+            ApiHelper.RunIfPropertyIsPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay", () => {
                 var imageSource = ((BitmapImage)((Image)sender).Source);
                 imageSource.Play();
-            }
-        }
+            });
 
-        private void Image_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "IsPlaying")) {
+        private void Image_PointerExited(object sender, PointerRoutedEventArgs e) =>
+            ApiHelper.RunIfPropertyIsPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay", () => {
                 var imageSource = ((BitmapImage)((Image)sender).Source);
                 imageSource.Stop();
-            }
-        }
+            });
 
         void Image_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
@@ -56,11 +51,8 @@ namespace GifWin.UWP
             gifEntry.CopyImageUrlCommand.Execute(gifEntry);
         }
 
-        void tags_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            var tags = (ListView)sender;
-            if (e.ClickedItem == tags.SelectedItem)
-                tags.SelectedItem = null;
-        }
+        private void TagSelectionChanged(object sender, SelectionChangedEventArgs e) =>
+            ((MainWindowViewModel)DataContext).SelectedTag =
+                ((ListView)sender).SelectedItems.Cast<string>().ToArray();
     }
 }
