@@ -56,6 +56,9 @@ namespace GifWin.UWP
             }
 
             var db = new GifWinDatabase(file.Path);
+
+            ServiceContainer.Instance.RegisterService(db);
+
             var migrated = await db.ExecuteMigrationsAsync().ConfigureAwait(false);
 
             if (!migrated) {
@@ -71,9 +74,6 @@ namespace GifWin.UWP
 #pragma warning disable CS4014
             Task.Run(async () => {
                 var allGifs = await db.GetAllGifsAsync();
-
-                // Don't keep this alive any longer than it needs to be.
-                db.Dispose();
 
                 // Build cache.
                 await allGifs.ForEach(async g => await GifHelper.GetOrMakeSavedAsync(g, g.FirstFrame));

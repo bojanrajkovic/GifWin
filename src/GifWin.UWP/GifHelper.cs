@@ -7,6 +7,7 @@ using Windows.Storage;
 using GifWin.Core;
 using GifWin.Core.Models;
 using GifWin.Core.Data;
+using GifWin.Core.Services;
 
 namespace GifWin
 {
@@ -37,8 +38,8 @@ namespace GifWin
 #pragma warning disable CS4014
                         Task.Run(async () => {
                             var frame = await GetFrameDataAsync(fullCachePath, 1);
-                            using (var db = new GifWinDatabase("GifWin.sqlite"))
-                                await db.UpdateFrameDataAsync(entry.Id, frame);
+                            var db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
+                            await db.UpdateFrameDataAsync(entry.Id, frame);
                         });
 #pragma warning restore CS4014
                     }

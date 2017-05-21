@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-
+using GifWin.Core.Commands;
 using GifWin.Core.Models;
 
 namespace GifWin.Core.ViewModels
@@ -27,6 +27,7 @@ namespace GifWin.Core.ViewModels
 
         public ICommand CopyImageUrlCommand => new CopyImageUrlCommand();
         public ICommand CopyImageCommand => new CopyImageCommand();
+        public ICommand DeleteImageCommand => new DeleteImageCommand();
 
         public byte[] FirstFrame { get; }
         public int Id { get; }

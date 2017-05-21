@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 using GifWin.Core.Data;
+using GifWin.Core.Services;
 
 namespace GifWin.Core.ViewModels
 {
@@ -25,7 +25,7 @@ namespace GifWin.Core.ViewModels
 
         public MainWindowViewModel()
         {
-            db = new GifWinDatabase("GifWin.sqlite");
+            db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
             RefreshImageCollection();
         }
 
