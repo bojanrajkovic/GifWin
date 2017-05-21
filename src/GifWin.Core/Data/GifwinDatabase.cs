@@ -43,12 +43,16 @@ namespace GifWin.Core.Data
 
         public async Task<bool> ExecuteMigrationsAsync()
         {
+            CheckDisposed();
+
             var migrator = new Migrator(typeof(GifWinDatabase).GetTypeInfo().Assembly, connection);
             return await migrator.MigrateAsync();
         }
 
         public async Task<IEnumerable<GifEntry>> GetAllGifsAsync()
         {
+            CheckDisposed();
+
             var gifs = (await connection.QueryAsync<GifEntry>("SELECT * FROM Gifs")).ToList();
             var tags = (await connection.QueryAsync<GifTag>("SELECT * FROM Tags"))
                                         .ToLookup(gt => gt.GifId);
@@ -63,23 +67,37 @@ namespace GifWin.Core.Data
             return gifs;
         }
 
-        public async Task<IEnumerable<GifTag>> GetAllTagsAsync() =>
-            await connection.QueryAsync<GifTag>("SELECT * FROM Tags");
+        public async Task<IEnumerable<GifTag>> GetAllTagsAsync()
+        {
+            CheckDisposed();
 
-        public async Task<IEnumerable<GifEntry>> GetGifsByTagAsync(string tag) =>
-            await connection.QueryAsync<GifEntry>(
+            return await connection.QueryAsync<GifTag>("SELECT * FROM Tags");
+        }
+
+        public async Task<IEnumerable<GifEntry>> GetGifsByTagAsync(string tag)
+        {
+            CheckDisposed();
+
+            return await connection.QueryAsync<GifEntry>(
                 "SELECT g.* FROM Tags t JOIN Gifs g ON t.GifId = g.Id WHERE t.Tag = @tag",
                 new { tag }
             );
+        }
 
-        public async Task<IEnumerable<GifEntry>> GetGifsbyTagAsync(string[] filterArray) =>
-            await connection.QueryAsync<GifEntry>(
+        public async Task<IEnumerable<GifEntry>> GetGifsbyTagAsync(string[] filterArray)
+        {
+            CheckDisposed();
+
+            return await connection.QueryAsync<GifEntry>(
                 "SELECT g.* FROM Tags t JOIN Gifs g ON t.GifId = g.Id WHERE t.Tag IN @filterArray",
                 new { filterArray }
             );
+        }
 
         public async Task<GifEntry> GetGifByIdAsync(int id)
         {
+            CheckDisposed();
+
             GifEntry realEntry = null;
             await connection.QueryAsync<GifTag, GifEntry, GifEntry>(
                 "SELECT t.*, g.* FROM Tags t JOIN Gifs g ON t.GifId = g.Id WHERE g.Id = @id",
@@ -97,6 +115,8 @@ namespace GifWin.Core.Data
 
         public async Task RecordGifUsageAsync(int gifId, string searchTerm)
         {
+            CheckDisposed();
+
             var lastUsed = DateTimeOffset.UtcNow.ToString(dateTimeOffsetFormat);
             await connection.ExecuteAsync(@"
                 UPDATE Gifs
@@ -118,6 +138,8 @@ namespace GifWin.Core.Data
 
         public async Task DeleteGifAsync(int gifId)
         {
+            CheckDisposed();
+
             await connection.ExecuteAsync(@"
                 DELETE FROM Gifs WHERE Id = @gifId
             ", new {
@@ -127,6 +149,8 @@ namespace GifWin.Core.Data
 
         public async Task<GifEntry> UpdateFrameDataAsync(int gifId, FrameData data)
         {
+            CheckDisposed();
+
             await connection.ExecuteAsync(@"
                 UPDATE Gifs
                 SET FirstFrame = @frame, Width = @width, Height = @height
@@ -142,6 +166,8 @@ namespace GifWin.Core.Data
 
         public async Task<GifEntry> AddGifEntryAsync(string url, string[] tags)
         {
+            CheckDisposed();
+
             var newGifId = await connection.QuerySingleAsync<int>(@"
                 INSERT INTO Gifs(AddedAt, Url, UsedCount) VALUES(@addedAt, @url, @usedCount);
                 SELECT last_insert_rowid();
@@ -159,8 +185,36 @@ namespace GifWin.Core.Data
             return await GetGifByIdAsync(newGifId);
         }
 
+        public void ForceFlush()
+        {
+            CheckDisposed();
+
+            try {
+                connection.Execute("PRAGMA wal_checkpoint(FULL);");
+            } catch {
+
+            }
+        }
+
+        public void Optimize()
+        {
+            CheckDisposed();
+
+            try {
+                connection.Execute("PRAGMA optimize;");
+            } catch {
+
+            }
+        }
+
         #region IDisposable Support
         private bool disposed = false;
+
+        void CheckDisposed()
+        {
+            if (disposed)
+                throw new ObjectDisposedException(nameof(GifWinDatabase));
+        }
 
         protected virtual void Dispose(bool disposing)
         {

@@ -138,7 +138,12 @@ namespace GifWin.UWP
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
+
             //TODO: Save application state and stop any background activity
+            var db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
+            db.Optimize();
+            db.ForceFlush();
+
             deferral.Complete();
         }
     }
