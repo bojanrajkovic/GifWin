@@ -82,7 +82,7 @@ namespace GifWin.Core.Data
                                            $"successfully in {sw.ElapsedMilliseconds}ms.");
                 } catch (Exception e) {
                     transaction.Rollback();
-                    logger?.LogWarning(null, e, $"Migration \"{migrationInfo.MigrationName}\" failed to apply.");
+                    logger?.LogWarning(new EventId(), e, $"Migration \"{migrationInfo.MigrationName}\" failed to apply.");
                 } finally {
                     sw.Stop();
                 }

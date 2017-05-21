@@ -195,7 +195,7 @@ namespace GifWin.Core.Data
                 connection.Execute("PRAGMA wal_checkpoint(FULL);");
             } catch (Exception e) {
                 ServiceContainer.Instance.GetLogger<GifWinDatabase>()
-                               ?.LogWarning(null, e, "Could not execute wal_checkpoint.");
+                               ?.LogWarning(new EventId(), e, "Could not execute wal_checkpoint.");
             }
         }
 
@@ -207,7 +207,7 @@ namespace GifWin.Core.Data
                 connection.Execute("PRAGMA optimize;");
             } catch (Exception e) {
                 ServiceContainer.Instance.GetLogger<GifWinDatabase>()
-                               ?.LogWarning(null, e, "Could not execute optimized.");
+                               ?.LogWarning(new EventId(), e, "Could not execute optimized.");
             }
         }
 

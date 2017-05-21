@@ -22,12 +22,12 @@ namespace GifWin.Core.Commands
             var db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
             var gifEntry = (GifEntryViewModel)parameter;
 
-            db.RecordGifUsageAsync(gifEntry.Id, "*");
+            db.RecordGifUsageAsync(gifEntry.Id, "*").FireAndForget();
 
             db.GetGifByIdAsync(gifEntry.Id).ContinueOrFault(
                 @continue: t => clipService.PutImageOnClipboard(t.Result),
                 fault: t => ServiceContainer.Instance.GetLogger<CopyImageCommand>()
-                                           ?.LogWarning(null, t.Exception, "Could not copy image to clipboard.")
+                                           ?.LogWarning(new EventId(), t.Exception, "Could not copy image to clipboard.")
             );
         }
     }

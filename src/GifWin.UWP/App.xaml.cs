@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Data.Sqlite.Internal;
-using Microsoft.Extensions.Logging;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+
+using Microsoft.Data.Sqlite.Internal;
+using Microsoft.Extensions.Logging;
 
 using GifWin.Core;
 using GifWin.Core.Data;
@@ -21,7 +22,7 @@ namespace GifWin.UWP
     sealed partial class App : Application
     {
         /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
+        /// Initializes the singleton application object. This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
@@ -37,11 +38,19 @@ namespace GifWin.UWP
 
             ServiceContainer.Instance.RegisterService<ILoggerFactory>(lf);
             ServiceContainer.Instance.RegisterService<IClipboardService>(new UWPClipboardService());
+            ServiceContainer.Instance.RegisterService<IPrompter>(new UWPPrompter());
+            ServiceContainer.Instance.RegisterService<IMainThread>(new UWPMainThread());
 
-            SetUpDatabaseAsync().Wait();
+            var dbPath = SetUpDatabaseAsync().GetAwaiter().GetResult();
+            var migrated = MigrateDatabaseAsync(dbPath).GetAwaiter().GetResult();
+
+            if (!migrated)
+                Current.Exit();
+
+            StartCachingAsync();
         }
 
-        async Task SetUpDatabaseAsync()
+        async Task<string> SetUpDatabaseAsync()
         {
             // Copy the database into place.
             StorageFile file;
@@ -57,27 +66,23 @@ namespace GifWin.UWP
                 file = await importedFile.CopyAsync(ApplicationData.Current.LocalFolder)
                                          .AsTask()
                                          .ConfigureAwait(false);
-                ;
             }
 
-            var db = new GifWinDatabase(file.Path);
+            return file.Path;
+        }
 
+        async Task<bool> MigrateDatabaseAsync(string dbPath)
+        {
+            var db = new GifWinDatabase(dbPath);
             ServiceContainer.Instance.RegisterService(db);
+            return await db.ExecuteMigrationsAsync().ConfigureAwait(false);
+        }
 
-            var migrated = await db.ExecuteMigrationsAsync().ConfigureAwait(false);
-
-            if (!migrated) {
-                var cd = new ContentDialog {
-                    Title = "Database failed to migrate",
-                    Content = "Failed to migrate database to latest version.",
-                    CloseButtonText = "Ok",
-                };
-                await cd.ShowAsync();
-                Current.Exit();
-            }
-
+        Task StartCachingAsync()
+        {
 #pragma warning disable CS4014
-            Task.Run(async () => {
+            return Task.Run(async () => {
+                var db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
                 var allGifs = await db.GetAllGifsAsync();
 
                 // Build cache.

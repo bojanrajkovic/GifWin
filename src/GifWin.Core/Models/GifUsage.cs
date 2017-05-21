@@ -8,5 +8,6 @@ namespace GifWin.Core.Models
         public int GifId { get; set; }
         public string UsedAt { get; set; }
         public string SearchTerm { get; set; }
+        public string SearchProvider { get; set; }
     }
 }

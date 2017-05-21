@@ -20,9 +20,9 @@ namespace GifWin.Core.Commands
             var db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
             var gifEntry = (GifEntryViewModel)parameter;
 
-            db.RecordGifUsageAsync(gifEntry.Id, "*");
+            db.RecordGifUsageAsync(gifEntry.Id, "*").FireAndForget();
 
-            clipService.PutTextOnClipboard(gifEntry.Url);
+            clipService.PutTextOnClipboard(gifEntry.OriginalUrl);
         }
     }
 }

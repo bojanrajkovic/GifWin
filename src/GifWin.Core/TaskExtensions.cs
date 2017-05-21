@@ -7,11 +7,11 @@ namespace GifWin.Core
 {
     static class TaskExtensions
     {
-        public static void FireAndForget<T>(this Task<T> self)
+        public static void FireAndForget(this Task self)
         {
             self.ContinueWith(t => {
                 var logger = ServiceContainer.Instance.GetLogger(nameof(TaskExtensions));
-                logger?.LogWarning(null, t.Exception, $"FAF: Dropping exception on floor.");
+                logger?.LogWarning(new EventId(), t.Exception, $"FAF: Dropping exception on floor.");
             }, TaskContinuationOptions.NotOnRanToCompletion);
         }
 

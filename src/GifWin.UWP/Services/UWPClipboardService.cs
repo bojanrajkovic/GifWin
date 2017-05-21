@@ -30,7 +30,7 @@ namespace GifWin.UWP
                                  });
                              } catch (Exception e) {
                                  ServiceContainer.Instance.GetLogger<UWPClipboardService>()
-                                                ?.LogWarning(null, e, "Could not place image on clipboard.");
+                                                ?.LogWarning(new EventId(), e, "Could not place image on clipboard.");
                              }
                          }
                      });

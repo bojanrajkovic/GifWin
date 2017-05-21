@@ -7,7 +7,7 @@
     <ProjectGuid>{B1FB584C-F892-4E95-9096-EACB5A7D1D80}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GifWin</RootNamespace>
+    <RootNamespace>GifWin.UWP</RootNamespace>
     <AssemblyName>GifWin.UWP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
@@ -95,12 +95,14 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GifHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\UWPClipboardService.cs" />
+    <Compile Include="Services\UWPFrameDataService.cs" />
+    <Compile Include="Services\UWPMainThread.cs" />
+    <Compile Include="Services\UWPPrompter.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
