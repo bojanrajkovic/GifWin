@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 namespace GifWin.Core
 {
     [JsonObject]
-    class GifWitLibrary : IEnumerable<GifWitLibraryEntry>, IReadOnlyList<GifWitLibraryEntry>
+    sealed class GifWitLibrary : IEnumerable<GifWitLibraryEntry>, IReadOnlyList<GifWitLibraryEntry>
     {
         public IEnumerator<GifWitLibraryEntry> GetEnumerator () =>
             Images.AsReadOnly ().GetEnumerator ();

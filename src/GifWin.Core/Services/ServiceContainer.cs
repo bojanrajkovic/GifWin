@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace GifWin.Core.Services
 {
-    public class ServiceContainer
+    public sealed class ServiceContainer
     {
         static readonly Lazy<ServiceContainer> instance = new Lazy<ServiceContainer>();
         public static ServiceContainer Instance => instance.Value;
@@ -17,5 +18,11 @@ namespace GifWin.Core.Services
 
         public T GetRequiredService<T>() =>
             (T)services[typeof(T)];
+
+        public ILogger GetLogger(string categoryName) =>
+            GetOptionalService<ILoggerFactory>()?.CreateLogger(categoryName);
+
+        public ILogger<T> GetLogger<T>() =>
+            GetOptionalService<ILoggerFactory>()?.CreateLogger<T>();
     }
 }

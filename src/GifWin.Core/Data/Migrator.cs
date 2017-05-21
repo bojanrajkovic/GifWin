@@ -3,11 +3,16 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+
 using Dapper;
+using Microsoft.Extensions.Logging;
+
+using GifWin.Core.Services;
+using System.Diagnostics;
 
 namespace GifWin.Core.Data
 {
-    class Migrator
+    sealed class Migrator
     {
         class AppliedMigrationData
         {
@@ -54,18 +59,32 @@ namespace GifWin.Core.Data
             // Find all the migrations since the latest applied.
             var migrationsSinceLastApplied = migrations.Where(
                 mig => mig.migrationInfo.MigrationNumber > latestAppliedMigration.MigrationNumber
-            );
+            ).ToList();
+
+            var logger = ServiceContainer.Instance.GetLogger<Migrator>();
+
+            logger.LogInformation($"Applying {migrationsSinceLastApplied.Count} migrations...");
 
             foreach (var migration in migrationsSinceLastApplied) {
                 var applied = false;
 
                 var transaction = database.BeginTransaction();
+                var migrationInfo = migration.migrationInfo;
+                logger.LogInformation($"Applying migration \"{migrationInfo.MigrationName}\" " +
+                                      $"({migrationInfo.MigrationNumber})");
+                var sw = Stopwatch.StartNew();
                 try {
                     await migration.migrationInstance.ExecuteAsync(database);
                     transaction.Commit();
                     applied = true;
-                } catch {
+
+                    logger?.LogInformation($"Applied migration \"{migrationInfo.MigrationName}\" " +
+                                           $"successfully in {sw.ElapsedMilliseconds}ms.");
+                } catch (Exception e) {
                     transaction.Rollback();
+                    logger?.LogWarning(null, e, $"Migration \"{migrationInfo.MigrationName}\" failed to apply.");
+                } finally {
+                    sw.Stop();
                 }
 
                 if (!applied)

@@ -8,7 +8,7 @@ using GifWin.Core.Models;
 
 namespace GifWin.Core.ViewModels
 {
-    public class GifEntryViewModel
+    public sealed class GifEntryViewModel
     {
         // Figure out how to populate this.
         Task<string> cachedUri;

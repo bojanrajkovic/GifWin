@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows.Input;
+
+using Microsoft.Extensions.Logging;
 
 using GifWin.Core.Data;
 using GifWin.Core.Services;
@@ -8,7 +9,7 @@ using GifWin.Core.ViewModels;
 
 namespace GifWin.Core.Commands
 {
-    internal class CopyImageCommand : ICommand
+    sealed class CopyImageCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
@@ -20,9 +21,13 @@ namespace GifWin.Core.Commands
             var clipService = ServiceContainer.Instance.GetRequiredService<IClipboardService>();
             var db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
             var gifEntry = (GifEntryViewModel)parameter;
-            db.GetGifByIdAsync(gifEntry.Id).ContinueWith(
-                t => clipService.PutImageOnClipboard(t.Result),
-                TaskContinuationOptions.OnlyOnRanToCompletion
+
+            db.RecordGifUsageAsync(gifEntry.Id, "*");
+
+            db.GetGifByIdAsync(gifEntry.Id).ContinueOrFault(
+                @continue: t => clipService.PutImageOnClipboard(t.Result),
+                fault: t => ServiceContainer.Instance.GetLogger<CopyImageCommand>()
+                                           ?.LogWarning(null, t.Exception, "Could not copy image to clipboard.")
             );
         }
     }

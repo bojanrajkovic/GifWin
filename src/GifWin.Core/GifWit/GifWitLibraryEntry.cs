@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace GifWin.Core
 {
-    class GifWitLibraryEntry
+    sealed class GifWitLibraryEntry
     {
         [JsonProperty ("url")]
         public Uri Url { get; set; }

@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 using Dapper;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 
 using GifWin.Core.Models;
-using System.Reflection;
+using GifWin.Core.Services;
 
 namespace GifWin.Core.Data
 {
-    public class GifWinDatabase : IDisposable
+    public sealed class GifWinDatabase : IDisposable
     {
         const string dateTimeOffsetFormat = "yyyy-MM-dd hh:mm:ss.fffffffzzzz";
 
@@ -191,8 +193,9 @@ namespace GifWin.Core.Data
 
             try {
                 connection.Execute("PRAGMA wal_checkpoint(FULL);");
-            } catch {
-
+            } catch (Exception e) {
+                ServiceContainer.Instance.GetLogger<GifWinDatabase>()
+                               ?.LogWarning(null, e, "Could not execute wal_checkpoint.");
             }
         }
 
@@ -202,8 +205,9 @@ namespace GifWin.Core.Data
 
             try {
                 connection.Execute("PRAGMA optimize;");
-            } catch {
-
+            } catch (Exception e) {
+                ServiceContainer.Instance.GetLogger<GifWinDatabase>()
+                               ?.LogWarning(null, e, "Could not execute optimized.");
             }
         }
 
@@ -216,13 +220,13 @@ namespace GifWin.Core.Data
                 throw new ObjectDisposedException(nameof(GifWinDatabase));
         }
 
-        protected virtual void Dispose(bool disposing)
+        void Dispose(bool disposing)
         {
             if (!disposed) {
                 if (disposing) {
                     // It's recommended to do this before closing the DB connection,
                     // in the SQLite documentation: http://www.sqlite.org/pragma.html#pragma_optimize
-                    connection.Execute("PRAGMA optimize;");
+                    Optimize();
                     connection.Dispose();
                 }
 
@@ -230,10 +234,7 @@ namespace GifWin.Core.Data
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => Dispose(true);
         #endregion
 
     }

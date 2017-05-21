@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite.Internal;
+using Microsoft.Extensions.Logging;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
@@ -31,6 +32,10 @@ namespace GifWin.UWP
             CacheHelper.Init(ApplicationData.Current.LocalCacheFolder.Path);
             SqliteEngine.UseWinSqlite3();
 
+            var lf = new LoggerFactory();
+            lf.AddDebug();
+
+            ServiceContainer.Instance.RegisterService<ILoggerFactory>(lf);
             ServiceContainer.Instance.RegisterService<IClipboardService>(new UWPClipboardService());
 
             SetUpDatabaseAsync().Wait();

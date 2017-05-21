@@ -1,7 +1,11 @@
 ﻿using System;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI.Core;
+
+using Microsoft.Extensions.Logging;
 
 using GifWin.Core.Models;
 using GifWin.Core.Services;
@@ -19,7 +23,15 @@ namespace GifWin.UWP
                              var pack = new DataPackage();
                              var storageFile = await StorageFile.GetFileFromPathAsync(path);
                              pack.SetBitmap(RandomAccessStreamReference.CreateFromFile(storageFile));
-                             Clipboard.SetContent(pack);
+
+                             try {
+                                 await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                                     Clipboard.SetContent(pack);
+                                 });
+                             } catch (Exception e) {
+                                 ServiceContainer.Instance.GetLogger<UWPClipboardService>()
+                                                ?.LogWarning(null, e, "Could not place image on clipboard.");
+                             }
                          }
                      });
         }

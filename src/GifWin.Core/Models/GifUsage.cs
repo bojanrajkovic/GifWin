@@ -2,7 +2,7 @@
 
 namespace GifWin.Core.Models
 {
-    public class GifUsage
+    public sealed class GifUsage
     {
         public int Id { get; set; }
         public int GifId { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace GifWin.Core.Models
 {
-    public class GifTag
+    public sealed class GifTag
     {
         public int Id { get; set; }
         public int GifId { get; set; }

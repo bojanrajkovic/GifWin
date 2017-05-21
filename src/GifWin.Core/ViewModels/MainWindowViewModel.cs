@@ -12,16 +12,8 @@ namespace GifWin.Core.ViewModels
     {
         GifWinDatabase db;
 
-        string newEntryTags;
-        string filterText;
-        string imageSource;
-
         IReadOnlyList<string> tags;
         IReadOnlyList<GifEntryViewModel> images;
-
-        readonly HashSet<string> filterKeywords = new HashSet<string> {
-            "*"
-        };
 
         public MainWindowViewModel()
         {
@@ -58,45 +50,6 @@ namespace GifWin.Core.ViewModels
                     return;
 
                 images = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string ImageSource {
-            get { return imageSource; }
-            set {
-                if (imageSource == value)
-                    return;
-
-                var uri = new Uri(value, UriKind.Absolute);
-                imageSource = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string FilterText {
-            get { return filterText; }
-            set {
-                if (filterText == value)
-                    return;
-
-                filterText = value;
-
-                filterKeywords.Clear();
-                filterKeywords.UnionWith(value.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
-
-                if (Uri.IsWellFormedUriString(filterText, UriKind.Absolute))
-                    ImageSource = value;
-
-                RefreshImageCollection();
-                RaisePropertyChanged();
-            }
-        }
-
-        public string NewEntryTags {
-            get { return newEntryTags; }
-            set {
-                newEntryTags = value;
                 RaisePropertyChanged();
             }
         }

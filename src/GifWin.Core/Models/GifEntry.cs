@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GifWin.Core.Models
 {
-    public class GifEntry
+    public sealed class GifEntry
     {
         public GifEntry()
         {

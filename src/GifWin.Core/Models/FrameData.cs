@@ -1,6 +1,6 @@
 ﻿namespace GifWin.Core.Models
 {
-    public class FrameData
+    public sealed class FrameData
     {
         public int Height { get; set; }
         public byte[] PngImage { get; set; }
