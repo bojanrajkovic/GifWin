@@ -1,16 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Microsoft.Extensions.Logging;
 
 using GifWin.Core;
 using GifWin.Core.Models;
 using GifWin.Core.Data;
 using GifWin.Core.Services;
-using Microsoft.Extensions.Logging;
 
 namespace GifWin
 {
     public static class GifHelper
     {
+        static Dictionary<int, WeakReference<Task<string>>> cacheTaskCache =
+            new Dictionary<int, WeakReference<Task<string>>>();
+
         public static bool TryGetCachedPathIfExists(GifEntry entry, out string cachedPath)
         {
             var expectedCacheName = $"{CacheHelper.ComputeFilesystemSafeHash(entry.Url)}.gif";
@@ -20,7 +25,11 @@ namespace GifWin
 
         public static Task<string> GetOrMakeSavedAsync(GifEntry entry, byte[] frameData)
         {
-            return Task.Run(async () => {
+            var hasCachedTask = cacheTaskCache.TryGetValue(entry.Id, out var maybeCachedTask);
+            if (hasCachedTask && maybeCachedTask != null && maybeCachedTask.TryGetTarget(out var cachedTask))
+                return cachedTask;
+
+            cachedTask = Task.Run(async () => {
                 try {
                     var expectedCacheName = $"{CacheHelper.ComputeFilesystemSafeHash(entry.Url)}.gif";
                     var cachedFileExists = TryGetCachedPathIfExists(entry, out var fullCachePath);
@@ -55,6 +64,9 @@ namespace GifWin
                     return null;
                 }
             });
+
+            cacheTaskCache[entry.Id] = new WeakReference<Task<string>>(cachedTask);
+            return cachedTask;
         }
     }
 }

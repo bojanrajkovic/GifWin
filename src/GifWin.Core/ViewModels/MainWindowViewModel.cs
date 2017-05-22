@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
+using GifWin.Core.Commands;
 using GifWin.Core.Data;
 using GifWin.Core.Services;
 
@@ -42,7 +44,7 @@ namespace GifWin.Core.ViewModels
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private void Model_EntryDeleted(object sender, EventArgs e)
+        void Model_EntryDeleted(object sender, EventArgs e)
         {
             var gifEntry = (GifEntryViewModel)sender;
             gifEntry.EntryDeleted -= Model_EntryDeleted;
@@ -52,6 +54,10 @@ namespace GifWin.Core.ViewModels
                 Images.Remove(gifEntry);
             });
         }
+
+        public Action<object> AddNewGifCallback { get; set; }
+
+        public ICommand AddNewGif => new RelayCommand(AddNewGifCallback);
 
         public string[] SelectedTag {
             get => selectedTag;

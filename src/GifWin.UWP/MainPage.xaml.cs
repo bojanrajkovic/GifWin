@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Windows.ApplicationModel.Core;
-using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -18,28 +17,30 @@ namespace GifWin.UWP
         public MainPage()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel();
+            DataContext = new MainWindowViewModel {
+                AddNewGifCallback = (parameter) => Frame.Navigate(typeof(AddNewGifPage), parameter)
+            };
 
             var title = CoreApplication.GetCurrentView().TitleBar;
             if (title != null) {
-                title.ExtendViewIntoTitleBar = true;
+                title.ExtendViewIntoTitleBar = false;
             }
         }
 
-        private void Image_Loaded(object sender, RoutedEventArgs e) =>
+        void Image_Loaded(object sender, RoutedEventArgs e) =>
             ApiHelper.RunIfPropertyIsPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay", () => {
                 var imageSource = ((BitmapImage)((Image)sender).Source);
                 imageSource.AutoPlay = false;
                 imageSource.Stop();
             });
 
-        private void Image_PointerEntered(object sender, PointerRoutedEventArgs e) =>
+        void Image_PointerEntered(object sender, PointerRoutedEventArgs e) =>
             ApiHelper.RunIfPropertyIsPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay", () => {
                 var imageSource = ((BitmapImage)((Image)sender).Source);
                 imageSource.Play();
             });
 
-        private void Image_PointerExited(object sender, PointerRoutedEventArgs e) =>
+        void Image_PointerExited(object sender, PointerRoutedEventArgs e) =>
             ApiHelper.RunIfPropertyIsPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay", () => {
                 var imageSource = ((BitmapImage)((Image)sender).Source);
                 imageSource.Stop();
@@ -51,7 +52,7 @@ namespace GifWin.UWP
             gifEntry.CopyImageUrlCommand.Execute(gifEntry);
         }
 
-        private void TagSelectionChanged(object sender, SelectionChangedEventArgs e) =>
+        void TagSelectionChanged(object sender, SelectionChangedEventArgs e) =>
             ((MainWindowViewModel)DataContext).SelectedTag =
                 ((ListView)sender).SelectedItems.Cast<string>().ToArray();
     }
