@@ -44,8 +44,8 @@ namespace GifWin.Core.Commands
 
             var vm = (parameter as AddNewGifViewModel);
             var db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
-
             var mt = ServiceContainer.Instance.GetRequiredService<IMainThread>();
+
             db.AddGifEntryAsync(vm.Url, vm.Tags).ContinueOrFault(
                 @continue: async t => {
                     var gifEntry = await t;
