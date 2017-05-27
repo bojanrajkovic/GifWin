@@ -1,6 +1,10 @@
-﻿using Windows.ApplicationModel.Core;
+﻿using System;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 
+using GifWin.Core.Messages;
+using GifWin.Core.Services;
 using GifWin.Core.ViewModels;
 
 namespace GifWin.UWP
@@ -10,14 +14,14 @@ namespace GifWin.UWP
     /// </summary>
     public sealed partial class AddNewGifPage : Page
     {
+        IDisposable subscription;
+
         public AddNewGifPage()
         {
             this.InitializeComponent();
 
-            var vm = new AddNewGifViewModel();
-            vm.GifEntryAdded += GifEntryAdded;
-
-            DataContext = vm;
+            DataContext = new AddNewGifViewModel();
+            subscription = MessagingService.Subscribe<NewGifAdded>(OnNewGifAdded);
 
             var title = CoreApplication.GetCurrentView().TitleBar;
             if (title != null) {
@@ -25,7 +29,16 @@ namespace GifWin.UWP
             }
         }
 
-        void GifEntryAdded(object sender, Core.Models.GifEntry e) =>
-            Frame.GoBack();
+        bool OnNewGifAdded(NewGifAdded newGif)
+        {
+#pragma warning disable 4014
+            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                subscription.Dispose();
+                Frame.GoBack();
+            });
+#pragma warning restore 4014
+
+            return true;
+        }
     }
 }

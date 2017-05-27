@@ -5,7 +5,7 @@ using Dapper;
 namespace GifWin.Core.Data.Migrations
 {
     [Migration(1, MigrationName = "Create initial database structure")]
-    class InitialDatabaseCreation : IMigration
+    sealed class InitialDatabaseCreation : IMigration
     {
         const string CreateGifsTable = @"
             CREATE TABLE IF NOT EXISTS ""gifs"" (

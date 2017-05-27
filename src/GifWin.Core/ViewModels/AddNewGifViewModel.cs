@@ -1,18 +1,15 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows.Input;
 
 using GifWin.Core.Commands;
-using GifWin.Core.Models;
 
 namespace GifWin.Core.ViewModels
 {
-    public class AddNewGifViewModel : ViewModelBase
+    public sealed class AddNewGifViewModel : ViewModelBase
     {
         string url, tagString;
         string[] tags;
 
-        public event EventHandler<GifEntry> GifEntryAdded;
         public ICommand AddGif => new AddNewGifCommand(this);
 
         public string Url {
@@ -48,8 +45,5 @@ namespace GifWin.Core.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        internal void RaiseGifEntryAdded(GifEntry newGifEntry) =>
-            GifEntryAdded?.Invoke(this, newGifEntry);
     }
 }

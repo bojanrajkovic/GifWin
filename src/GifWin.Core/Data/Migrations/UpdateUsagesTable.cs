@@ -6,7 +6,7 @@ using Dapper;
 namespace GifWin.Core.Data.Migrations
 {
     [Migration(2, MigrationName = "Add search provider to usage table")]
-    class AddSearchProvider : IMigration
+    sealed class AddSearchProvider : IMigration
     {
         const string AddSearchProviderSql = "ALTER TABLE usages ADD COLUMN SearchProvider TEXT";
 

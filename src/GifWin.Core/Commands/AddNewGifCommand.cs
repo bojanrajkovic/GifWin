@@ -5,12 +5,13 @@ using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 
 using GifWin.Core.Data;
+using GifWin.Core.Messages;
 using GifWin.Core.Services;
 using GifWin.Core.ViewModels;
 
 namespace GifWin.Core.Commands
 {
-    class AddNewGifCommand : ICommand
+    sealed class AddNewGifCommand : ICommand
     {
         AddNewGifViewModel vm;
         bool isAdding;
@@ -50,7 +51,9 @@ namespace GifWin.Core.Commands
                 @continue: async t => {
                     var gifEntry = await t;
                     GifHelper.GetOrMakeSavedAsync(gifEntry, gifEntry.FirstFrame).FireAndForget();
-                    mt.RunAsync(() => vm.RaiseGifEntryAdded(t.Result)).FireAndForget();
+                    MessagingService.Send(new NewGifAdded {
+                        NewGif = t.Result
+                    });
                 },
                 fault: t => {
                     var logger = ServiceContainer.Instance.GetLogger<AddNewGifCommand>();
