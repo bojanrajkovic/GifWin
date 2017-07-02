@@ -9,7 +9,7 @@ namespace GifWin.Core.Commands
 {
     sealed class CopyImageUrlCommand : ICommand
     {
-        string searchTerm;
+        readonly string searchTerm;
 
         public event EventHandler CanExecuteChanged;
 

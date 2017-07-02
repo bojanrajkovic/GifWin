@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+
 using GifWin.Core.Commands;
 using GifWin.Core.Models;
 using GifWin.Core.Services;
 
+using JetBrains.Annotations;
+
 namespace GifWin.Core.ViewModels
 {
+    [PublicAPI]
     public sealed class GifEntryViewModel : ViewModelBase
     {
         readonly Task<string> cachedUri;
-        string url, searchTerm;
+        readonly string searchTerm;
 
-        public event EventHandler EntryDeleted;
+        string url;
 
         public GifEntryViewModel (GifEntry entry, string searchTerm = null)
         {
@@ -30,7 +34,9 @@ namespace GifWin.Core.ViewModels
             if (GifHelper.TryGetCachedPathIfExists(entry, out var cachedPath))
                 Url = cachedPath;
             else {
-                cachedUri = GifHelper.GetOrMakeSavedAsync(entry, entry.FirstFrame);
+                if (cachedUri == null)
+                    cachedUri = GifHelper.GetOrMakeSavedAsync(entry, entry.FirstFrame);
+
                 cachedUri.ContinueWith(
                     t => {
                         if (t != null) {
@@ -44,9 +50,6 @@ namespace GifWin.Core.ViewModels
             FirstFrame = entry.FirstFrame;
             Keywords = entry.Tags.Select (t => t.Tag).ToArray ();
         }
-
-        internal void RaiseDeleted() =>
-            EntryDeleted?.Invoke(this, null);
 
         public ICommand CopyImageUrlCommand => new CopyImageUrlCommand(searchTerm);
         public ICommand CopyImageCommand => new CopyImageCommand(searchTerm);

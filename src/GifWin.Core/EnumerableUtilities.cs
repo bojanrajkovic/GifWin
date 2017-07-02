@@ -12,6 +12,7 @@ namespace GifWin.Core
                 action(t);
         }
 
+        // ReSharper disable once ConsiderUsingAsyncSuffix
         public static async Task ForEach<T>(this IEnumerable<T> self, Func<T, Task> action)
         {
             foreach (var t in self) {

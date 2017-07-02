@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
-namespace GifWin.Core
+namespace GifWin.Core.GifWit
 {
     [JsonObject]
-    sealed class GifWitLibrary : IEnumerable<GifWitLibraryEntry>, IReadOnlyList<GifWitLibraryEntry>
+    sealed class GifWitLibrary : IReadOnlyList<GifWitLibraryEntry>
     {
         public IEnumerator<GifWitLibraryEntry> GetEnumerator () =>
             Images.AsReadOnly ().GetEnumerator ();

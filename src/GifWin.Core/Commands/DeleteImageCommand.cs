@@ -4,6 +4,7 @@ using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 
 using GifWin.Core.Data;
+using GifWin.Core.Messages;
 using GifWin.Core.Services;
 using GifWin.Core.ViewModels;
 
@@ -37,7 +38,9 @@ namespace GifWin.Core.Commands
                             logger?.LogWarning(new EventId(), e, "Could not delete GIF from database.");
                         }
 
-                        model.RaiseDeleted();
+                        MessagingService.Send(new GifDeleted {
+                            DeletedGifId = model.Id
+                        });
                     });
         }
     }

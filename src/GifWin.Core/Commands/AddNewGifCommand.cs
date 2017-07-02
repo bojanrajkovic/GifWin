@@ -13,7 +13,6 @@ namespace GifWin.Core.Commands
 {
     sealed class AddNewGifCommand : ICommand
     {
-        AddNewGifViewModel vm;
         bool isAdding;
 
         public event EventHandler CanExecuteChanged;
@@ -21,20 +20,19 @@ namespace GifWin.Core.Commands
         public AddNewGifCommand(AddNewGifViewModel vm)
         {
             vm.PropertyChanged += ViewModelPropertyChanged;
-            this.vm = vm;
         }
 
-        private void ViewModelPropertyChanged(object sender, PropertyChangedEventArgs e) => 
+        void ViewModelPropertyChanged(object sender, PropertyChangedEventArgs e) => 
             CanExecuteChanged?.Invoke(this, null);
 
         public bool CanExecute(object parameter)
         {
-            var vm = (parameter as AddNewGifViewModel);
+            var model = parameter as AddNewGifViewModel;
 
-            if (vm == null || isAdding)
+            if (model == null || isAdding)
                 return false;
 
-            return vm.Tags?.Length > 0 && !string.IsNullOrWhiteSpace(vm.Url);
+            return model.Tags?.Length > 0 && !string.IsNullOrWhiteSpace(model.Url);
         }
 
         public void Execute(object parameter)
@@ -44,6 +42,10 @@ namespace GifWin.Core.Commands
             CanExecuteChanged?.Invoke(this, null);
 
             var vm = (parameter as AddNewGifViewModel);
+
+            if (vm == null)
+                return;
+
             var db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
             var mt = ServiceContainer.Instance.GetRequiredService<IMainThread>();
 
@@ -51,7 +53,7 @@ namespace GifWin.Core.Commands
                 @continue: async t => {
                     var gifEntry = await t;
                     GifHelper.GetOrMakeSavedAsync(gifEntry, gifEntry.FirstFrame).FireAndForget();
-                    MessagingService.Send(new NewGifAdded {
+                    MessagingService.Send(new GifAdded {
                         NewGif = t.Result
                     });
                 },

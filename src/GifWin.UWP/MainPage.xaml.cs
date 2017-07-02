@@ -1,10 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+
 using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
 
+using GifWin.Core.Messages;
+using GifWin.Core.Services;
 using GifWin.Core.ViewModels;
 
 namespace GifWin.UWP
@@ -18,7 +22,7 @@ namespace GifWin.UWP
         {
             InitializeComponent();
             DataContext = new MainWindowViewModel {
-                AddNewGifCallback = (parameter) => Frame.Navigate(typeof(AddNewGifPage), parameter)
+                AddNewGifCallback = parameter => Frame.Navigate(typeof(AddNewGifPage), parameter)
             };
 
             var title = CoreApplication.GetCurrentView().TitleBar;

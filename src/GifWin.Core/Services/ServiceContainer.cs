@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 namespace GifWin.Core.Services
 {
+    [PublicAPI]
     public sealed class ServiceContainer
     {
+        // ReSharper disable once InconsistentNaming
         static readonly Lazy<ServiceContainer> instance = new Lazy<ServiceContainer>();
+
         public static ServiceContainer Instance => instance.Value;
 
         readonly Dictionary<Type, object> services = new Dictionary<Type, object>();

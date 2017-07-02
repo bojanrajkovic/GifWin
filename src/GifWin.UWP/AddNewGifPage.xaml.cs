@@ -21,7 +21,7 @@ namespace GifWin.UWP
             this.InitializeComponent();
 
             DataContext = new AddNewGifViewModel();
-            subscription = MessagingService.Subscribe<NewGifAdded>(OnNewGifAdded);
+            subscription = MessagingService.Subscribe<GifAdded>(OnNewGifAdded);
 
             var title = CoreApplication.GetCurrentView().TitleBar;
             if (title != null) {
@@ -29,7 +29,7 @@ namespace GifWin.UWP
             }
         }
 
-        bool OnNewGifAdded(NewGifAdded newGif)
+        bool OnNewGifAdded(GifAdded newGif)
         {
 #pragma warning disable 4014
             Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {

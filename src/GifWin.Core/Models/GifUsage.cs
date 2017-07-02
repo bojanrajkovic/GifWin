@@ -1,7 +1,8 @@
-﻿using System;
+﻿using JetBrains.Annotations;
 
 namespace GifWin.Core.Models
 {
+    [PublicAPI]
     public sealed class GifUsage
     {
         public int Id { get; set; }

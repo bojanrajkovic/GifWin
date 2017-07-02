@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     mc:Ignorable="d">
 
-    <Pivot Title="GifWin">
+    <Pivot>
         <PivotItem Header="My Library">
             <Grid Padding="10">
                 <Grid.ColumnDefinitions>

@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
 using Dapper;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 using GifWin.Core.Services;
-using System.Diagnostics;
 
 namespace GifWin.Core.Data
 {
     sealed class Migrator
     {
+        [PublicAPI("Ostensibly not public API, but these are properties in the DB, just unused in code.")]
         class AppliedMigrationData
         {
             public int MigrationNumber { get; set; }
@@ -21,8 +23,8 @@ namespace GifWin.Core.Data
             public string AppliedOn { get; set; }
         }
 
-        IDbConnection database;
-        Assembly migrationsAssembly;
+        readonly IDbConnection database;
+        readonly Assembly migrationsAssembly;
 
         public Migrator(Assembly migrationsAssembly, IDbConnection database)
         {

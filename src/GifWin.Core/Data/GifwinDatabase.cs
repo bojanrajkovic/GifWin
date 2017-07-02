@@ -6,19 +6,23 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 using Dapper;
+using JetBrains.Annotations;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 
 using GifWin.Core.Models;
 using GifWin.Core.Services;
 
+// ReSharper disable ConsiderUsingConfigureAwait
+
 namespace GifWin.Core.Data
 {
+    [PublicAPI]
     public sealed class GifWinDatabase : IDisposable
     {
-        const string dateTimeOffsetFormat = "yyyy-MM-dd hh:mm:ss.fffffffzzzz";
+        const string DateTimeOffsetFormat = "yyyy-MM-dd hh:mm:ss.fffffffzzzz";
 
-        static readonly string[] Pragmas = new[] {
+        static readonly string[] Pragmas = {
             // Automatic indexing is good.
             "PRAGMA automatic_index = true",
             // We definitely want foreign-keys.
@@ -119,7 +123,7 @@ namespace GifWin.Core.Data
         {
             CheckDisposed();
 
-            var lastUsed = DateTimeOffset.UtcNow.ToString(dateTimeOffsetFormat);
+            var lastUsed = DateTimeOffset.UtcNow.ToString(DateTimeOffsetFormat);
             await connection.ExecuteAsync(@"
                 UPDATE Gifs
                 SET LastUsed = @lastUsed, UsedCount = UsedCount + 1
@@ -174,7 +178,7 @@ namespace GifWin.Core.Data
                 INSERT INTO Gifs(AddedAt, Url, UsedCount) VALUES(@addedAt, @url, @usedCount);
                 SELECT last_insert_rowid();
             ", new {
-                addedAt = DateTimeOffset.UtcNow.ToString(dateTimeOffsetFormat),
+                addedAt = DateTimeOffset.UtcNow.ToString(DateTimeOffsetFormat),
                 url,
                 usedCount = 0
             });
@@ -212,7 +216,7 @@ namespace GifWin.Core.Data
         }
 
         #region IDisposable Support
-        private bool disposed = false;
+        bool disposed;
 
         void CheckDisposed()
         {

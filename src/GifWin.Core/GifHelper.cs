@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 using GifWin.Core;
@@ -11,6 +12,7 @@ using GifWin.Core.Services;
 
 namespace GifWin
 {
+    [PublicAPI]
     public static class GifHelper
     {
         static Dictionary<int, WeakReference<Task<string>>> cacheTaskCache =

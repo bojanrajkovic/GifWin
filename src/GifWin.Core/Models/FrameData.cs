@@ -1,5 +1,8 @@
-﻿namespace GifWin.Core.Models
+﻿using JetBrains.Annotations;
+
+namespace GifWin.Core.Models
 {
+    [PublicAPI]
     public sealed class FrameData
     {
         public int Height { get; set; }

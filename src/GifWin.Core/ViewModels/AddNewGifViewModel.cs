@@ -1,10 +1,13 @@
 ﻿using System.Linq;
 using System.Windows.Input;
 
+using JetBrains.Annotations;
+
 using GifWin.Core.Commands;
 
 namespace GifWin.Core.ViewModels
 {
+    [PublicAPI]
     public sealed class AddNewGifViewModel : ViewModelBase
     {
         string url, tagString;

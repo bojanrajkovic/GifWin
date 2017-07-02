@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 using Microsoft.Extensions.Logging;
@@ -12,7 +11,7 @@ namespace GifWin.Core.Commands
 {
     sealed class CopyImageCommand : ICommand
     {
-        string searchTerm;
+        readonly string searchTerm;
 
         public CopyImageCommand(string searchTerm) =>
             this.searchTerm = searchTerm;
@@ -45,7 +44,7 @@ namespace GifWin.Core.Commands
             );
         }
 
-        void FaultHandler(Exception e)
+        static void FaultHandler(Exception e)
         {
             ServiceContainer.Instance.GetLogger<CopyImageCommand>()
                                     ?.LogWarning(

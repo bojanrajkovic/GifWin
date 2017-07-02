@@ -4,24 +4,41 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+using JetBrains.Annotations;
+
 using GifWin.Core.Commands;
 using GifWin.Core.Data;
+using GifWin.Core.Messages;
 using GifWin.Core.Services;
 
 namespace GifWin.Core.ViewModels
 {
+    [PublicAPI]
     public sealed class MainWindowViewModel : ViewModelBase
     {
-        GifWinDatabase db;
+        readonly GifWinDatabase db;
 
         string[] selectedTag;
         ObservableCollection<string> tags;
         ObservableCollection<GifEntryViewModel> images;
+        IDisposable imageDeletedSubscription;
 
         public MainWindowViewModel()
         {
             db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
+            imageDeletedSubscription = MessagingService.Subscribe<GifDeleted>(OnImageDeleted);
             RefreshImageCollection();
+        }
+
+        bool OnImageDeleted(GifDeleted arg)
+        {
+            var mt = ServiceContainer.Instance.GetRequiredService<IMainThread>();
+            mt.RunAsync(() => {
+                Images.Where(gevm => gevm.Id == arg.DeletedGifId)
+                      .ForEach(gevm => Images.Remove(gevm));
+            });
+
+            return true;
         }
 
         void RefreshImageCollection()
@@ -35,29 +52,14 @@ namespace GifWin.Core.ViewModels
 
             db.GetAllGifsAsync().ContinueWith(t => {
                 Images = new ObservableCollection<GifEntryViewModel>(
-                    t.Result.Select(ge => {
-                        var model = new GifEntryViewModel(ge);
-                        model.EntryDeleted += Model_EntryDeleted;
-                        return model;
-                    })
+                    t.Result.Select(ge => new GifEntryViewModel(ge))
                 );
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        void Model_EntryDeleted(object sender, EventArgs e)
-        {
-            var gifEntry = (GifEntryViewModel)sender;
-            gifEntry.EntryDeleted -= Model_EntryDeleted;
-
-            var mainThread = ServiceContainer.Instance.GetRequiredService<IMainThread>();
-            mainThread.RunAsync(() => {
-                Images.Remove(gifEntry);
-            });
-        }
-
         public Action<object> AddNewGifCallback { get; set; }
 
-        public ICommand AddNewGif => new RelayCommand(AddNewGifCallback);
+        public ICommand AddNewGif => new RelayCommand(AddNewGifCallback, param => true);
 
         public string[] SelectedTag {
             get => selectedTag;
@@ -72,11 +74,9 @@ namespace GifWin.Core.ViewModels
                     var mainThread = ServiceContainer.Instance.GetRequiredService<IMainThread>();
                     mainThread.RunAsync(() => {
                         Images.Clear();
-                        Images = new ObservableCollection<GifEntryViewModel>(t.Result.Select(ge => {
-                            var model = new GifEntryViewModel(ge, searchTerm: string.Join(", ", selectedTag));
-                            model.EntryDeleted += Model_EntryDeleted;
-                            return model;
-                        }));
+                        Images = new ObservableCollection<GifEntryViewModel>(t.Result.Select(ge =>
+                            new GifEntryViewModel(ge, searchTerm: string.Join(", ", selectedTag)))
+                        );
                     });
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
             }

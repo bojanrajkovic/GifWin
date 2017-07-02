@@ -4,20 +4,23 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
+using JetBrains.Annotations;
+
 namespace GifWin.Core
 {
+    [PublicAPI]
     public static class CacheHelper
     {
         static bool inited;
         static string cacheBasePath;
 
-        public static void Init(string cacheBasePath)
+        public static void Init(string newCacheBasePath)
         {
-            CacheHelper.cacheBasePath = cacheBasePath;
+            cacheBasePath = newCacheBasePath;
             inited = true;
         }
 
-        private static void CheckInited()
+        static void CheckInited()
         {
             if (!inited)
                 throw new InvalidOperationException("Cache helper has not been inited.");

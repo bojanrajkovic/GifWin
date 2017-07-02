@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
+using JetBrains.Annotations;
 
 namespace GifWin.Core.Models
 {
+    [PublicAPI]
     public sealed class GifEntry
     {
         public GifEntry()

@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace GifWin.Core
+namespace GifWin.Core.GifWit
 {
     sealed class GifWitLibraryEntry
     {
