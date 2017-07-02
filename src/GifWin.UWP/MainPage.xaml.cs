@@ -21,9 +21,12 @@ namespace GifWin.UWP
         public MainPage()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel {
-                AddNewGifCallback = parameter => Frame.Navigate(typeof(AddNewGifPage), parameter)
-            };
+
+            var model = DataContext as MainWindowViewModel;
+            if (model != null) {
+                model.AddNewGifCallback =
+                    parameter => Frame.Navigate(typeof(AddNewGifPage), parameter);
+            }
 
             var title = CoreApplication.GetCurrentView().TitleBar;
             if (title != null) {

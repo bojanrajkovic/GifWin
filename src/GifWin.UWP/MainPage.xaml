@@ -4,8 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:viewModels="using:GifWin.Core.ViewModels"
     mc:Ignorable="d">
 
+    <Page.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Page.DataContext>
     <Pivot>
         <PivotItem Header="My Library">
             <Grid Padding="10">
@@ -20,10 +24,10 @@
                     <RowDefinition Height="50" />
                 </Grid.RowDefinitions>
 
-                <ListView x:Name="tags" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Tags}"
+                <ListView Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Tags}"
                           SelectionChanged="{x:Bind TagSelectionChanged}" SelectionMode="Extended">
                 </ListView>
-                <GridView x:Name="results" Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Images}">
+                <GridView Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Images}">
                     <GridView.ItemTemplate>
                         <DataTemplate>
                             <Image Width="200" Height="200" 

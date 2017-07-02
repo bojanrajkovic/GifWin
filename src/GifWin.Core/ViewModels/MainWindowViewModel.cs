@@ -35,6 +35,7 @@ namespace GifWin.Core.ViewModels
             var mt = ServiceContainer.Instance.GetRequiredService<IMainThread>();
             mt.RunAsync(() => {
                 Images.Where(gevm => gevm.Id == arg.DeletedGifId)
+                      .ToArray()
                       .ForEach(gevm => Images.Remove(gevm));
             });
 
