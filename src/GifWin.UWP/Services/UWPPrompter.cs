@@ -13,7 +13,7 @@ namespace GifWin.UWP
             var cd = new ContentDialog {
                 Title = title,
                 Content = detail,
-                CloseButtonText = buttonText
+                PrimaryButtonText = buttonText
             };
             await cd.ShowAsync();
         }
