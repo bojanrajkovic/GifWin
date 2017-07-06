@@ -172,11 +172,7 @@
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <Target Name="SetVersion"
-          DependsOnTargets="GitInfo"
-          BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;EnsureWixToolsetInstalled"
-          Condition="$(GitInfoImported) == 'True'">
+  <Target Name="SetVersion" DependsOnTargets="GitInfo" BeforeTargets="XamlPreCompile;CoreCompile;GetAssemblyVersion;" Condition="$(GitInfoImported) == 'True'">
     <PropertyGroup>
       <VersionPrefix>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</VersionPrefix>
       <VersionSuffix Condition="'$(GitBranch)' == 'master'">$(GitSemVerDashLabel)</VersionSuffix>
@@ -186,4 +182,5 @@
     </PropertyGroup>
     <Message Importance="high" Text="##teamcity[buildNumber '$(PackageVersion)']" Condition="'$(TEAMCITY_VERSION)' != ''" />
   </Target>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
 </Project>
