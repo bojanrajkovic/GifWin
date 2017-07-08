@@ -1,103 +1,108 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
-using GifWin.Data;
+using JetBrains.Annotations;
 
-namespace GifWin.ViewModels
+using GifWin.Core.Commands;
+using GifWin.Core.Data;
+using GifWin.Core.Messages;
+using GifWin.Core.Services;
+
+namespace GifWin.Core.ViewModels
 {
+    [PublicAPI]
     public sealed class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel ()
+        readonly GifWinDatabase db;
+
+        string[] selectedTag;
+        ObservableCollection<string> tags;
+        ObservableCollection<GifEntryViewModel> images;
+        IDisposable imageDeletedSubscription;
+
+        public MainWindowViewModel()
         {
-            helper = new GifWinDatabaseHelper ();
-            RefreshImageCollection ();
+            db = ServiceContainer.Instance.GetRequiredService<GifWinDatabase>();
+            imageDeletedSubscription = MessagingService.Subscribe<GifDeleted>(OnImageDeleted);
+            RefreshImageCollection();
         }
 
-        public IReadOnlyList<GifEntryViewModel> Images
+        bool OnImageDeleted(GifDeleted arg)
         {
-            get { return images; }
-            private set
-            {
+            var mt = ServiceContainer.Instance.GetRequiredService<IMainThread>();
+            mt.RunAsync(() => {
+                Images.Where(gevm => gevm.Id == arg.DeletedGifId)
+                      .ToArray()
+                      .ForEach(gevm => Images.Remove(gevm));
+            });
+
+            return true;
+        }
+
+        void RefreshImageCollection()
+        {
+            db.GetAllTagsAsync().ContinueWith(t => {
+                Tags = new ObservableCollection<string>(
+                    t.Result.Select(tag => tag.Tag).Distinct()
+                     .OrderBy(tag => tag)
+                );
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+
+            db.GetAllGifsAsync().ContinueWith(t => {
+                Images = new ObservableCollection<GifEntryViewModel>(
+                    t.Result.Select(ge => new GifEntryViewModel(ge))
+                );
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        public Action<object> AddNewGifCallback { get; set; }
+
+        public ICommand AddNewGif => new RelayCommand(AddNewGifCallback, param => true);
+
+        public string[] SelectedTag {
+            get => selectedTag;
+            set {
+                if (selectedTag == value)
+                    return;
+
+                selectedTag = value;
+
+                var gifs = selectedTag.Length == 0 ? db.GetAllGifsAsync() : db.GetGifsByTagAsync(selectedTag);
+                gifs.ContinueWith(t => {
+                    var mainThread = ServiceContainer.Instance.GetRequiredService<IMainThread>();
+                    mainThread.RunAsync(() => {
+                        Images.Clear();
+                        Images = new ObservableCollection<GifEntryViewModel>(t.Result.Select(ge =>
+                            new GifEntryViewModel(ge, searchTerm: string.Join(", ", selectedTag)))
+                        );
+                    });
+                }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            }
+        }
+
+        public ObservableCollection<string> Tags {
+            get => tags;
+            private set {
+                if (tags == value)
+                    return;
+
+                tags = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<GifEntryViewModel> Images {
+            get => images;
+            private set {
                 if (images == value)
                     return;
 
                 images = value;
-                RaisePropertyChanged ();
+                RaisePropertyChanged();
             }
-        }
-
-        public string ImageSource
-        {
-            get { return imageSource; }
-            set
-            {
-                if (imageSource == value)
-                    return;
-
-                var uri = new Uri (value, UriKind.Absolute);
-                var finalValue = value;
-
-                imageSource = finalValue;
-
-                RaisePropertyChanged ();
-            }
-        }
-
-        public string FilterText
-        {
-            get { return filterText; }
-            set
-            {
-                if (filterText == value)
-                    return;
-
-                filterText = value;
-
-                filterKeywords.Clear ();
-                filterKeywords.UnionWith (value.Split (new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
-
-                if (Uri.IsWellFormedUriString (filterText, UriKind.Absolute))
-                    ImageSource = value;
-
-                RefreshImageCollection ();
-                RaisePropertyChanged ();
-            }
-        }
-
-        public string NewEntryTags
-        {
-            get { return newEntryTags; }
-            set
-            {
-                newEntryTags = value;
-                RaisePropertyChanged ();
-            }
-        }
-
-        GifWinDatabaseHelper helper;
-        string newEntryTags;
-        string filterText;
-        string imageSource;
-        IReadOnlyList<GifEntryViewModel> images;
-        readonly HashSet<string> filterKeywords = new HashSet<string> ();
-
-        private void RefreshImageCollection ()
-        {
-            Task<IEnumerable<GifEntry>> gifs;
-
-            var filterArray = filterKeywords.ToArray ();
-            if (filterArray.Length == 1 && filterArray[0] == "*")
-                gifs = Task.FromResult (helper.QueryGifs (e => true, e => e).AsEnumerable ());
-            else
-                gifs = helper.GetGifsbyTagAsync (filterArray);
-
-            gifs.ContinueWith (t => {
-                var filterResults = t.Result.Select (ge => new GifEntryViewModel (ge));
-                Images = filterResults.ToArray();
-            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+
+using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Media.Imaging;
 
-using GifWin.ViewModels;
-using Windows.ApplicationModel.Core;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+using GifWin.Core.Messages;
+using GifWin.Core.Services;
+using GifWin.Core.ViewModels;
 
 namespace GifWin.UWP
 {
@@ -28,12 +21,46 @@ namespace GifWin.UWP
         public MainPage()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel ();
+
+            var model = DataContext as MainWindowViewModel;
+            if (model != null) {
+                model.AddNewGifCallback =
+                    parameter => Frame.Navigate(typeof(AddNewGifPage), parameter);
+            }
 
             var title = CoreApplication.GetCurrentView().TitleBar;
             if (title != null) {
-                title.ExtendViewIntoTitleBar = true;
+                title.ExtendViewIntoTitleBar = false;
             }
         }
+
+        void Image_Loaded(object sender, RoutedEventArgs e) =>
+            ApiHelper.RunIfPropertyIsPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay", () => {
+                var imageSource = ((BitmapImage)((Image)sender).Source);
+                imageSource.AutoPlay = false;
+                imageSource.Stop();
+            });
+
+        void Image_PointerEntered(object sender, PointerRoutedEventArgs e) =>
+            ApiHelper.RunIfPropertyIsPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay", () => {
+                var imageSource = ((BitmapImage)((Image)sender).Source);
+                imageSource.Play();
+            });
+
+        void Image_PointerExited(object sender, PointerRoutedEventArgs e) =>
+            ApiHelper.RunIfPropertyIsPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay", () => {
+                var imageSource = ((BitmapImage)((Image)sender).Source);
+                imageSource.Stop();
+            });
+
+        void Image_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            var gifEntry = (GifEntryViewModel)((Image)sender).DataContext;
+            gifEntry.CopyImageUrlCommand.Execute(gifEntry);
+        }
+
+        void TagSelectionChanged(object sender, SelectionChangedEventArgs e) =>
+            ((MainWindowViewModel)DataContext).SelectedTag =
+                ((ListView)sender).SelectedItems.Cast<string>().ToArray();
     }
 }

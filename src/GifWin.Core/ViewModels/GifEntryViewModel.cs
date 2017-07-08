@@ -1,38 +1,74 @@
-﻿using GifWin.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
-namespace GifWin.ViewModels
+using GifWin.Core.Commands;
+using GifWin.Core.Models;
+using GifWin.Core.Services;
+
+using JetBrains.Annotations;
+
+namespace GifWin.Core.ViewModels
 {
-    public class GifEntryViewModel : ViewModelBase
+    [PublicAPI]
+    public sealed class GifEntryViewModel : ViewModelBase
     {
-        Task<string> cachedUri;
+        readonly Task<string> cachedUri;
+        readonly string searchTerm;
 
-        public GifEntryViewModel (GifEntry entry)
+        string url;
+
+        public GifEntryViewModel (GifEntry entry, string searchTerm = null)
         {
-            if (entry == null) {
+            if (entry == null)
                 throw new ArgumentNullException (nameof (entry));
-            }
+
+            this.searchTerm = searchTerm;
 
             Id = entry.Id;
-            Url = entry.Url;
+
+            OriginalUrl = entry.Url;
+
+            if (GifHelper.TryGetCachedPathIfExists(entry, out var cachedPath))
+                Url = cachedPath;
+            else {
+                if (cachedUri == null)
+                    cachedUri = GifHelper.GetOrMakeSavedAsync(entry, entry.FirstFrame);
+
+                cachedUri.ContinueWith(
+                    t => {
+                        if (t != null) {
+                            var mt = ServiceContainer.Instance.GetRequiredService<IMainThread>();
+                            mt.RunAsync(() => Url = t.Result);
+                        }
+                    }, TaskContinuationOptions.OnlyOnRanToCompletion
+                );
+            }
+
             FirstFrame = entry.FirstFrame;
             Keywords = entry.Tags.Select (t => t.Tag).ToArray ();
-            Width = entry.Width;
-            Height = entry.Height;
         }
+
+        public ICommand CopyImageUrlCommand => new CopyImageUrlCommand(searchTerm);
+        public ICommand CopyImageCommand => new CopyImageCommand(searchTerm);
+        public ICommand DeleteImageCommand => new DeleteImageCommand();
 
         public byte[] FirstFrame { get; }
         public int Id { get; }
-        public string Url { get; }
-        public int Width { get; }
-        public int Height { get; }
 
-        public string KeywordString => string.Join (" ", Keywords);
+        public string Url {
+            get => url;
+            private set {
+                if (url != value) {
+                    url = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
+        public string OriginalUrl { get; }
         public IEnumerable<string> Keywords { get; }
     }
 }

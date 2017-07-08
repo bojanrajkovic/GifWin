@@ -1,16 +1,19 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace GifWin.ViewModels
+using JetBrains.Annotations;
+
+namespace GifWin.Core.ViewModels
 {
+    [PublicAPI]
     public abstract class ViewModelBase
         : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void RaisePropertyChanged ([CallerMemberName] string property = null)
+        protected void RaisePropertyChanged([CallerMemberName] string property = null)
         {
-            PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 }
